@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2011 The Android Open Source Project
+<!--
+     Copyright (C) 2011 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -16,13 +17,19 @@
 
 <!-- BEGIN_INCLUDE(all) -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
 
-    <fragment android:id="@+id/headlines"
-              android:layout_height="fill_parent"
-              android:name="com.example.android.newsreader.HeadlinesFragment"
-              android:layout_width="match_parent" />
-</LinearLayout>
-<!-- END_INCLUDE(all) -->
+    <fragment
+        android:id="@+id/headlines"
+        android:name="com.example.android.newsreader.HeadlinesFragment"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/NodeIndexViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent" />
+
+</LinearLayout> <!-- END_INCLUDE(all) -->
