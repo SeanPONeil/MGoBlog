@@ -24,9 +24,9 @@
         android:layout_width="400dp"
         android:layout_height="fill_parent"
         android:layout_marginRight="10dp" />
-    <fragment android:id="@+id/article"
-              android:layout_height="fill_parent"
-              android:name="com.example.android.newsreader.ArticleFragment"
-              android:layout_width="fill_parent" />
+    <android.support.v4.view.ViewPager
+        android:id="@+id/NodeViewPager"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
 </LinearLayout>
 <!-- END_INCLUDE(all) -->
