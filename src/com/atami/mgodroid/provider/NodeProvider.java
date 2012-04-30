@@ -97,7 +97,63 @@ public class NodeProvider extends ContentProvider {
 				+ " ("
 				+ KEY_ID
 				+ " integer primary key autoincrement, "
-				+ KEY_COLUMN_1_NAME
+				+ KEY_NODE_INDEX_TYPES_NAME_COLUMN
+				+ " text not null);";
+		
+		private static final String DATABASE_CREATE_NODE_INDEXES = "create table "
+				+ DATABASE_TABLE_NODE_INDEXES
+				+ " ("
+				+ KEY_ID
+				+ " integer primary key autoincrement, "
+				+ KEY_NODE_INDEXES_TYPE_ID_COLUMN
+				+ " integer not null, "
+				+ KEY_NODE_INDEXES_TITLE_COLUMN
+				+ " text not null, "
+				+ KEY_NODE_INDEXES_CREATED_COLUMN
+				+" integer not null, "
+				+ KEY_NODE_INDEXES_NID_COLUMN
+				+ " integer not null, "
+				+ KEY_NODE_INDEXES_STICKY_COLUMN
+				+ " integer not null);";
+		
+		private static final String DATABASE_CREATE_NODES = "create table "
+				+ DATABASE_TABLE_NODES
+				+ " ("
+				+ KEY_ID
+				+ " integer primary key autoincrement, "
+				+ KEY_NODES_NID_COLUMN
+				+ " integer not null, "
+				+ KEY_NODES_TITLE_COLUMN
+				+ " text not null, "
+				+ KEY_NODES_COMMENT_COUNT_COLUMN
+				+ " integer not null, "
+				+ KEY_NODES_CREATED_COLUMN
+				+ " integer not null, "
+				+ KEY_NODES_BODY_COLUMN
+				+ " text not null, "
+				+ KEY_NODES_PATH_COLUMN
+				+ " text not null, "
+				+ KEY_NODES_LINK_COLUMN
+				+ " text not null);";
+		
+		private static final String DATABASE_CREATE_NODE_COMMENTS = "create table "
+				+ DATABASE_TABLE_NODE_COMMENTS
+				+ " ("
+				+ KEY_ID
+				+ " integer primary key autoincrement, "
+				+ KEY_NODE_COMMENTS_NID_COLUMN
+				+ " integer not null, "
+				+ KEY_NODE_COMMENTS_TITLE_COLUMN
+				+ " text not null, "
+				+ KEY_NODE_COMMENTS_CREATED_COLUMN
+				+ " integer not null, "
+				+ KEY_NODE_COMMENTS_BODY_COLUMN
+				+ " text not null, "
+				+ KEY_NODE_COMMENTS_CID_COLUMN
+				+ " integer not null, "
+				+ KEY_NODE_COMMENTS_PID_COLUMN
+				+ " integer not null, "
+				+ KEY_NODE_COMMENTS_THREAD_COLUMN
 				+ " text not null);";
 
 		public MySQLiteOpenHelper(Context context, String name,
@@ -109,7 +165,10 @@ public class NodeProvider extends ContentProvider {
 		// to create a new one.
 		@Override
 		public void onCreate(SQLiteDatabase _db) {
-			_db.execSQL(DATABASE_CREATE);
+			_db.execSQL(DATABASE_CREATE_NODE_INDEX_TYPES);
+			_db.execSQL(DATABASE_CREATE_NODE_INDEXES);
+			_db.execSQL(DATABASE_CREATE_NODES);
+			_db.execSQL(DATABASE_CREATE_NODE_COMMENTS);
 		}
 
 		// Called when there is a database version mismatch meaning that the
@@ -119,7 +178,7 @@ public class NodeProvider extends ContentProvider {
 		public void onUpgrade(SQLiteDatabase _db, int _oldVersion,
 				int _newVersion) {
 			// Log the version upgrade.
-			Log.w("TaskDBAdapter", "Upgrading from version " + _oldVersion
+			Log.w("NodeDBAdapter", "Upgrading from version " + _oldVersion
 					+ " to " + _newVersion
 					+ ", which will destroy all old data");
 
@@ -130,7 +189,11 @@ public class NodeProvider extends ContentProvider {
 			// values.
 
 			// The simplest case is to drop the old table and create a new one.
-			_db.execSQL("DROP TABLE IF IT EXISTS " + DATABASE_TABLE);
+			_db.execSQL("DROP TABLE IF IT EXISTS " + DATABASE_TABLE_NODE_INDEX_TYPES);
+			_db.execSQL("DROP TABLE IF IT EXISTS " + DATABASE_TABLE_NODE_INDEXES);
+			_db.execSQL("DROP TABLE IF IT EXISTS " + DATABASE_TABLE_NODES);
+			_db.execSQL("DROP TABLE IF IT EXISTS " + DATABASE_TABLE_NODE_COMMENTS);
+
 			// Create a new one.
 			onCreate(_db);
 		}
