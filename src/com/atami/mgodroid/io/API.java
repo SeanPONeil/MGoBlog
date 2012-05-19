@@ -22,6 +22,9 @@ import com.google.common.io.CharStreams;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+//Static methods for retrieving content from the MGoBlog Drupal
+//Services module. All network I/O is blocking, and needs to be called
+//from a separate thread (in this case, an IntentService)
 public class API {
 
 	public static final String TAG = "API";
