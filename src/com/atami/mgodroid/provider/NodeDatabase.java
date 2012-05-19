@@ -9,7 +9,7 @@ class NodeDatabase extends SQLiteOpenHelper {
 
 	// Database name, version, and table names.
 	static final String DATABASE_NAME = "Node.db";
-	static final int DATABASE_VERSION = 1;
+	static final int DATABASE_VERSION = 2;
 
 	private static final String DATABASE_CREATE_NODE_INDEXES = "create table "
 			+ "node_indices ( _id integer primary key autoincrement, "
@@ -36,6 +36,16 @@ class NodeDatabase extends SQLiteOpenHelper {
 			+ "cid integer not null, "
 			+ "pid integer not null, "
 			+ "thread string not null);";
+	
+	//IRL laughed at this whole SQL statement
+	private static final String DATABASE_CREATE_INDEX_NODE_INDEXES = "create index "
+			+ "node_index_index on node_indices (node_index_type)";
+	
+	private static final String DATABASE_CREATE_INDEX_NODES = "create index "
+			+ "node_index on nodes (nid)";
+	
+	private static final String DATABASE_CREATE_INDEX_NODE_COMMENTS = "create index "
+			+ "node_comment_index on node_comments (nid)";
 
 	public NodeDatabase(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -48,6 +58,9 @@ class NodeDatabase extends SQLiteOpenHelper {
 		db.execSQL(DATABASE_CREATE_NODE_INDEXES);
 		db.execSQL(DATABASE_CREATE_NODES);
 		db.execSQL(DATABASE_CREATE_NODE_COMMENTS);
+		db.execSQL(DATABASE_CREATE_INDEX_NODE_INDEXES);
+		db.execSQL(DATABASE_CREATE_INDEX_NODES);
+		db.execSQL(DATABASE_CREATE_INDEX_NODE_COMMENTS);
 		Log.v("Provider", "Database is created");
 		seedData(db);
 	}
@@ -61,16 +74,19 @@ class NodeDatabase extends SQLiteOpenHelper {
 		Log.w("NodeDBAdapter", "Upgrading from version " + oldVersion + " to "
 				+ newVersion + ", which will destroy all old data");
 
-		db.execSQL("drop table if it exists node_indices");
-		db.execSQL("drop table if it exists nodes");
-		db.execSQL("drop table if it exists node_comments");
+		db.execSQL("drop table node_indices");
+		db.execSQL("drop table nodes");
+		db.execSQL("drop table node_comments");
+		db.execSQL("drop index node_index_index");
+		db.execSQL("drop index node_index");
+		db.execSQL("drop index node_comments_index");
 
 		onCreate(db);
 	}
 
 	// Create sample data to use
 	private void seedData(SQLiteDatabase db) {
-		db.execSQL("insert into node_indices (node_index_type, node_title, node_created, nid, is_sticky) values ('MGoBoard', 'Test1', 1234567, 54362, 1);");
+		db.execSQL("insert into node_indices (node_index_type, node_title, node_created, nid, is_sticky) values ('MGoBlog', 'Test1', 1234567, 54362, 1);");
 		db.execSQL("insert into node_indices (node_index_type, node_title, node_created, nid, is_sticky) values ('MGoBoard', 'Test2', 1234567, 54362, 0);");
 		db.execSQL("insert into node_indices (node_index_type, node_title, node_created, nid, is_sticky) values ('MGoBoard', 'Test3', 1234567, 54362, 1);");
 		db.execSQL("insert into node_indices (node_index_type, node_title, node_created, nid, is_sticky) values ('MGoBoard', 'Test4', 1234567, 54362, 1);");

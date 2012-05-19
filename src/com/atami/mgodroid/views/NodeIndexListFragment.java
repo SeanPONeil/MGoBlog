@@ -9,7 +9,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 
-import com.atami.mgodroid.provider.NodeProvider;
+import com.atami.mgodroid.provider.NodeIndicesProvider;
 
 public class NodeIndexListFragment extends ListFragment implements
 		LoaderCallbacks<Cursor> {
@@ -66,13 +66,20 @@ public class NodeIndexListFragment extends ListFragment implements
 		getLoaderManager().initLoader(0, null, this);
 	}
 
+	/*
+	 * 
+	 * Loader Callbacks
+	 * 
+	 */
+	
+	
 	static final String[] NODE_INDEX_COLUMNS = new String[] { "_id",
 			"node_index_type", "node_title", "node_created", "nid", "is_sticky" };
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-		Uri baseUri = NodeProvider.CONTENT_URI;
+		Uri baseUri = NodeIndicesProvider.NODE_INDICES_URI;
 		Uri.withAppendedPath(baseUri,
 				Uri.encode(getArguments().getString("node_index_type")));
 
