@@ -3,13 +3,9 @@ package com.atami.mgodroid.io;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -19,8 +15,6 @@ import android.content.Context;
 import android.util.Log;
 
 import com.google.common.io.CharStreams;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 //Static methods for retrieving content from the MGoBlog Drupal
 //Services module. All network I/O is blocking, and needs to be called
@@ -29,8 +23,14 @@ public class API {
 
 	public static final String TAG = "API";
 
-	// Pulls in a fresh set of Node Index data from MGoBlog based on the
-	// position in the ViewFlow.
+	// Returns a SessID on successful connect
+	public static JSONObject connect() throws MalformedURLException, IOException,
+			JSONException {
+		String result = post(ServiceUrls.SYSTEM_CONNECT_URL, null, null);
+		return new JSONObject(result);
+	}
+
+	// Pulls in a fresh set of Node Index data from MGoBlog
 	public static JSONArray getNodeIndex(String type, int page, Context context)
 			throws MalformedURLException, IOException, JSONException {
 		String url = String.format(ServiceUrls.NODE_INDEX_URL, type,
@@ -47,25 +47,16 @@ public class API {
 		return new JSONArray(result);
 	}
 
-	public static boolean userLogin(String username, String password,
+	public static JSONObject userLogin(String username, String password,
 			Context context) throws JSONException, MalformedURLException,
 			IOException {
 
-		//POST request body
+		// POST request body
 		JSONObject payload = new JSONObject();
 		payload.put("username", username);
 		payload.put("password", password);
-		Log.d(TAG, payload.toString());
-		
 		String result = post(ServiceUrls.USER_LOGIN_URL, payload, null);
-		
-		JSONObject json = new JSONObject(result);
-		if (json.get("sessid") == null) {
-			return false;
-		} else {
-			//Do something with sessid here
-			return true;
-		}
+		return new JSONObject(result);
 	}
 
 	//
@@ -162,6 +153,7 @@ public class API {
 			return CharStreams.toString(new InputStreamReader(conn
 					.getInputStream(), "UTF-8"));
 		} else {
+			Log.d(TAG, conn.getResponseMessage());
 			return null;
 		}
 
@@ -198,21 +190,4 @@ public class API {
 		}
 
 	}
-
-	// Returns a SessID on successful connect
-	public static String connect() throws MalformedURLException, IOException,
-			JSONException {
-
-		String result = post(ServiceUrls.SYSTEM_CONNECT_URL, null, null);
-
-		JSONObject json = new JSONObject(result);
-		return json.toString();
-		// Log.v(TAG, json.toString());
-		// if (json.get("sessid") == null) {
-		// return null;
-		// } else {
-		// return (String) json.get("sessid");
-		// }
-	}
-
 }

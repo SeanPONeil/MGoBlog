@@ -21,6 +21,6 @@ public class ServiceUrls {
 	static final String[] NODE_INDEX_TYPE = { "forum", "story", "blog",
 			"link" };
 	static final String NODE_INDEX_URL = BASE_URL
-			+ "node.json?fields=nid,title,created&parameters[type]=%s&page=%s";
+			+ "node.json?parameters[type]=%s&page=%s";
 
 }

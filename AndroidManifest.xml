@@ -31,6 +31,8 @@
             android:name=".provider.NodeIndicesProvider"
             android:authorities="com.mgoblog.nodeprovider" >
         </provider>
+        
+        <service android:name=".io.APIIntentService"/>
     </application>
 
 </manifest>

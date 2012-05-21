@@ -1,5 +1,6 @@
 package com.atami.mgodroid.views;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -8,7 +9,12 @@ import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
+import com.atami.mgodroid.R;
+import com.atami.mgodroid.io.APIIntentService;
 import com.atami.mgodroid.provider.NodeIndicesProvider;
 
 public class NodeIndexListFragment extends ListFragment implements
@@ -50,9 +56,7 @@ public class NodeIndexListFragment extends ListFragment implements
 		// Give some text to display if there is no data. In a real
 		// application this would come from a resource.
 		setEmptyText("Loading");
-
-		// We have a menu item to show in action bar.
-		// setHasOptionsMenu(true);
+		setHasOptionsMenu(true);
 
 		// Create an empty adapter we will use to display the loaded data.
 		mAdapter = new SimpleCursorAdapter(getActivity(),
@@ -66,13 +70,32 @@ public class NodeIndexListFragment extends ListFragment implements
 		getLoaderManager().initLoader(0, null, this);
 	}
 
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.node_index, menu);
+		super.onCreateOptionsMenu(menu, inflater);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.refresh:
+			// Launch Intent Service to refresh data
+			Intent i = new Intent(getActivity(), APIIntentService.class);
+			i.setAction(APIIntentService.NODE_INDEX_DOWNLOAD);
+			i.putExtra(APIIntentService.NODE_INDEX_TYPE, type);
+			getActivity().startService(i);
+		default:
+			super.onOptionsItemSelected(item);
+		}
+		return true;
+	}
+
 	/*
 	 * 
 	 * Loader Callbacks
-	 * 
 	 */
-	
-	
+
 	static final String[] NODE_INDEX_COLUMNS = new String[] { "_id",
 			"node_index_type", "node_title", "node_created", "nid", "is_sticky" };
 
@@ -80,13 +103,14 @@ public class NodeIndexListFragment extends ListFragment implements
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
 		Uri baseUri = NodeIndicesProvider.NODE_INDICES_URI;
-		Uri.withAppendedPath(baseUri,
-				Uri.encode(getArguments().getString("node_index_type")));
+		String where = "node_index_type = ?";
+		String whereArgs[] = { type };
 
 		// Now create and return a CursorLoader that will take care of
 		// creating a Cursor for the data being displayed.
+
 		return new CursorLoader(getActivity(), baseUri, NODE_INDEX_COLUMNS,
-				null, null, "node_title desc");
+				where, whereArgs, "node_created desc");
 	}
 
 	@Override
