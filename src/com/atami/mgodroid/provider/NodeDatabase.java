@@ -62,7 +62,6 @@ class NodeDatabase extends SQLiteOpenHelper {
 		db.execSQL(DATABASE_CREATE_INDEX_NODES);
 		db.execSQL(DATABASE_CREATE_INDEX_NODE_COMMENTS);
 		Log.v("Provider", "Database is created");
-		seedData(db);
 	}
 
 	// Called when there is a database version mismatch meaning that the
@@ -82,13 +81,5 @@ class NodeDatabase extends SQLiteOpenHelper {
 		db.execSQL("drop index node_comments_index");
 
 		onCreate(db);
-	}
-
-	// Create sample data to use
-	private void seedData(SQLiteDatabase db) {
-		db.execSQL("insert into node_indices (node_index_type, node_title, node_created, nid, is_sticky) values ('MGoBlog', 'Test1', 1234567, 54362, 1);");
-		db.execSQL("insert into node_indices (node_index_type, node_title, node_created, nid, is_sticky) values ('MGoBoard', 'Test2', 1234567, 54362, 0);");
-		db.execSQL("insert into node_indices (node_index_type, node_title, node_created, nid, is_sticky) values ('MGoBoard', 'Test3', 1234567, 54362, 1);");
-		db.execSQL("insert into node_indices (node_index_type, node_title, node_created, nid, is_sticky) values ('MGoBoard', 'Test4', 1234567, 54362, 1);");
 	}
 }

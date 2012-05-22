@@ -18,8 +18,6 @@ public class ServiceUrls {
 
 	static final String SYSTEM_CONNECT_URL = BASE_URL + "system/connect/";
 
-	static final String[] NODE_INDEX_TYPE = { "forum", "story", "blog",
-			"link" };
 	static final String NODE_INDEX_URL = BASE_URL
 			+ "node.json?parameters[type]=%s&page=%s";
 

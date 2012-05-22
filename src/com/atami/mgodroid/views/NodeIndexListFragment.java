@@ -9,9 +9,13 @@ import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import com.atami.mgodroid.R;
 import com.atami.mgodroid.io.APIIntentService;
@@ -68,6 +72,12 @@ public class NodeIndexListFragment extends ListFragment implements
 		// Prepare the loader. Either re-connect with an existing one,
 		// or start a new one.
 		getLoaderManager().initLoader(0, null, this);
+	}
+
+	@Override
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		Log.i("NodeIndexListFragment", "Item clicked: " + id);
+		Toast.makeText(getActivity(), "Item clicked: " + id, Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
