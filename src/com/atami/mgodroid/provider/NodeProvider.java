@@ -5,20 +5,18 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
 
-public class NodeIndicesProvider extends ContentProvider {
-
+public class NodeProvider extends ContentProvider {
+	
 	private NodeDatabase db;
 
-	public static final Uri NODE_INDICES_URI = Uri
-			.parse("content://com.mgoblog.nodeprovider/node_indices");
+	public static final Uri NODES_URI = Uri
+			.parse("content://com.mgoblog.nodeprovider/nodes");
 	
-	public static final String TABLE = "node_indices";
+	public static final String TABLE = "nodes";
 
 	private static final int ALLROWS = 1;
 	private static final int SINGLE_ROW = 2;
@@ -26,8 +24,8 @@ public class NodeIndicesProvider extends ContentProvider {
 	private static final UriMatcher uriMatcher;
 	static {
 		uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-		uriMatcher.addURI("com.mgoblog.nodeprovider", TABLE, ALLROWS);
-		uriMatcher.addURI("com.mgoblog.nodeprovider", TABLE + "/#",
+		uriMatcher.addURI("com.mgoblog.nodeprovider", "nodes", ALLROWS);
+		uriMatcher.addURI("com.mgoblog.nodeprovider", "nodes/#",
 				SINGLE_ROW);
 	}
 
@@ -69,33 +67,13 @@ public class NodeIndicesProvider extends ContentProvider {
 	@Override
 	public Uri insert(Uri uri, ContentValues values) {
 		long id = db.getWritableDatabase().insert(TABLE, null, values);
-		if (id > -1) {
-			// Construct and return the URI of the newly inserted row.
-			Uri insertedId = ContentUris.withAppendedId(NODE_INDICES_URI, id);
+		if(id > -1){
+			//Construct and return the URI of the newly inserted row.
+			Uri insertedId = ContentUris.withAppendedId(NODES_URI, id);
 			getContext().getContentResolver().notifyChange(insertedId, null);
 			return insertedId;
 		}
 		return null;
-	}
-
-	@Override
-	public int bulkInsert(Uri uri, ContentValues[] values) {
-		SQLiteDatabase sqlDB = db.getWritableDatabase();
-		sqlDB.beginTransaction();
-		try {
-
-			for (ContentValues cv : values) {
-				long newID = sqlDB.insertOrThrow(TABLE, null, cv);
-				if (newID <= 0) {
-					throw new SQLException("Failed to insert row into " + uri);
-				}
-			}
-			sqlDB.setTransactionSuccessful();
-			getContext().getContentResolver().notifyChange(uri, null);
-		} finally {
-			sqlDB.endTransaction();
-		}
-		return values.length;
 	}
 
 	@Override
@@ -140,18 +118,19 @@ public class NodeIndicesProvider extends ContentProvider {
 		getContext().getContentResolver().notifyChange(uri, null);
 		return updateCount;
 	}
-
+	
 	@Override
 	public String getType(Uri uri) {
 		// Return a string that identifies the MIME type
 		// for a Content Provider URI
 		switch (uriMatcher.match(uri)) {
 		case ALLROWS:
-			return "vnd.android.cursor.dir/vnd.mgoblog.node_index";
+			return "vnd.android.cursor.dir/vnd.mgoblog.node";
 		case SINGLE_ROW:
-			return "vnd.android.cursor.item/vnd.mgoblog.node_index";
+			return "vnd.android.cursor.item/vnd.mgoblog.node";
 		default:
 			throw new IllegalArgumentException("Unsupported URI: " + uri);
 		}
 	}
+
 }
