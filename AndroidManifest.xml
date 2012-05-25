@@ -28,7 +28,7 @@
         </activity>
 
         <provider
-            android:name=".provider.NodeIndicesProvider"
+            android:name=".provider.NodeIndexProvider"
             android:authorities="com.mgoblog.nodeprovider" >
         </provider>
         

@@ -19,7 +19,7 @@ import android.widget.Toast;
 
 import com.atami.mgodroid.R;
 import com.atami.mgodroid.io.APIIntentService;
-import com.atami.mgodroid.provider.NodeIndicesProvider;
+import com.atami.mgodroid.provider.NodeIndexProvider;
 
 public class NodeIndexListFragment extends ListFragment implements
 		LoaderCallbacks<Cursor> {
@@ -27,15 +27,10 @@ public class NodeIndexListFragment extends ListFragment implements
 	// This is the Adapter being used to display the list's data.
 	SimpleCursorAdapter mAdapter;
 
-	// If non-null, this is the current filter the user has provided.
-	String mCurFilter;
+	//The type of content we are displaying. Used by the CursorLoader
+	//to pull the correct nodes indices out of the database.
+	String indexType;
 
-	String type;
-
-	/**
-	 * Create a new instance of DetailsFragment, initialized to show the text at
-	 * 'index'.
-	 */
 	public static NodeIndexListFragment newInstance(String type) {
 		NodeIndexListFragment f = new NodeIndexListFragment();
 
@@ -50,7 +45,7 @@ public class NodeIndexListFragment extends ListFragment implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		type = getArguments().getString("node_index_type");
+		indexType = getArguments().getString("node_index_type");
 	}
 
 	@Override
@@ -89,11 +84,12 @@ public class NodeIndexListFragment extends ListFragment implements
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.refresh:
+		case R.id.refresh:			
 			// Launch Intent Service to refresh data
 			Intent i = new Intent(getActivity(), APIIntentService.class);
 			i.setAction(APIIntentService.NODE_INDEX_DOWNLOAD);
-			i.putExtra(APIIntentService.NODE_INDEX_TYPE, type);
+			i.putExtra(APIIntentService.NODE_INDEX_TYPE, indexType);
+			i.putExtra(APIIntentService.NODE_INDEX_PAGE, 0);
 			getActivity().startService(i);
 		default:
 			super.onOptionsItemSelected(item);
@@ -112,9 +108,9 @@ public class NodeIndexListFragment extends ListFragment implements
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-		Uri baseUri = NodeIndicesProvider.NODE_INDICES_URI;
+		Uri baseUri = NodeIndexProvider.NODE_INDEX_URI;
 		String where = "node_index_type = ?";
-		String whereArgs[] = { type };
+		String whereArgs[] = { indexType };
 
 		// Now create and return a CursorLoader that will take care of
 		// creating a Cursor for the data being displayed.

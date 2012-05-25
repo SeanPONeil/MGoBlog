@@ -11,14 +11,14 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
 
-public class NodeIndicesProvider extends ContentProvider {
+public class NodeIndexProvider extends ContentProvider {
 
 	private NodeDatabase db;
 
-	public static final Uri NODE_INDICES_URI = Uri
-			.parse("content://com.mgoblog.nodeprovider/node_indices");
+	public static final Uri NODE_INDEX_URI = Uri
+			.parse("content://com.mgoblog.nodeprovider/node_index");
 	
-	public static final String TABLE = "node_indices";
+	public static final String TABLE = "node_index";
 
 	private static final int ALLROWS = 1;
 	private static final int SINGLE_ROW = 2;
@@ -71,7 +71,7 @@ public class NodeIndicesProvider extends ContentProvider {
 		long id = db.getWritableDatabase().insert(TABLE, null, values);
 		if (id > -1) {
 			// Construct and return the URI of the newly inserted row.
-			Uri insertedId = ContentUris.withAppendedId(NODE_INDICES_URI, id);
+			Uri insertedId = ContentUris.withAppendedId(NODE_INDEX_URI, id);
 			getContext().getContentResolver().notifyChange(insertedId, null);
 			return insertedId;
 		}

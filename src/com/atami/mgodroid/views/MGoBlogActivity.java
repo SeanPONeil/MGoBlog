@@ -11,8 +11,14 @@ import com.atami.mgodroid.R;
 
 public class MGoBlogActivity extends FragmentActivity {
 
+	//Left pane
 	NodeIndexAdapter mAdapter;
 	ViewPager mPager;
+	
+	//Right pane
+	
+	// Whether or not we are in dual-pane mode
+    boolean mIsDualPane = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
