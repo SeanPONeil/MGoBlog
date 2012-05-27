@@ -32,7 +32,7 @@
             android:authorities="com.mgoblog.nodeprovider" >
         </provider>
         
-        <service android:name=".io.APIIntentService"/>
+        <service android:name=".io.NodeIndexService"/>
     </application>
 
 </manifest>

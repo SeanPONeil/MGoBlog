@@ -9,13 +9,15 @@ class NodeDatabase extends SQLiteOpenHelper {
 
 	// Database name, version, and table names.
 	static final String DATABASE_NAME = "Node.db";
-	static final int DATABASE_VERSION = 3;
+	static final int DATABASE_VERSION = 5;
+
+	String[] NODE_INDEX_TYPES = { "forum", "story", "blog", "link" };
 
 	private static final String DATABASE_CREATE_NODE_INDEX = "create table "
 			+ "node_index ( _id integer primary key autoincrement, "
 			+ "node_index_type text not null, " + "node_title text not null, "
 			+ "node_created integer not null, " + "nid integer not null, "
-			+ "is_sticky integer not null);";
+			+ "is_sticky integer not null, " + "page integer not null);";
 
 	private static final String DATABASE_CREATE_NODES = "create table "
 			+ "nodes ( _id integer primary key autoincrement, "

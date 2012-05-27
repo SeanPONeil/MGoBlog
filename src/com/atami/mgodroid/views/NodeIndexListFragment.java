@@ -1,6 +1,5 @@
 package com.atami.mgodroid.views;
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,21 +13,23 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.atami.mgodroid.R;
-import com.atami.mgodroid.io.APIIntentService;
+import com.atami.mgodroid.io.NodeIndexServiceHelper;
 import com.atami.mgodroid.provider.NodeIndexProvider;
 
 public class NodeIndexListFragment extends ListFragment implements
-		LoaderCallbacks<Cursor> {
+		LoaderCallbacks<Cursor>, OnScrollListener {
 
 	// This is the Adapter being used to display the list's data.
 	SimpleCursorAdapter mAdapter;
 
-	//The type of content we are displaying. Used by the CursorLoader
-	//to pull the correct nodes indices out of the database.
+	// The type of content we are displaying. Used by the CursorLoader
+	// to pull the correct nodes indices out of the database.
 	String indexType;
 
 	public static NodeIndexListFragment newInstance(String type) {
@@ -56,6 +57,7 @@ public class NodeIndexListFragment extends ListFragment implements
 		// application this would come from a resource.
 		setEmptyText("Loading");
 		setHasOptionsMenu(true);
+		getListView().setOnScrollListener(this);
 
 		// Create an empty adapter we will use to display the loaded data.
 		mAdapter = new SimpleCursorAdapter(getActivity(),
@@ -72,7 +74,8 @@ public class NodeIndexListFragment extends ListFragment implements
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		Log.i("NodeIndexListFragment", "Item clicked: " + id);
-		Toast.makeText(getActivity(), "Item clicked: " + id, Toast.LENGTH_SHORT).show();
+		Toast.makeText(getActivity(), "Item clicked: " + id, Toast.LENGTH_SHORT)
+				.show();
 	}
 
 	@Override
@@ -84,13 +87,9 @@ public class NodeIndexListFragment extends ListFragment implements
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.refresh:			
-			// Launch Intent Service to refresh data
-			Intent i = new Intent(getActivity(), APIIntentService.class);
-			i.setAction(APIIntentService.NODE_INDEX_DOWNLOAD);
-			i.putExtra(APIIntentService.NODE_INDEX_TYPE, indexType);
-			i.putExtra(APIIntentService.NODE_INDEX_PAGE, 0);
-			getActivity().startService(i);
+		case R.id.refresh:
+			NodeIndexServiceHelper.refreshNodeIndex(indexType, getActivity());
+			break;
 		default:
 			super.onOptionsItemSelected(item);
 		}
@@ -116,7 +115,7 @@ public class NodeIndexListFragment extends ListFragment implements
 		// creating a Cursor for the data being displayed.
 
 		return new CursorLoader(getActivity(), baseUri, NODE_INDEX_COLUMNS,
-				where, whereArgs, "node_created desc");
+				where, whereArgs, null);
 	}
 
 	@Override
@@ -132,6 +131,25 @@ public class NodeIndexListFragment extends ListFragment implements
 		// above is about to be closed. We need to make sure we are no
 		// longer using it.
 		mAdapter.swapCursor(null);
+	}
+
+	@Override
+	public void onScroll(AbsListView list, int firstVisible, int visibleCount,
+			int totalCount) {
+
+		boolean reachedEndOfList = /* maybe add a padding */
+		firstVisible + visibleCount >= totalCount;
+
+		if (reachedEndOfList && list.getChildCount() != 0) {
+			// Launch Intent Service to get next page
+			Log.d("test", "reached end of list");
+			NodeIndexServiceHelper.getNextNodeIndexPage(indexType, getActivity());
+		}
+
+	}
+
+	@Override
+	public void onScrollStateChanged(AbsListView view, int scrollState) {
 	}
 
 }
