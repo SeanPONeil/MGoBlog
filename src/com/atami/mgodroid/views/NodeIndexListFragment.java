@@ -52,9 +52,6 @@ public class NodeIndexListFragment extends ListFragment implements
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-
-		// Give some text to display if there is no data. In a real
-		// application this would come from a resource.
 		setEmptyText("Loading");
 		setHasOptionsMenu(true);
 		getListView().setOnScrollListener(this);

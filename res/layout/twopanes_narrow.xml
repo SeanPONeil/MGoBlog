@@ -21,9 +21,9 @@
     android:orientation="horizontal">
     <android.support.v4.view.ViewPager
         android:id="@+id/NodeIndexViewPager"
-        android:layout_width="200dp"
+        android:layout_width="100dp"
         android:layout_height="fill_parent"
-        android:layout_marginRight="10dp" />
+        android:layout_marginRight="20dp" />
     <FrameLayout
         android:id="@+id/NodeViewPager"
         android:layout_width="fill_parent"
