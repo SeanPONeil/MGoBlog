@@ -24,8 +24,8 @@ public class APIUtil {
 	public static final String TAG = "API";
 
 	// Returns a SessID on successful connect
-	public static JSONObject connect() throws MalformedURLException, IOException,
-			JSONException {
+	public static JSONObject connect() throws MalformedURLException,
+			IOException, JSONException {
 		String result = post(ServiceUrls.SYSTEM_CONNECT_URL, null, null);
 		return new JSONObject(result);
 	}
@@ -59,32 +59,14 @@ public class APIUtil {
 		return new JSONObject(result);
 	}
 
-	//
-	// public static DrupalNode getNode(String nid, Context context)
-	// throws Exception {
-	//
-	// URLConnection conn = new URL(String.format(NODE_GET, nid))
-	// .openConnection();
-	// conn.setRequestProperty("Accept-Charset", ENCODING);
-	// InputStream response = conn.getInputStream();
-	// String result = CharStreams.toString(new InputStreamReader(response,
-	// ENCODING));
-	// Log.v(TAG, result);
-	// JSONObject json = new JSONObject(result);
-	// json.remove("taxonomy");
-	// json.remove("files");
-	// json.remove("nodewords");
-	// json.remove("page_title");
-	//
-	// Gson gson = new Gson();
-	// Type mapType = new TypeToken<Map<String, String>>() {
-	// }.getType();
-	//
-	// Log.v(TAG, json.toString());
-	//
-	// HashMap<String, String> obj = gson.fromJson(json.toString(), mapType);
-	// return new DrupalNode(obj);
-	// }
+	public static JSONObject getNode(String nid, Context context)
+			throws Exception {
+
+		String url = String.format(ServiceUrls.NODE_GET_URL, nid);
+		String result = get(url);
+		return new JSONObject(result);
+	}
+
 	//
 	// public static boolean postComment(Context context, String subject,
 	// String nid, String body, String pid) throws Exception {

@@ -3,26 +3,29 @@ package com.atami.mgodroid.views;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
+import android.os.Handler;
+import android.os.ResultReceiver;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.SherlockListFragment;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.atami.mgodroid.R;
+import com.atami.mgodroid.io.NodeIndexService;
 import com.atami.mgodroid.io.NodeIndexServiceHelper;
 import com.atami.mgodroid.provider.NodeIndexProvider;
 
-public class NodeIndexListFragment extends ListFragment implements
+public class NodeIndexListFragment extends SherlockListFragment implements
 		LoaderCallbacks<Cursor>, OnScrollListener {
 
 	// This is the Adapter being used to display the list's data.
@@ -31,6 +34,9 @@ public class NodeIndexListFragment extends ListFragment implements
 	// The type of content we are displaying. Used by the CursorLoader
 	// to pull the correct nodes indices out of the database.
 	String indexType;
+
+	// Used to receive info from NodeIndexService
+	private ResultReceiver mReceiver;
 
 	public static NodeIndexListFragment newInstance(String type) {
 		NodeIndexListFragment f = new NodeIndexListFragment();
@@ -47,12 +53,35 @@ public class NodeIndexListFragment extends ListFragment implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		indexType = getArguments().getString("node_index_type");
+
+		mReceiver = new ResultReceiver(new Handler()) {
+
+			@Override
+			protected void onReceiveResult(int resultCode, Bundle resultData) {
+				switch (resultCode) {
+				case NodeIndexService.STATUS_RUNNING:
+					getActivity().setProgressBarIndeterminateVisibility(true);
+					break;
+				case NodeIndexService.STATUS_COMPLETE:
+					getActivity().setProgressBarIndeterminateVisibility(false);
+					break;
+				case NodeIndexService.STATUS_ERROR:
+					Toast.makeText(getActivity(),
+							"Error pulling content from MGoBlog",
+							Toast.LENGTH_SHORT).show();
+					break;
+				default:
+
+				}
+			}
+
+		};
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		setEmptyText("Loading");
+		setEmptyText("No nodes to display");
 		setHasOptionsMenu(true);
 		getListView().setOnScrollListener(this);
 
@@ -85,22 +114,16 @@ public class NodeIndexListFragment extends ListFragment implements
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.refresh:
-			NodeIndexServiceHelper.refreshNodeIndex(indexType, getActivity());
+			NodeIndexServiceHelper.refreshNodeIndex(indexType, getActivity(),
+					mReceiver);
+			getListView().setSelection(0);
 			break;
 		default:
 			super.onOptionsItemSelected(item);
 		}
 		return true;
 	}
-
-	/*
-	 * 
-	 * Loader Callbacks
-	 */
-
-	static final String[] NODE_INDEX_COLUMNS = new String[] { "_id",
-			"node_index_type", "node_title", "node_created", "nid", "is_sticky" };
-
+	
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
@@ -111,8 +134,9 @@ public class NodeIndexListFragment extends ListFragment implements
 		// Now create and return a CursorLoader that will take care of
 		// creating a Cursor for the data being displayed.
 
-		return new CursorLoader(getActivity(), baseUri, NODE_INDEX_COLUMNS,
-				where, whereArgs, null);
+		return new CursorLoader(getActivity(), baseUri, new String[] { "_id",
+				"node_index_type", "node_title", "node_created", "nid",
+				"is_sticky" }, where, whereArgs, null);
 	}
 
 	@Override
@@ -140,7 +164,8 @@ public class NodeIndexListFragment extends ListFragment implements
 		if (reachedEndOfList && list.getChildCount() != 0) {
 			// Launch Intent Service to get next page
 			Log.d("test", "reached end of list");
-			NodeIndexServiceHelper.getNextNodeIndexPage(indexType, getActivity());
+			NodeIndexServiceHelper.getNextNodeIndexPage(indexType,
+					getActivity(), mReceiver);
 		}
 
 	}

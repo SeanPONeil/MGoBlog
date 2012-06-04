@@ -9,7 +9,7 @@ class NodeDatabase extends SQLiteOpenHelper {
 
 	// Database name, version, and table names.
 	static final String DATABASE_NAME = "Node.db";
-	static final int DATABASE_VERSION = 5;
+	static final int DATABASE_VERSION = 6;
 
 	String[] NODE_INDEX_TYPES = { "forum", "story", "blog", "link" };
 
@@ -23,7 +23,7 @@ class NodeDatabase extends SQLiteOpenHelper {
 			+ "nodes ( _id integer primary key autoincrement, "
 			+ "nid integer not null, " + "title text not null, "
 			+ "comment_count integer not null, " + "created integer not null, "
-			+ "body text not null, path text not null, link text not null);";
+			+ "body text not null, path text not null, link text);";
 
 	private static final String DATABASE_CREATE_NODE_COMMENTS = "create table "
 			+ "node_comments ( _id integer primary key autoincrement, "

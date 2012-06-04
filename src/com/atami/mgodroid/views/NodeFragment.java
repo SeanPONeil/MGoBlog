@@ -1,13 +1,14 @@
 package com.atami.mgodroid.views;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 
-public class NodeFragment extends Fragment {
+import com.actionbarsherlock.app.SherlockFragment;
+
+public class NodeFragment extends SherlockFragment {
 	
 	//ID of the current node
 	int nid;

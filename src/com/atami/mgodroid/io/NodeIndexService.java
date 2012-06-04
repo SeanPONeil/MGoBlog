@@ -1,7 +1,5 @@
 package com.atami.mgodroid.io;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
@@ -12,6 +10,8 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Bundle;
+import android.os.ResultReceiver;
 import android.util.Log;
 
 import com.atami.mgodroid.provider.NodeIndexProvider;
@@ -23,9 +23,36 @@ public class NodeIndexService extends IntentService {
 	public static String GET_NEXT_PAGE = "get_next_page";
 	public static String REFRESH = "node_index_refresh";
 	public static String TYPE = "node_index_type";
+	
+	public static String RESULT = "result";
+	public static String RESULT_RECEIVER = "receiver";
+	public static final int STATUS_ERROR = 0;
+	public static final int STATUS_COMPLETE = 1;
+	public static final int STATUS_RUNNING = 2;
+	
+	private ResultReceiver mReceiver;
 
 	public NodeIndexService() {
-		super("MGoBlog");
+		super("NodeIndexService");
+	}
+	
+	@Override
+	protected void onHandleIntent(Intent intent) {
+		String action = intent.getAction();
+		String indexType = intent.getStringExtra(TYPE);
+		mReceiver = intent.getParcelableExtra(RESULT_RECEIVER);
+		mReceiver.send(STATUS_RUNNING, Bundle.EMPTY);
+		Log.d(TAG, action + " running");
+
+		if (action.equals(GET_NEXT_PAGE)) {
+			getNextNodeIndexPage(indexType);
+		} else if (action.equals(REFRESH)) {
+			refreshIndexPage(indexType);
+		}
+		
+		mReceiver.send(STATUS_COMPLETE, Bundle.EMPTY);
+		NodeIndexServiceHelper.threadCompleted(indexType);
+		Log.d(TAG, action + " completed");
 	}
 
 	// Drops all rows where node_type is type. This should be
@@ -55,15 +82,9 @@ public class NodeIndexService extends IntentService {
 		try {
 			index = APIUtil.getNodeIndex(type, page, this);
 			Log.v(TAG, index.toString());
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
+		} catch(Exception e){
 			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			mReceiver.send(STATUS_ERROR, Bundle.EMPTY);
 		}
 		return index;
 	}
@@ -99,6 +120,9 @@ public class NodeIndexService extends IntentService {
 		insertNodeIndex(index, page);
 	}
 
+	//Gets the first node index page given the type, and
+	//if successful drops all rows for that type and inserts
+	//the retrieved page.
 	private void refreshIndexPage(String type) {
 		JSONArray index = getNodeIndexPage(0, type);
 		if (index.length() != 0) {
@@ -106,19 +130,4 @@ public class NodeIndexService extends IntentService {
 			insertNodeIndex(index, 0);
 		}
 	}
-
-	@Override
-	protected void onHandleIntent(Intent intent) {
-		String action = intent.getAction();
-		String type = intent.getStringExtra(TYPE);
-		Log.d(TAG, "Action = " + action);
-
-		if (action.equals(GET_NEXT_PAGE)) {
-			getNextNodeIndexPage(type);
-		} else if (action.equals(REFRESH)) {
-			refreshIndexPage(type);
-		}
-		NodeIndexServiceHelper.threadCompleted(type);
-	}
-
 }

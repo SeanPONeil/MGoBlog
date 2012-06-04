@@ -4,6 +4,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.ResultReceiver;
 import android.util.Log;
 
 public class NodeIndexServiceHelper {
@@ -32,7 +33,7 @@ public class NodeIndexServiceHelper {
 
 	// Utility methods for sending refresh node index intents
 
-	public static void refreshNodeIndex(String indexType, Context context) {
+	public static void refreshNodeIndex(String indexType, Context context, ResultReceiver receiver) {
 		Boolean alreadyQueued = NodeIndexServiceHelper.getInstance().threadQueue
 				.get(indexType);
 		if (alreadyQueued == null || alreadyQueued == false) {
@@ -41,6 +42,7 @@ public class NodeIndexServiceHelper {
 			Intent i = new Intent(context, NodeIndexService.class);
 			i.setAction(NodeIndexService.REFRESH);
 			i.putExtra(NodeIndexService.TYPE, indexType);
+			i.putExtra(NodeIndexService.RESULT_RECEIVER, receiver);
 			context.startService(i);
 			NodeIndexServiceHelper.getInstance().threadQueue.put(indexType,
 					true);
@@ -49,13 +51,14 @@ public class NodeIndexServiceHelper {
 		}
 	}
 
-	public static void getNextNodeIndexPage(String indexType, Context context) {
+	public static void getNextNodeIndexPage(String indexType, Context context, ResultReceiver receiver) {
 		Boolean alreadyQueued = NodeIndexServiceHelper.getInstance().threadQueue
 				.get(indexType);
 		if (alreadyQueued == null || alreadyQueued == false) {
 			Intent i = new Intent(context, NodeIndexService.class);
 			i.setAction(NodeIndexService.GET_NEXT_PAGE);
 			i.putExtra(NodeIndexService.TYPE, indexType);
+			i.putExtra(NodeIndexService.RESULT_RECEIVER, receiver);
 			context.startService(i);
 			NodeIndexServiceHelper.getInstance().threadQueue.put(indexType,
 					true);
