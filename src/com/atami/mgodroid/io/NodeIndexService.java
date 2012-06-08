@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import android.app.IntentService;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -15,8 +14,9 @@ import android.os.ResultReceiver;
 import android.util.Log;
 
 import com.atami.mgodroid.provider.NodeIndexProvider;
+import com.atami.mgodroid.util.BlockingIntentService;
 
-public class NodeIndexService extends IntentService {
+public class NodeIndexService extends BlockingIntentService {
 
 	private static String TAG = "NodeIndexService";
 
@@ -37,13 +37,13 @@ public class NodeIndexService extends IntentService {
 	}
 	
 	@Override
-	protected void onHandleIntent(Intent intent) {
+	protected void onHandleBlockingIntent(Intent intent) {
 		String action = intent.getAction();
 		String indexType = intent.getStringExtra(TYPE);
 		mReceiver = intent.getParcelableExtra(RESULT_RECEIVER);
 		mReceiver.send(STATUS_RUNNING, Bundle.EMPTY);
 		Log.d(TAG, action + " running");
-
+		
 		if (action.equals(GET_NEXT_PAGE)) {
 			getNextNodeIndexPage(indexType);
 		} else if (action.equals(REFRESH)) {
@@ -51,7 +51,6 @@ public class NodeIndexService extends IntentService {
 		}
 		
 		mReceiver.send(STATUS_COMPLETE, Bundle.EMPTY);
-		NodeIndexServiceHelper.threadCompleted(indexType);
 		Log.d(TAG, action + " completed");
 	}
 
