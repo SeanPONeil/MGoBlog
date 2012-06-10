@@ -86,7 +86,7 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment imp
 		setEmptyText("No nodes to display");
 		setHasOptionsMenu(true);
 		getPullToRefreshListView().setOnScrollListener(this);
-		
+
 		getPullToRefreshListView().setOnRefreshListener(new OnRefreshListener(){
 
 			@Override
@@ -94,7 +94,7 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment imp
 				NodeIndexService.refreshNodeIndex(indexType, getActivity(),
 						mReceiver);
 			}
-			
+
 		});
 
 		// Create an empty adapter we will use to display the loaded data.
@@ -135,13 +135,13 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment imp
 		}
 		return true;
 	}
-	
+
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
 		Uri baseUri = NodeIndexProvider.NODE_INDEX_URI;
-		String where = "node_index_type = ?";
-		String whereArgs[] = { indexType };
+		String where = "node_index_type = ? and is_sticky = ?";
+		String whereArgs[] = { indexType , "0"};
 
 		return new CursorLoader(getActivity(), baseUri, new String[] { "_id",
 				"node_index_type", "node_title", "node_created", "nid",
