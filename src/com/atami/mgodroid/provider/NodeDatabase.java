@@ -9,7 +9,7 @@ class NodeDatabase extends SQLiteOpenHelper {
 
 	// Database name, version, and table names.
 	static final String DATABASE_NAME = "Node.db";
-	static final int DATABASE_VERSION = 6;
+	static final int DATABASE_VERSION = 8;
 
 	String[] NODE_INDEX_TYPES = { "forum", "story", "blog", "link" };
 

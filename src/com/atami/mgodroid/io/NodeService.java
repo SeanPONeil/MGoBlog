@@ -3,9 +3,6 @@ package com.atami.mgodroid.io;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.atami.mgodroid.provider.NodeProvider;
-
-import android.app.IntentService;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -13,7 +10,10 @@ import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.util.Log;
 
-public class NodeService extends IntentService {
+import com.atami.mgodroid.provider.NodeProvider;
+import com.atami.mgodroid.util.BlockingIntentService;
+
+public class NodeService extends BlockingIntentService {
 	
 	public static final String TAG = "NodeService";
 	
@@ -27,25 +27,6 @@ public class NodeService extends IntentService {
 
 	public NodeService() {
 		super("NodeService");
-		// TODO Auto-generated constructor stub
-	}
-
-	@Override
-	protected void onHandleIntent(Intent intent) {
-		String nid = intent.getStringExtra(NID);
-		mReceiver = intent.getParcelableExtra(RESULT_RECEIVER);
-		mReceiver.send(STATUS_RUNNING, Bundle.EMPTY);
-		Log.d(TAG, "NodeService running");
-		
-		try {
-			JSONObject node = APIUtil.getNode(nid, this);
-			insertNode(node);
-		} catch (Exception e) {
-			e.printStackTrace();
-			mReceiver.send(STATUS_ERROR, Bundle.EMPTY);
-		}finally{
-			mReceiver.send(STATUS_COMPLETE, Bundle.EMPTY);
-		}
 	}
 	
 	private void insertNode(JSONObject node) throws JSONException{
@@ -66,6 +47,24 @@ public class NodeService extends IntentService {
 		}
 		
 		cr.insert(NodeProvider.NODES_URI, cv);
+	}
+
+	@Override
+	protected void onHandleBlockingIntent(Intent intent) {
+		String nid = intent.getStringExtra(NID);
+		mReceiver = intent.getParcelableExtra(RESULT_RECEIVER);
+		mReceiver.send(STATUS_RUNNING, Bundle.EMPTY);
+		Log.d(TAG, "NodeService running");
+		
+		try {
+			JSONObject node = APIUtil.getNode(nid, this);
+			insertNode(node);
+		} catch (Exception e) {
+			e.printStackTrace();
+			mReceiver.send(STATUS_ERROR, Bundle.EMPTY);
+		}finally{
+			mReceiver.send(STATUS_COMPLETE, Bundle.EMPTY);
+		}
 	}
 
 }

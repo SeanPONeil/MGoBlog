@@ -22,7 +22,6 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.atami.mgodroid.R;
 import com.atami.mgodroid.io.NodeIndexService;
-import com.atami.mgodroid.io.NodeIndexServiceHelper;
 import com.atami.mgodroid.provider.NodeIndexProvider;
 
 public class NodeIndexListFragment extends SherlockListFragment implements
@@ -114,7 +113,7 @@ public class NodeIndexListFragment extends SherlockListFragment implements
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.refresh:
-			NodeIndexServiceHelper.refreshNodeIndex(indexType, getActivity(),
+			NodeIndexService.refreshNodeIndex(indexType, getActivity(),
 					mReceiver);
 			getListView().setSelection(0);
 			break;
@@ -131,9 +130,6 @@ public class NodeIndexListFragment extends SherlockListFragment implements
 		String where = "node_index_type = ?";
 		String whereArgs[] = { indexType };
 
-		// Now create and return a CursorLoader that will take care of
-		// creating a Cursor for the data being displayed.
-
 		return new CursorLoader(getActivity(), baseUri, new String[] { "_id",
 				"node_index_type", "node_title", "node_created", "nid",
 				"is_sticky" }, where, whereArgs, null);
@@ -141,16 +137,11 @@ public class NodeIndexListFragment extends SherlockListFragment implements
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-		// Swap the new cursor in. (The framework will take care of closing the
-		// old cursor once we return.)
 		mAdapter.swapCursor(data);
 	}
 
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
-		// This is called when the last Cursor provided to onLoadFinished()
-		// above is about to be closed. We need to make sure we are no
-		// longer using it.
 		mAdapter.swapCursor(null);
 	}
 
@@ -164,7 +155,7 @@ public class NodeIndexListFragment extends SherlockListFragment implements
 		if (reachedEndOfList && list.getChildCount() != 0) {
 			// Launch Intent Service to get next page
 			Log.d("test", "reached end of list");
-			NodeIndexServiceHelper.getNextNodeIndexPage(indexType,
+			NodeIndexService.getNextNodeIndexPage(indexType,
 					getActivity(), mReceiver);
 		}
 

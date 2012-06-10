@@ -7,6 +7,7 @@ import org.json.JSONException;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -23,19 +24,19 @@ public class NodeIndexService extends BlockingIntentService {
 	public static String GET_NEXT_PAGE = "get_next_page";
 	public static String REFRESH = "node_index_refresh";
 	public static String TYPE = "node_index_type";
-	
+
 	public static String RESULT = "result";
 	public static String RESULT_RECEIVER = "receiver";
 	public static final int STATUS_ERROR = 0;
 	public static final int STATUS_COMPLETE = 1;
 	public static final int STATUS_RUNNING = 2;
-	
+
 	private ResultReceiver mReceiver;
 
 	public NodeIndexService() {
 		super("NodeIndexService");
 	}
-	
+
 	@Override
 	protected void onHandleBlockingIntent(Intent intent) {
 		String action = intent.getAction();
@@ -43,13 +44,13 @@ public class NodeIndexService extends BlockingIntentService {
 		mReceiver = intent.getParcelableExtra(RESULT_RECEIVER);
 		mReceiver.send(STATUS_RUNNING, Bundle.EMPTY);
 		Log.d(TAG, action + " running");
-		
+
 		if (action.equals(GET_NEXT_PAGE)) {
 			getNextNodeIndexPage(indexType);
 		} else if (action.equals(REFRESH)) {
 			refreshIndexPage(indexType);
 		}
-		
+
 		mReceiver.send(STATUS_COMPLETE, Bundle.EMPTY);
 		Log.d(TAG, action + " completed");
 	}
@@ -81,7 +82,7 @@ public class NodeIndexService extends BlockingIntentService {
 		try {
 			index = APIUtil.getNodeIndex(type, page, this);
 			Log.v(TAG, index.toString());
-		} catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 			mReceiver.send(STATUS_ERROR, Bundle.EMPTY);
 		}
@@ -119,14 +120,34 @@ public class NodeIndexService extends BlockingIntentService {
 		insertNodeIndex(index, page);
 	}
 
-	//Gets the first node index page given the type, and
-	//if successful drops all rows for that type and inserts
-	//the retrieved page.
+	// Gets the first node index page given the type, and
+	// if successful drops all rows for that type and inserts
+	// the retrieved page.
 	private void refreshIndexPage(String type) {
 		JSONArray index = getNodeIndexPage(0, type);
 		if (index.length() != 0) {
 			dropNodeIndex(type);
 			insertNodeIndex(index, 0);
 		}
+	}
+
+	// Helper methods for using the service
+
+	public static void refreshNodeIndex(String indexType, Context context,
+			ResultReceiver receiver) {
+		Intent i = new Intent(context, NodeIndexService.class);
+		i.setAction(NodeIndexService.REFRESH);
+		i.putExtra(NodeIndexService.TYPE, indexType);
+		i.putExtra(NodeIndexService.RESULT_RECEIVER, receiver);
+		context.startService(i);
+	}
+
+	public static void getNextNodeIndexPage(String indexType, Context context,
+			ResultReceiver receiver) {
+		Intent i = new Intent(context, NodeIndexService.class);
+		i.setAction(NodeIndexService.GET_NEXT_PAGE);
+		i.putExtra(NodeIndexService.TYPE, indexType);
+		i.putExtra(NodeIndexService.RESULT_RECEIVER, receiver);
+		context.startService(i);
 	}
 }
