@@ -16,15 +16,16 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.atami.mgodroid.R;
 import com.atami.mgodroid.io.NodeIndexService;
 import com.atami.mgodroid.provider.NodeIndexProvider;
+import com.atami.mgodroid.util.SherlockPullToRefreshListFragment;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 
-public class NodeIndexListFragment extends SherlockListFragment implements
+public class NodeIndexListFragment extends SherlockPullToRefreshListFragment implements
 		LoaderCallbacks<Cursor>, OnScrollListener {
 
 	// This is the Adapter being used to display the list's data.
@@ -63,11 +64,13 @@ public class NodeIndexListFragment extends SherlockListFragment implements
 					break;
 				case NodeIndexService.STATUS_COMPLETE:
 					getActivity().setProgressBarIndeterminateVisibility(false);
+					getPullToRefreshListView().onRefreshComplete();
 					break;
 				case NodeIndexService.STATUS_ERROR:
 					Toast.makeText(getActivity(),
 							"Error pulling content from MGoBlog",
 							Toast.LENGTH_SHORT).show();
+					getPullToRefreshListView().onRefreshComplete();
 					break;
 				default:
 
@@ -82,7 +85,17 @@ public class NodeIndexListFragment extends SherlockListFragment implements
 		super.onActivityCreated(savedInstanceState);
 		setEmptyText("No nodes to display");
 		setHasOptionsMenu(true);
-		getListView().setOnScrollListener(this);
+		getPullToRefreshListView().setOnScrollListener(this);
+		
+		getPullToRefreshListView().setOnRefreshListener(new OnRefreshListener(){
+
+			@Override
+			public void onRefresh() {
+				NodeIndexService.refreshNodeIndex(indexType, getActivity(),
+						mReceiver);
+			}
+			
+		});
 
 		// Create an empty adapter we will use to display the loaded data.
 		mAdapter = new SimpleCursorAdapter(getActivity(),
