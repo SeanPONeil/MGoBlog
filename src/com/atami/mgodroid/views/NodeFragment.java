@@ -60,7 +60,6 @@ public class NodeFragment extends SherlockWebViewFragment implements
 					Toast.makeText(getActivity(),
 							"Error pulling content from MGoBlog",
 							Toast.LENGTH_SHORT).show();
-					getActivity().setProgressBarIndeterminateVisibility(false);
 					break;
 				default:
 

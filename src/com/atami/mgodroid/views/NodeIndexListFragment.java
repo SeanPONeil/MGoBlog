@@ -49,7 +49,7 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		if (mNodeIndexItemClickListener != null) {
-			mAdapter.getCursor().moveToPosition(position);
+			mAdapter.getCursor().moveToPosition(position-1);
 			int nid = mAdapter.getCursor().getInt(
 					mAdapter.getCursor().getColumnIndex("nid"));
 			mNodeIndexItemClickListener.onNodeIndexItemClick(nid);
