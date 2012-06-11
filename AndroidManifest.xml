@@ -26,13 +26,24 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+        <activity
+            android:name=".views.NodeActivity"
+            android:label="@string/app_name" >
+        </activity>
 
         <provider
             android:name=".provider.NodeIndexProvider"
             android:authorities="com.mgoblog.nodeprovider" >
         </provider>
         
+        <provider
+            android:name=".provider.NodeProvider"
+            android:authorities="com.mgoblog.nodeprovider" >
+        </provider>
+        
         <service android:name=".io.NodeIndexService"/>
+        <service android:name=".io.NodeService" />
     </application>
 
 </manifest>

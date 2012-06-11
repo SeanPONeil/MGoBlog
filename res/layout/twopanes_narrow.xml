@@ -25,7 +25,7 @@
         android:layout_height="fill_parent"
         android:layout_marginRight="20dp" />
     <FrameLayout
-        android:id="@+id/NodeViewPager"
+        android:id="@+id/NodeFrame"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />
 </LinearLayout>

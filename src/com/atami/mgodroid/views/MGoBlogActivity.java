@@ -3,26 +3,30 @@ package com.atami.mgodroid.views;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
+import android.widget.FrameLayout;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Window;
 import com.atami.mgodroid.R;
-import com.atami.mgodroid.util.SherlockPullToRefreshListFragment;
 
-public class MGoBlogActivity extends SherlockFragmentActivity {
+public class MGoBlogActivity extends SherlockFragmentActivity implements
+		NodeIndexListFragment.OnNodeIndexItemClickListener {
 
 	// Left pane
 	TabsAdapter mTabsAdapter;
 	ViewPager mPager;
 
 	// Right pane
+	FrameLayout nodeFrame;
 
 	// Whether or not we are in dual-pane mode
 	boolean mIsDualPane = false;
@@ -35,12 +39,15 @@ public class MGoBlogActivity extends SherlockFragmentActivity {
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.main_layout);
 		setProgressBarIndeterminateVisibility(false);
-		
+
 		final ActionBar bar = getSupportActionBar();
 		bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
 		mPager = (ViewPager) findViewById(R.id.NodeIndexViewPager);
 		mTabsAdapter = new TabsAdapter(this, mPager);
+		nodeFrame = (FrameLayout) findViewById(R.id.NodeFrame);
+
+		mIsDualPane = getResources().getBoolean(R.bool.has_two_panes);
 
 		for (int i = 0; i < NODE_INDEX_TYPES.length; i++) {
 			Bundle args = new Bundle();
@@ -50,84 +57,103 @@ public class MGoBlogActivity extends SherlockFragmentActivity {
 		}
 
 	}
-	
-	public static class TabsAdapter extends FragmentPagerAdapter
-    implements ActionBar.TabListener, ViewPager.OnPageChangeListener {
-        private final Context mContext;
-        private final ActionBar mActionBar;
-        private final ViewPager mViewPager;
-        private final ArrayList<TabInfo> mTabs = new ArrayList<TabInfo>();
 
-        static final class TabInfo {
-            private final Class<?> clss;
-            private final Bundle args;
+	@Override
+	public void onNodeIndexItemClickListener(int nid) {
+		if (mIsDualPane) {
+			NodeFragment nodeFragment = NodeFragment.newInstance(String
+					.valueOf(nid));
+			FragmentTransaction ft = getSupportFragmentManager()
+					.beginTransaction();
+			ft.add(R.id.NodeFrame, nodeFragment).commit();
+		} else {
+			Log.d("DEBUG", "reached non dual pane");
+			Intent intent = new Intent(this, NodeActivity.class);
+			intent.putExtra("nid", nid);
+			startActivity(intent);
+		}
 
-            TabInfo(Class<?> _class, Bundle _args) {
-                clss = _class;
-                args = _args;
-            }
-        }
+	}
 
-        public TabsAdapter(SherlockFragmentActivity activity, ViewPager pager) {
-            super(activity.getSupportFragmentManager());
-            mContext = activity;
-            mActionBar = activity.getSupportActionBar();
-            mViewPager = pager;
-            mViewPager.setAdapter(this);
-            mViewPager.setOnPageChangeListener(this);
-        }
+	public static class TabsAdapter extends FragmentPagerAdapter implements
+			ActionBar.TabListener, ViewPager.OnPageChangeListener {
+		private final Context mContext;
+		private final ActionBar mActionBar;
+		private final ViewPager mViewPager;
+		private final ArrayList<TabInfo> mTabs = new ArrayList<TabInfo>();
 
-        public void addTab(ActionBar.Tab tab, Class<?> clss, Bundle args) {
-            TabInfo info = new TabInfo(clss, args);
-            tab.setTag(info);
-            tab.setTabListener(this);
-            mTabs.add(info);
-            mActionBar.addTab(tab);
-            notifyDataSetChanged();
-        }
+		static final class TabInfo {
+			private final Class<?> clss;
+			private final Bundle args;
 
+			TabInfo(Class<?> _class, Bundle _args) {
+				clss = _class;
+				args = _args;
+			}
+		}
 
-        public int getCount() {
-            return mTabs.size();
-        }
+		public TabsAdapter(SherlockFragmentActivity activity, ViewPager pager) {
+			super(activity.getSupportFragmentManager());
+			mContext = activity;
+			mActionBar = activity.getSupportActionBar();
+			mViewPager = pager;
+			mViewPager.setAdapter(this);
+			mViewPager.setOnPageChangeListener(this);
+		}
 
-        public SherlockPullToRefreshListFragment getItem(int position) {
-            TabInfo info = mTabs.get(position);
-            return (SherlockPullToRefreshListFragment) Fragment.instantiate(mContext, info.clss.getName(), info.args);
-        }
+		public void addTab(ActionBar.Tab tab, Class<?> clss, Bundle args) {
+			TabInfo info = new TabInfo(clss, args);
+			tab.setTag(info);
+			tab.setTabListener(this);
+			mTabs.add(info);
+			mActionBar.addTab(tab);
+			notifyDataSetChanged();
+		}
 
+		public int getCount() {
+			return mTabs.size();
+		}
 
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        }
+		public NodeIndexListFragment getItem(int position) {
+			TabInfo info = mTabs.get(position);
+			NodeIndexListFragment f = (NodeIndexListFragment) Fragment
+					.instantiate(mContext, info.clss.getName(), info.args);
+			return f;
+		}
 
+		public void onPageScrolled(int position, float positionOffset,
+				int positionOffsetPixels) {
+		}
 
-        public void onPageSelected(int position) {
-            mActionBar.setSelectedNavigationItem(position);
-        }
+		public void onPageSelected(int position) {
+			mActionBar.setSelectedNavigationItem(position);
+		}
 
+		public void onPageScrollStateChanged(int state) {
+		}
 
-        public void onPageScrollStateChanged(int state) {
-        }
+		public void onTabSelected(Tab tab, FragmentTransaction ft) {
+			mViewPager.setCurrentItem(tab.getPosition());
+			// Log.v(TAG, "clicked");
+			Object tag = tab.getTag();
+			for (int i = 0; i < mTabs.size(); i++) {
+				if (mTabs.get(i) == tag) {
+					mViewPager.setCurrentItem(i);
+				}
+			}
+		}
 
+		public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+		}
 
-        public void onTabSelected(Tab tab, FragmentTransaction ft) {
-            mViewPager.setCurrentItem(tab.getPosition());
-            //Log.v(TAG, "clicked");
-            Object tag = tab.getTag();
-            for (int i=0; i<mTabs.size(); i++) {
-                if (mTabs.get(i) == tag) {
-                    mViewPager.setCurrentItem(i);
-                }
-            }
-        }
+		public void onTabReselected(Tab tab, FragmentTransaction ft) {
+		}
 
-        public void onTabUnselected(Tab tab, FragmentTransaction ft) {}
+		public void onTabReselected(Tab tab, android.app.FragmentTransaction ft) {
+		}
 
-        public void onTabReselected(Tab tab, FragmentTransaction ft) {}
-
-        public void onTabReselected(Tab tab, android.app.FragmentTransaction ft) {}
-
-        public void onTabUnselected(Tab tab, android.app.FragmentTransaction ft) {}
-    }
+		public void onTabUnselected(Tab tab, android.app.FragmentTransaction ft) {
+		}
+	}
 
 }
