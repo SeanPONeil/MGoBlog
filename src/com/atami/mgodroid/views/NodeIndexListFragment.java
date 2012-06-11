@@ -1,5 +1,6 @@
 package com.atami.mgodroid.views;
 
+import android.app.Activity;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -42,12 +43,7 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 
 	// Represents a listener that will be notified of node selections
 	public interface OnNodeIndexItemClickListener {
-		public void onNodeIndexItemClickListener(int nid);
-	}
-
-	public void setOnNodeIndexItemClickListener(
-			OnNodeIndexItemClickListener listener) {
-		mNodeIndexItemClickListener = listener;
+		public void onNodeIndexItemClick(int nid);
 	}
 
 	@Override
@@ -56,7 +52,7 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 			mAdapter.getCursor().moveToPosition(position);
 			int nid = mAdapter.getCursor().getInt(
 					mAdapter.getCursor().getColumnIndex("nid"));
-			mNodeIndexItemClickListener.onNodeIndexItemClickListener(nid);
+			mNodeIndexItemClickListener.onNodeIndexItemClick(nid);
 		}
 	}
 
@@ -67,8 +63,19 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 		Bundle args = new Bundle();
 		args.putString("node_index_type", type);
 		f.setArguments(args);
-		
+
 		return f;
+	}
+
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		try {
+			mNodeIndexItemClickListener = (OnNodeIndexItemClickListener) activity;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(activity.toString()
+					+ " must implement OnNodeIndexItemClickListener");
+		}
 	}
 
 	@Override

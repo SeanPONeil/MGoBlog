@@ -16,7 +16,7 @@ public class NodeIndexProvider extends ContentProvider {
 	private NodeDatabase db;
 
 	public static final Uri NODE_INDEX_URI = Uri
-			.parse("content://com.mgoblog.nodeprovider/node_index");
+			.parse("content://com.mgoblog.nodeindexprovider/node_index");
 	
 	public static final String TABLE = "node_index";
 
@@ -26,8 +26,8 @@ public class NodeIndexProvider extends ContentProvider {
 	private static final UriMatcher uriMatcher;
 	static {
 		uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-		uriMatcher.addURI("com.mgoblog.nodeprovider", TABLE, ALLROWS);
-		uriMatcher.addURI("com.mgoblog.nodeprovider", TABLE + "/#",
+		uriMatcher.addURI("com.mgoblog.nodeindexprovider", TABLE, ALLROWS);
+		uriMatcher.addURI("com.mgoblog.nodeindexprovider", TABLE + "/#",
 				SINGLE_ROW);
 	}
 

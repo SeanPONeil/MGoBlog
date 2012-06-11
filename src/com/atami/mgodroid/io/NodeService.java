@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.ResultReceiver;
@@ -51,7 +52,7 @@ public class NodeService extends BlockingIntentService {
 
 	@Override
 	protected void onHandleBlockingIntent(Intent intent) {
-		String nid = intent.getStringExtra(NID);
+		String nid = intent.getAction();
 		mReceiver = intent.getParcelableExtra(RESULT_RECEIVER);
 		mReceiver.send(STATUS_RUNNING, Bundle.EMPTY);
 		Log.d(TAG, "NodeService running");
@@ -65,6 +66,14 @@ public class NodeService extends BlockingIntentService {
 		}finally{
 			mReceiver.send(STATUS_COMPLETE, Bundle.EMPTY);
 		}
+	}
+	
+	public static void refreshNode(int nid, Context context,
+			ResultReceiver receiver) {
+		Intent i = new Intent(context, NodeService.class);
+		i.setAction(String.valueOf(nid));
+		i.putExtra(NodeService.RESULT_RECEIVER, receiver);
+		context.startService(i);
 	}
 
 }

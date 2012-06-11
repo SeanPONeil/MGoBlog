@@ -3,13 +3,18 @@ package com.atami.mgodroid.views;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.ResultReceiver;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.atami.mgodroid.io.NodeIndexService;
+import com.atami.mgodroid.io.NodeService;
 import com.atami.mgodroid.provider.NodeProvider;
 import com.atami.mgodroid.util.SherlockWebViewFragment;
 
@@ -22,11 +27,14 @@ public class NodeFragment extends SherlockWebViewFragment implements
 	// Body of the node
 	String body;
 
-	public static NodeFragment newInstance(String nid) {
+	// Used to receive info from NodeService
+	private ResultReceiver mReceiver;
+
+	public static NodeFragment newInstance(int nid) {
 		NodeFragment f = new NodeFragment();
 
 		Bundle args = new Bundle();
-		args.putString("nid", nid);
+		args.putInt("nid", nid);
 		f.setArguments(args);
 
 		return f;
@@ -36,6 +44,30 @@ public class NodeFragment extends SherlockWebViewFragment implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		nid = getArguments().getInt("nid");
+
+		mReceiver = new ResultReceiver(new Handler()) {
+
+			@Override
+			protected void onReceiveResult(int resultCode, Bundle resultData) {
+				switch (resultCode) {
+				case NodeIndexService.STATUS_RUNNING:
+					getActivity().setProgressBarIndeterminateVisibility(true);
+					break;
+				case NodeIndexService.STATUS_COMPLETE:
+					getActivity().setProgressBarIndeterminateVisibility(false);
+					break;
+				case NodeIndexService.STATUS_ERROR:
+					Toast.makeText(getActivity(),
+							"Error pulling content from MGoBlog",
+							Toast.LENGTH_SHORT).show();
+					getActivity().setProgressBarIndeterminateVisibility(false);
+					break;
+				default:
+
+				}
+			}
+
+		};
 	}
 
 	@Override
@@ -67,15 +99,18 @@ public class NodeFragment extends SherlockWebViewFragment implements
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-		data.moveToFirst();
-		String body = data.getString(data.getColumnIndex("body"));
-		getWebView()
-				.loadDataWithBaseURL(null, body, "text/html", "UTF-8", null);
+		if (data.getCount() > 0) {
+			data.moveToFirst();
+			String body = data.getString(data.getColumnIndex("body"));
+			getWebView().loadDataWithBaseURL(null, body, "text/html", "UTF-8",
+					null);
+		} else {
+			NodeService.refreshNode(nid, getActivity(), mReceiver);
+		}
 	}
 
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
-		// TODO Auto-generated method stub
 
 	}
 

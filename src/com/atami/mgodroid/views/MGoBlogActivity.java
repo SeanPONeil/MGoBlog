@@ -59,10 +59,9 @@ public class MGoBlogActivity extends SherlockFragmentActivity implements
 	}
 
 	@Override
-	public void onNodeIndexItemClickListener(int nid) {
+	public void onNodeIndexItemClick(int nid) {
 		if (mIsDualPane) {
-			NodeFragment nodeFragment = NodeFragment.newInstance(String
-					.valueOf(nid));
+			NodeFragment nodeFragment = NodeFragment.newInstance(nid);
 			FragmentTransaction ft = getSupportFragmentManager()
 					.beginTransaction();
 			ft.add(R.id.NodeFrame, nodeFragment).commit();

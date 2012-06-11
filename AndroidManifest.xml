@@ -34,7 +34,7 @@
 
         <provider
             android:name=".provider.NodeIndexProvider"
-            android:authorities="com.mgoblog.nodeprovider" >
+            android:authorities="com.mgoblog.nodeindexprovider" >
         </provider>
         
         <provider
