@@ -17,6 +17,7 @@ public class NodeActivity extends SherlockFragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		setProgressBarIndeterminateVisibility(false);
         nid = getIntent().getIntExtra("nid", 0);
         
         //IF we are in two pane mode, finish this activity
@@ -31,8 +32,6 @@ public class NodeActivity extends SherlockFragmentActivity {
 					.beginTransaction();
 			ft.add(android.R.id.content, nodeFragment).commit();
         }
-        
-        setProgressBarIndeterminateVisibility(false);
 	}
 	
 	

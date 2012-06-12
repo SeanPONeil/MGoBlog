@@ -81,6 +81,7 @@ public class NodeFragment extends SherlockWebViewFragment implements
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+		getActivity().setProgressBarIndeterminateVisibility(false);
 		setHasOptionsMenu(true);
 		getLoaderManager().initLoader(0, null, this);
 	}

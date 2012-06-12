@@ -112,6 +112,7 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+		getActivity().setProgressBarIndeterminateVisibility(false);
 		setEmptyText("No nodes to display");
 		setHasOptionsMenu(true);
 		getPullToRefreshListView().setOnScrollListener(this);

@@ -71,9 +71,9 @@ class NodeDatabase extends SQLiteOpenHelper {
 		db.execSQL("drop table node_index");
 		db.execSQL("drop table nodes");
 		db.execSQL("drop table node_comments");
-		db.execSQL("drop index node_index_index");
-		db.execSQL("drop index node");
-		db.execSQL("drop index node_comments_index");
+//		db.execSQL("drop index node_index_index");
+//		db.execSQL("drop index node");
+//		db.execSQL("drop index node_comments_index");
 
 		onCreate(db);
 	}
