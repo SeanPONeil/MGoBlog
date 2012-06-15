@@ -38,6 +38,7 @@ public class MGoBlogActivity extends SherlockFragmentActivity implements
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.main_layout);
+		setProgressBarIndeterminateVisibility(false);
 
 		final ActionBar bar = getSupportActionBar();
 		bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -47,13 +48,14 @@ public class MGoBlogActivity extends SherlockFragmentActivity implements
 		nodeFrame = (FrameLayout) findViewById(R.id.NodeFrame);
 
 		mIsDualPane = getResources().getBoolean(R.bool.has_two_panes);
-
+		
 		for (int i = 0; i < NODE_INDEX_TYPES.length; i++) {
 			Bundle args = new Bundle();
 			args.putString("node_index_type", NODE_INDEX_TYPES[i]);
 			mTabsAdapter.addTab(bar.newTab().setText(NODE_INDEX_TYPES[i]),
 					NodeIndexListFragment.class, args);
 		}
+		
 
 	}
 

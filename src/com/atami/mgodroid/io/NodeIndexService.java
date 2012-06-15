@@ -45,13 +45,6 @@ public class NodeIndexService extends BlockingIntentService {
 		mReceiver = intent.getParcelableExtra(RESULT_RECEIVER);
 		mReceiver.send(STATUS_RUNNING, Bundle.EMPTY);
 		Log.d(TAG, action + " running");
-		Thread.currentThread();
-		try {
-			Thread.sleep(10000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
 		if (action.equals(GET_NEXT_PAGE)) {
 			getNextNodeIndexPage(indexType);

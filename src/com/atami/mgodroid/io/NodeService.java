@@ -64,6 +64,7 @@ public class NodeService extends BlockingIntentService {
 			e.printStackTrace();
 			mReceiver.send(STATUS_ERROR, Bundle.EMPTY);
 		}finally{
+			Log.d(TAG, "NodeService finished");
 			mReceiver.send(STATUS_COMPLETE, Bundle.EMPTY);
 		}
 	}

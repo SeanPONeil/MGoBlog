@@ -20,7 +20,7 @@ import com.atami.mgodroid.util.DetachableResultReceiver.Receiver;
 import com.atami.mgodroid.util.SherlockWebViewFragment;
 
 public class NodeFragment extends SherlockWebViewFragment implements
-		LoaderCallbacks<Cursor>, Receiver{
+		LoaderCallbacks<Cursor>, Receiver {
 
 	// ID of the current node
 	int nid;
@@ -29,7 +29,9 @@ public class NodeFragment extends SherlockWebViewFragment implements
 	String body;
 
 	// Used to receive info from NodeService
-	private DetachableResultReceiver mReceiver;
+	private DetachableResultReceiver receiver;
+
+	boolean progressBarVisibility;
 
 	public static NodeFragment newInstance(int nid) {
 		NodeFragment f = new NodeFragment();
@@ -46,15 +48,34 @@ public class NodeFragment extends SherlockWebViewFragment implements
 		super.onCreate(savedInstanceState);
 		nid = getArguments().getInt("nid");
 
-		mReceiver = new DetachableResultReceiver(new Handler());
-		mReceiver.setReceiver(this);
+		if (savedInstanceState == null) {
+			progressBarVisibility = false;
+			receiver = new DetachableResultReceiver(new Handler());
+		} else {
+			progressBarVisibility = savedInstanceState
+					.getBoolean("progressBar");
+			receiver = savedInstanceState.getParcelable("receiver");
+		}
 	}
-	
+
 	@Override
 	public void onPause() {
 		super.onPause();
-        mReceiver.clearReceiver();
-    }
+		receiver.clearReceiver();
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		receiver.setReceiver(this);
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		savedInstanceState.putBoolean("progressBar", progressBarVisibility);
+		savedInstanceState.putParcelable("receiver", receiver);
+		super.onSaveInstanceState(savedInstanceState);
+	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -68,7 +89,10 @@ public class NodeFragment extends SherlockWebViewFragment implements
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		getActivity().setProgressBarIndeterminateVisibility(false);
+
+		getSherlockActivity().setSupportProgressBarIndeterminateVisibility(
+				progressBarVisibility);
+
 		setHasOptionsMenu(true);
 		getLoaderManager().initLoader(0, null, this);
 	}
@@ -92,7 +116,7 @@ public class NodeFragment extends SherlockWebViewFragment implements
 			getWebView().loadDataWithBaseURL(null, body, "text/html", "UTF-8",
 					null);
 		} else {
-			NodeService.refreshNode(nid, getActivity(), mReceiver);
+			NodeService.refreshNode(nid, getActivity(), receiver);
 		}
 	}
 
@@ -105,14 +129,17 @@ public class NodeFragment extends SherlockWebViewFragment implements
 	public void onReceiveResult(int resultCode, Bundle resultData) {
 		switch (resultCode) {
 		case NodeIndexService.STATUS_RUNNING:
-			getActivity().setProgressBarIndeterminateVisibility(true);
+			getSherlockActivity().setSupportProgressBarIndeterminateVisibility(
+					true);
+			progressBarVisibility = true;
 			break;
 		case NodeIndexService.STATUS_COMPLETE:
-			getActivity().setProgressBarIndeterminateVisibility(false);
+			getSherlockActivity().setSupportProgressBarIndeterminateVisibility(
+					false);
+			progressBarVisibility = false;
 			break;
 		case NodeIndexService.STATUS_ERROR:
-			Toast.makeText(getActivity(),
-					"Error pulling content from MGoBlog",
+			Toast.makeText(getActivity(), "Error pulling content from MGoBlog",
 					Toast.LENGTH_SHORT).show();
 			break;
 		default:

@@ -28,7 +28,8 @@ import com.atami.mgodroid.util.SherlockPullToRefreshListFragment;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 
 public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
-		implements LoaderCallbacks<Cursor>, OnScrollListener, Receiver {
+		implements LoaderCallbacks<Cursor>, OnScrollListener, Receiver,
+		OnRefreshListener {
 
 	// This is the Adapter being used to display the list's data.
 	SimpleCursorAdapter mAdapter;
@@ -38,7 +39,7 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 	String indexType;
 
 	// Used to receive info from NodeIndexService
-	DetachableResultReceiver mReceiver;
+	DetachableResultReceiver receiver;
 
 	OnNodeIndexItemClickListener mNodeIndexItemClickListener = null;
 
@@ -85,60 +86,58 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		indexType = getArguments().getString("node_index_type");
-		mReceiver = new DetachableResultReceiver(new Handler());
-		mReceiver.setReceiver(this);
+
+		if (savedInstanceState == null) {
+			progressBarVisibility = false;
+			receiver = new DetachableResultReceiver(new Handler());
+			NodeIndexService.refreshNodeIndex(indexType, getActivity(),
+					receiver);
+		} else {
+			progressBarVisibility = savedInstanceState
+					.getBoolean("progressBar");
+			receiver = savedInstanceState.getParcelable("receiver");
+		}
 	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
-		mReceiver.clearReceiver();
+		receiver.clearReceiver();
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		receiver.setReceiver(this);
 	}
 
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
-		super.onSaveInstanceState(savedInstanceState);
 		savedInstanceState.putBoolean("progressBar", progressBarVisibility);
+		savedInstanceState.putParcelable("receiver", receiver);
+		super.onSaveInstanceState(savedInstanceState);
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		if (savedInstanceState != null) {
-			progressBarVisibility = savedInstanceState
-					.getBoolean("progressBar");
-		} else {
-			// First time this Fragment is created, refresh data
-			NodeIndexService.refreshNodeIndex(indexType, getActivity(),
-					mReceiver);
-			progressBarVisibility = false;
-		}
-		getActivity().setProgressBarIndeterminateVisibility(
-				progressBarVisibility);
 		setEmptyText("No nodes to display");
 		setHasOptionsMenu(true);
+
+		if (progressBarVisibility == true) {
+			getSherlockActivity().setSupportProgressBarIndeterminateVisibility(
+					progressBarVisibility);
+		}
+
 		getPullToRefreshListView().setOnScrollListener(this);
+		getPullToRefreshListView().setOnRefreshListener(this);
 
-		getPullToRefreshListView().setOnRefreshListener(
-				new OnRefreshListener() {
-
-					@Override
-					public void onRefresh() {
-						NodeIndexService.refreshNodeIndex(indexType,
-								getActivity(), mReceiver);
-					}
-
-				});
-
-		// Create an empty adapter we will use to display the loaded data.
 		mAdapter = new SimpleCursorAdapter(getActivity(),
 				android.R.layout.simple_list_item_2, null, new String[] {
 						"node_title", "nid" }, new int[] { android.R.id.text1,
 						android.R.id.text2 }, 0);
 		setListAdapter(mAdapter);
 
-		// Prepare the loader. Either re-connect with an existing one,
-		// or start a new one.
 		getLoaderManager().initLoader(0, null, this);
 	}
 
@@ -153,7 +152,7 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 		switch (item.getItemId()) {
 		case R.id.refresh:
 			NodeIndexService.refreshNodeIndex(indexType, getActivity(),
-					mReceiver);
+					receiver);
 			getListView().setSelection(0);
 			break;
 		default:
@@ -195,7 +194,7 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 			// Launch Intent Service to get next page
 			Log.d("test", "reached end of list");
 			NodeIndexService.getNextNodeIndexPage(indexType, getActivity(),
-					mReceiver);
+					receiver);
 		}
 
 	}
@@ -208,11 +207,13 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 	public void onReceiveResult(int resultCode, Bundle resultData) {
 		switch (resultCode) {
 		case NodeIndexService.STATUS_RUNNING:
-			getActivity().setProgressBarIndeterminateVisibility(true);
+			getSherlockActivity().setSupportProgressBarIndeterminateVisibility(
+					true);
 			progressBarVisibility = true;
 			break;
 		case NodeIndexService.STATUS_COMPLETE:
-			getActivity().setProgressBarIndeterminateVisibility(false);
+			getSherlockActivity().setSupportProgressBarIndeterminateVisibility(
+					false);
 			progressBarVisibility = false;
 			getPullToRefreshListView().onRefreshComplete();
 			break;
@@ -224,6 +225,11 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 		default:
 
 		}
+	}
+
+	@Override
+	public void onRefresh() {
+		NodeIndexService.refreshNodeIndex(indexType, getActivity(), receiver);
 	}
 
 }
