@@ -38,7 +38,6 @@ public class MGoBlogActivity extends SherlockFragmentActivity implements
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.main_layout);
-		setProgressBarIndeterminateVisibility(false);
 
 		final ActionBar bar = getSupportActionBar();
 		bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);

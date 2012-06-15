@@ -4,7 +4,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.ResultReceiver;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -16,10 +15,12 @@ import android.widget.Toast;
 import com.atami.mgodroid.io.NodeIndexService;
 import com.atami.mgodroid.io.NodeService;
 import com.atami.mgodroid.provider.NodeProvider;
+import com.atami.mgodroid.util.DetachableResultReceiver;
+import com.atami.mgodroid.util.DetachableResultReceiver.Receiver;
 import com.atami.mgodroid.util.SherlockWebViewFragment;
 
 public class NodeFragment extends SherlockWebViewFragment implements
-		LoaderCallbacks<Cursor> {
+		LoaderCallbacks<Cursor>, Receiver{
 
 	// ID of the current node
 	int nid;
@@ -28,7 +29,7 @@ public class NodeFragment extends SherlockWebViewFragment implements
 	String body;
 
 	// Used to receive info from NodeService
-	private ResultReceiver mReceiver;
+	private DetachableResultReceiver mReceiver;
 
 	public static NodeFragment newInstance(int nid) {
 		NodeFragment f = new NodeFragment();
@@ -45,29 +46,15 @@ public class NodeFragment extends SherlockWebViewFragment implements
 		super.onCreate(savedInstanceState);
 		nid = getArguments().getInt("nid");
 
-		mReceiver = new ResultReceiver(new Handler()) {
-
-			@Override
-			protected void onReceiveResult(int resultCode, Bundle resultData) {
-				switch (resultCode) {
-				case NodeIndexService.STATUS_RUNNING:
-					getActivity().setProgressBarIndeterminateVisibility(true);
-					break;
-				case NodeIndexService.STATUS_COMPLETE:
-					getActivity().setProgressBarIndeterminateVisibility(false);
-					break;
-				case NodeIndexService.STATUS_ERROR:
-					Toast.makeText(getActivity(),
-							"Error pulling content from MGoBlog",
-							Toast.LENGTH_SHORT).show();
-					break;
-				default:
-
-				}
-			}
-
-		};
+		mReceiver = new DetachableResultReceiver(new Handler());
+		mReceiver.setReceiver(this);
 	}
+	
+	@Override
+	public void onPause() {
+		super.onPause();
+        mReceiver.clearReceiver();
+    }
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -112,6 +99,25 @@ public class NodeFragment extends SherlockWebViewFragment implements
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
 
+	}
+
+	@Override
+	public void onReceiveResult(int resultCode, Bundle resultData) {
+		switch (resultCode) {
+		case NodeIndexService.STATUS_RUNNING:
+			getActivity().setProgressBarIndeterminateVisibility(true);
+			break;
+		case NodeIndexService.STATUS_COMPLETE:
+			getActivity().setProgressBarIndeterminateVisibility(false);
+			break;
+		case NodeIndexService.STATUS_ERROR:
+			Toast.makeText(getActivity(),
+					"Error pulling content from MGoBlog",
+					Toast.LENGTH_SHORT).show();
+			break;
+		default:
+
+		}
 	}
 
 }

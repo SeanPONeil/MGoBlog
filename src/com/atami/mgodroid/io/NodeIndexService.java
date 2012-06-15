@@ -16,6 +16,7 @@ import android.util.Log;
 
 import com.atami.mgodroid.provider.NodeIndexProvider;
 import com.atami.mgodroid.util.BlockingIntentService;
+import com.atami.mgodroid.util.DetachableResultReceiver;
 
 public class NodeIndexService extends BlockingIntentService {
 
@@ -44,6 +45,13 @@ public class NodeIndexService extends BlockingIntentService {
 		mReceiver = intent.getParcelableExtra(RESULT_RECEIVER);
 		mReceiver.send(STATUS_RUNNING, Bundle.EMPTY);
 		Log.d(TAG, action + " running");
+		Thread.currentThread();
+		try {
+			Thread.sleep(10000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		if (action.equals(GET_NEXT_PAGE)) {
 			getNextNodeIndexPage(indexType);
@@ -134,8 +142,8 @@ public class NodeIndexService extends BlockingIntentService {
 	// Helper methods for using the service
 
 	public static void refreshNodeIndex(String indexType, Context context,
-			ResultReceiver receiver) {
-		Intent i = new Intent(context, NodeIndexService.class);
+			DetachableResultReceiver receiver) {
+		final Intent i = new Intent(context, NodeIndexService.class);
 		i.setAction(NodeIndexService.REFRESH);
 		i.putExtra(NodeIndexService.TYPE, indexType);
 		i.putExtra(NodeIndexService.RESULT_RECEIVER, receiver);
@@ -143,7 +151,7 @@ public class NodeIndexService extends BlockingIntentService {
 	}
 
 	public static void getNextNodeIndexPage(String indexType, Context context,
-			ResultReceiver receiver) {
+			DetachableResultReceiver receiver) {
 		Intent i = new Intent(context, NodeIndexService.class);
 		i.setAction(NodeIndexService.GET_NEXT_PAGE);
 		i.putExtra(NodeIndexService.TYPE, indexType);
