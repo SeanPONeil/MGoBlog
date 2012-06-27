@@ -31,8 +31,6 @@ public class NodeFragment extends SherlockWebViewFragment implements
 	// Used to receive info from NodeService
 	private DetachableResultReceiver receiver;
 
-	boolean progressBarVisibility;
-
 	public static NodeFragment newInstance(int nid) {
 		NodeFragment f = new NodeFragment();
 
@@ -49,11 +47,8 @@ public class NodeFragment extends SherlockWebViewFragment implements
 		nid = getArguments().getInt("nid");
 
 		if (savedInstanceState == null) {
-			progressBarVisibility = false;
 			receiver = new DetachableResultReceiver(new Handler());
 		} else {
-			progressBarVisibility = savedInstanceState
-					.getBoolean("progressBar");
 			receiver = savedInstanceState.getParcelable("receiver");
 		}
 	}
@@ -72,7 +67,6 @@ public class NodeFragment extends SherlockWebViewFragment implements
 
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
-		savedInstanceState.putBoolean("progressBar", progressBarVisibility);
 		savedInstanceState.putParcelable("receiver", receiver);
 		super.onSaveInstanceState(savedInstanceState);
 	}
@@ -89,10 +83,6 @@ public class NodeFragment extends SherlockWebViewFragment implements
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-
-		getSherlockActivity().setSupportProgressBarIndeterminateVisibility(
-				progressBarVisibility);
-
 		setHasOptionsMenu(true);
 		getLoaderManager().initLoader(0, null, this);
 	}
@@ -129,14 +119,8 @@ public class NodeFragment extends SherlockWebViewFragment implements
 	public void onReceiveResult(int resultCode, Bundle resultData) {
 		switch (resultCode) {
 		case NodeIndexService.STATUS_RUNNING:
-			getSherlockActivity().setSupportProgressBarIndeterminateVisibility(
-					true);
-			progressBarVisibility = true;
 			break;
 		case NodeIndexService.STATUS_COMPLETE:
-			getSherlockActivity().setSupportProgressBarIndeterminateVisibility(
-					false);
-			progressBarVisibility = false;
 			break;
 		case NodeIndexService.STATUS_ERROR:
 			Toast.makeText(getActivity(), "Error pulling content from MGoBlog",

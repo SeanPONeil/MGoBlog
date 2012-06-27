@@ -43,8 +43,6 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 
 	OnNodeIndexItemClickListener mNodeIndexItemClickListener = null;
 
-	boolean progressBarVisibility;
-
 	// Represents a listener that will be notified of node selections
 	public interface OnNodeIndexItemClickListener {
 		public void onNodeIndexItemClick(int nid);
@@ -88,13 +86,10 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 		indexType = getArguments().getString("node_index_type");
 
 		if (savedInstanceState == null) {
-			progressBarVisibility = false;
 			receiver = new DetachableResultReceiver(new Handler());
 			NodeIndexService.refreshNodeIndex(indexType, getActivity(),
 					receiver);
 		} else {
-			progressBarVisibility = savedInstanceState
-					.getBoolean("progressBar");
 			receiver = savedInstanceState.getParcelable("receiver");
 		}
 	}
@@ -113,7 +108,6 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
-		savedInstanceState.putBoolean("progressBar", progressBarVisibility);
 		savedInstanceState.putParcelable("receiver", receiver);
 		super.onSaveInstanceState(savedInstanceState);
 	}
@@ -123,11 +117,6 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 		super.onActivityCreated(savedInstanceState);
 		setEmptyText("No nodes to display");
 		setHasOptionsMenu(true);
-
-		if (progressBarVisibility == true) {
-			getSherlockActivity().setSupportProgressBarIndeterminateVisibility(
-					progressBarVisibility);
-		}
 
 		getPullToRefreshListView().setOnScrollListener(this);
 		getPullToRefreshListView().setOnRefreshListener(this);
@@ -176,6 +165,7 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 		mAdapter.swapCursor(data);
+		getPullToRefreshListView().onRefreshComplete();
 	}
 
 	@Override
@@ -207,15 +197,8 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 	public void onReceiveResult(int resultCode, Bundle resultData) {
 		switch (resultCode) {
 		case NodeIndexService.STATUS_RUNNING:
-			getSherlockActivity().setSupportProgressBarIndeterminateVisibility(
-					true);
-			progressBarVisibility = true;
 			break;
 		case NodeIndexService.STATUS_COMPLETE:
-			getSherlockActivity().setSupportProgressBarIndeterminateVisibility(
-					false);
-			progressBarVisibility = false;
-			getPullToRefreshListView().onRefreshComplete();
 			break;
 		case NodeIndexService.STATUS_ERROR:
 			Toast.makeText(getActivity(), "Error pulling content from MGoBlog",
