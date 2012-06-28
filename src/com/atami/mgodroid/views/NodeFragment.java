@@ -49,7 +49,8 @@ public class NodeFragment extends SherlockWebViewFragment implements
 		if (savedInstanceState == null) {
 			receiver = new DetachableResultReceiver(new Handler());
 		} else {
-			receiver = savedInstanceState.getParcelable("receiver");
+			receiver = (DetachableResultReceiver) savedInstanceState
+					.getParcelable("receiver");
 		}
 	}
 

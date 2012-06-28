@@ -10,7 +10,9 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;
@@ -90,8 +92,17 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 			NodeIndexService.refreshNodeIndex(indexType, getActivity(),
 					receiver);
 		} else {
-			receiver = savedInstanceState.getParcelable("receiver");
+			receiver = (DetachableResultReceiver) savedInstanceState
+					.getParcelable("receiver");
 		}
+
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		super.onCreateView(inflater, container, savedInstanceState);
+		return inflater.inflate(R.layout.node_index_list, container, false);
 	}
 
 	@Override

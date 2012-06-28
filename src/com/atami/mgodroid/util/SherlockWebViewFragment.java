@@ -29,7 +29,7 @@ public class SherlockWebViewFragment extends SherlockFragment {
         if (mWebView != null) {
             mWebView.destroy();
         }
-        mWebView = new WebView(getActivity());
+        mWebView = new WebView(getSherlockActivity());
         mIsWebViewAvailable = true;
         return mWebView;
     }
