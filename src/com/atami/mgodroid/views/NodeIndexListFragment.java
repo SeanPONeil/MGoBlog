@@ -16,8 +16,10 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -26,12 +28,9 @@ import com.atami.mgodroid.io.NodeIndexService;
 import com.atami.mgodroid.provider.NodeIndexProvider;
 import com.atami.mgodroid.util.DetachableResultReceiver;
 import com.atami.mgodroid.util.DetachableResultReceiver.Receiver;
-import com.atami.mgodroid.util.SherlockPullToRefreshListFragment;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 
-public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
-		implements LoaderCallbacks<Cursor>, OnScrollListener, Receiver,
-		OnRefreshListener {
+public class NodeIndexListFragment extends SherlockListFragment implements
+		LoaderCallbacks<Cursor>, OnScrollListener, Receiver {
 
 	// This is the Adapter being used to display the list's data.
 	SimpleCursorAdapter mAdapter;
@@ -43,12 +42,16 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 	// Used to receive info from NodeIndexService
 	DetachableResultReceiver receiver;
 
+	ProgressBar mProgressBar;
+
 	OnNodeIndexItemClickListener mNodeIndexItemClickListener = null;
 
 	// Represents a listener that will be notified of node selections
 	public interface OnNodeIndexItemClickListener {
 		public void onNodeIndexItemClick(int nid);
 	}
+
+	boolean getNextPageRunning = true;
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
@@ -92,8 +95,7 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 			NodeIndexService.refreshNodeIndex(indexType, getActivity(),
 					receiver);
 		} else {
-			receiver = (DetachableResultReceiver) savedInstanceState
-					.getParcelable("receiver");
+			receiver = savedInstanceState.getParcelable("receiver");
 		}
 
 	}
@@ -102,7 +104,10 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
-		return inflater.inflate(R.layout.node_index_list, container, false);
+		View mListView = inflater.inflate(R.layout.node_index_list, container,
+				false);
+		mProgressBar = (ProgressBar) mListView.findViewById(R.id.progress_bar);
+		return mListView;
 	}
 
 	@Override
@@ -126,11 +131,9 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		setEmptyText("No nodes to display");
 		setHasOptionsMenu(true);
 
-		getPullToRefreshListView().setOnScrollListener(this);
-		getPullToRefreshListView().setOnRefreshListener(this);
+		getListView().setOnScrollListener(this);
 
 		mAdapter = new SimpleCursorAdapter(getActivity(),
 				android.R.layout.simple_list_item_2, null, new String[] {
@@ -176,7 +179,6 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 		mAdapter.swapCursor(data);
-		getPullToRefreshListView().onRefreshComplete();
 	}
 
 	@Override
@@ -188,14 +190,19 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 	public void onScroll(AbsListView list, int firstVisible, int visibleCount,
 			int totalCount) {
 
-		boolean reachedEndOfList = /* maybe add a padding */
-		firstVisible + visibleCount >= totalCount;
+		boolean atEndOfList = firstVisible + visibleCount >= totalCount;
+		boolean notAtEndOfList = firstVisible + visibleCount < totalCount;
 
-		if (reachedEndOfList && list.getChildCount() != 0) {
+		if (getNextPageRunning && notAtEndOfList) {
+			getNextPageRunning = false;
+		}
+
+		if (!getNextPageRunning && atEndOfList && list.getChildCount() != 0) {
 			// Launch Intent Service to get next page
 			Log.d("test", "reached end of list");
 			NodeIndexService.getNextNodeIndexPage(indexType, getActivity(),
 					receiver);
+			getNextPageRunning = true;
 		}
 
 	}
@@ -208,22 +215,18 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 	public void onReceiveResult(int resultCode, Bundle resultData) {
 		switch (resultCode) {
 		case NodeIndexService.STATUS_RUNNING:
+			mProgressBar.setVisibility(View.VISIBLE);
 			break;
 		case NodeIndexService.STATUS_COMPLETE:
+			mProgressBar.setVisibility(View.GONE);
 			break;
 		case NodeIndexService.STATUS_ERROR:
 			Toast.makeText(getActivity(), "Error pulling content from MGoBlog",
 					Toast.LENGTH_SHORT).show();
-			getPullToRefreshListView().onRefreshComplete();
+			mProgressBar.setVisibility(View.GONE);
 			break;
 		default:
 
 		}
 	}
-
-	@Override
-	public void onRefresh() {
-		NodeIndexService.refreshNodeIndex(indexType, getActivity(), receiver);
-	}
-
 }
