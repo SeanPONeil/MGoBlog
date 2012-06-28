@@ -15,6 +15,8 @@ import android.widget.FrameLayout;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.atami.mgodroid.R;
 
 public class MGoBlogActivity extends SherlockFragmentActivity implements
@@ -68,6 +70,13 @@ public class MGoBlogActivity extends SherlockFragmentActivity implements
 			startActivity(intent);
 		}
 
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getSupportMenuInflater();
+	    inflater.inflate(R.menu.mgoblog, menu);
+	    return true;
 	}
 
 	public static class TabsAdapter extends FragmentPagerAdapter implements
