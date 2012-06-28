@@ -56,7 +56,7 @@ public class NodeIndexListFragment extends SherlockListFragment implements
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		if (mNodeIndexItemClickListener != null) {
-			mAdapter.getCursor().moveToPosition(position - 1);
+			mAdapter.getCursor().moveToPosition(position);
 			int nid = mAdapter.getCursor().getInt(
 					mAdapter.getCursor().getColumnIndex("nid"));
 			mNodeIndexItemClickListener.onNodeIndexItemClick(nid);

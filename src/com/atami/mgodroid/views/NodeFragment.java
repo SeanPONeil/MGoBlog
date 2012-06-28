@@ -10,9 +10,11 @@ import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.atami.mgodroid.io.NodeIndexService;
+import com.atami.mgodroid.R;
 import com.atami.mgodroid.io.NodeService;
 import com.atami.mgodroid.provider.NodeProvider;
 import com.atami.mgodroid.util.DetachableResultReceiver;
@@ -30,6 +32,8 @@ public class NodeFragment extends SherlockWebViewFragment implements
 
 	// Used to receive info from NodeService
 	private DetachableResultReceiver receiver;
+	
+	ProgressBar mProgressBar;
 
 	public static NodeFragment newInstance(int nid) {
 		NodeFragment f = new NodeFragment();
@@ -75,9 +79,15 @@ public class NodeFragment extends SherlockWebViewFragment implements
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
+		View view = inflater.inflate(R.layout.node, container, false);
+		setWebView((WebView) view.findViewById(R.id.node_webview));
+		
 		getWebView().getSettings().setJavaScriptEnabled(true);
 		getWebView().getSettings().setDefaultFontSize(14);
-		return getWebView();
+		
+		mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+		
+		return view;
 	}
 
 	@Override
@@ -118,13 +128,16 @@ public class NodeFragment extends SherlockWebViewFragment implements
 	@Override
 	public void onReceiveResult(int resultCode, Bundle resultData) {
 		switch (resultCode) {
-		case NodeIndexService.STATUS_RUNNING:
+		case NodeService.STATUS_RUNNING:
+			mProgressBar.setVisibility(View.VISIBLE);
 			break;
-		case NodeIndexService.STATUS_COMPLETE:
+		case NodeService.STATUS_COMPLETE:
+			mProgressBar.setVisibility(View.GONE);
 			break;
-		case NodeIndexService.STATUS_ERROR:
+		case NodeService.STATUS_ERROR:
 			Toast.makeText(getActivity(), "Error pulling content from MGoBlog",
 					Toast.LENGTH_SHORT).show();
+			mProgressBar.setVisibility(View.GONE);
 			break;
 		default:
 

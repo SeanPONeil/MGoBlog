@@ -11,7 +11,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 /**
  * A SherlockFragment that displays a WebView.
  * 
- * The WebView is automically paused or resumed when the Fragment is paused or resumed.
+ * The WebView is automatically paused or resumed when the Fragment is paused or resumed.
  */
 public class SherlockWebViewFragment extends SherlockFragment {
     private WebView mWebView;
@@ -79,5 +79,12 @@ public class SherlockWebViewFragment extends SherlockFragment {
      */
     public WebView getWebView() {
         return mIsWebViewAvailable ? mWebView : null;
+    }
+    
+    /**
+     * Sets the WebView, if inflating from XML in a child class
+     */
+    public void setWebView(WebView wv){
+    	mWebView = wv;
     }
 }

@@ -33,6 +33,7 @@ public class MGoBlogActivity extends SherlockFragmentActivity implements
 	boolean mIsDualPane = false;
 
 	String[] NODE_INDEX_TYPES = { "forum", "story", "blog", "link" };
+	String[] NODE_INDEX_TITLES = { "Board", "Blog", "Diaries", "mgo.licio.us" };
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -51,7 +52,7 @@ public class MGoBlogActivity extends SherlockFragmentActivity implements
 		for (int i = 0; i < NODE_INDEX_TYPES.length; i++) {
 			Bundle args = new Bundle();
 			args.putString("node_index_type", NODE_INDEX_TYPES[i]);
-			mTabsAdapter.addTab(bar.newTab().setText(NODE_INDEX_TYPES[i]),
+			mTabsAdapter.addTab(bar.newTab().setText(NODE_INDEX_TITLES[i]),
 					NodeIndexListFragment.class, args);
 		}
 	}
@@ -69,14 +70,13 @@ public class MGoBlogActivity extends SherlockFragmentActivity implements
 			intent.putExtra("nid", nid);
 			startActivity(intent);
 		}
-
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-	    MenuInflater inflater = getSupportMenuInflater();
-	    inflater.inflate(R.menu.mgoblog, menu);
-	    return true;
+		MenuInflater inflater = getSupportMenuInflater();
+		inflater.inflate(R.menu.mgoblog, menu);
+		return true;
 	}
 
 	public static class TabsAdapter extends FragmentPagerAdapter implements
