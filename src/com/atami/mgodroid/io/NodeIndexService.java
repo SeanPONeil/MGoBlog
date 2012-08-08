@@ -1,9 +1,11 @@
 package com.atami.mgodroid.io;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -61,7 +63,7 @@ public class NodeIndexService extends BlockingIntentService {
 	// needs all fresh data
 	private void dropNodeIndex(String type) {
 		ContentResolver cr = getContentResolver();
-		cr.delete(NodeIndexProvider.NODE_INDEX_URI, "node_index_type = ?",
+		cr.delete(NodeIndexProvider.CONTENT_URI, "node_index_type = ?",
 				new String[] { type });
 	}
 
@@ -69,19 +71,16 @@ public class NodeIndexService extends BlockingIntentService {
 	// what is currently in the database.
 	private int getMaxPage(String type) {
 		ContentResolver cr = getContentResolver();
-		Cursor c = cr.query(NodeIndexProvider.NODE_INDEX_URI,
-				new String[] { "MAX(page) as maxPage" }, null, null, null);
-		if (c.getCount() == 0) {
-			return 0;
-		}
+		Cursor c = cr.query(NodeIndexProvider.CONTENT_URI,
+				new String[] {"count(*) AS count"}, "type = ?", new String[] {type}, null);
 		c.moveToFirst();
-		return c.getInt(0) + 1;
+		return c.getInt(0)/20;
 	}
 
 	private JSONArray getNodeIndexPage(int page, String type) {
 		JSONArray index = new JSONArray();
 		try {
-			index = APIUtil.getNodeIndex(type, page, this);
+			index = API.getNodeIndex(page, page, false);
 			Log.v(TAG, index.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -90,27 +89,19 @@ public class NodeIndexService extends BlockingIntentService {
 		return index;
 	}
 
-	private void insertNodeIndex(JSONArray index, int page) {
+	private void insertNodeIndex(JSONArray index, int page) throws JSONException {
 		ContentResolver cr = getContentResolver();
-		ArrayList<ContentValues> values = new ArrayList<ContentValues>();
 		for (int i = 0; i < index.length(); i++) {
 			ContentValues cv = new ContentValues();
-			try {
-				cv.put("node_index_type",
-						index.getJSONObject(i).getString("type"));
-				cv.put("node_title", index.getJSONObject(i).getString("title"));
-				cv.put("node_created",
-						index.getJSONObject(i).getString("created"));
-				cv.put("nid", index.getJSONObject(i).getString("nid"));
-				cv.put("is_sticky", index.getJSONObject(i).getString("sticky"));
-				cv.put("page", page);
-				values.add(cv);
-			} catch (JSONException e) {
-				e.printStackTrace();
+			JSONObject o = index.getJSONObject(i);
+			Iterator<?> keys = o.keys();
+			
+			while(keys.hasNext()){
+				String key = (String) keys.next();
+				cv.put(key, o.getString(key));
 			}
+			cr.insert(NodeIndexProvider.CONTENT_URI, cv);
 		}
-		cr.bulkInsert(NodeIndexProvider.NODE_INDEX_URI,
-				values.toArray(new ContentValues[0]));
 	}
 
 	// Gets the next node index page given the type, and
@@ -118,7 +109,11 @@ public class NodeIndexService extends BlockingIntentService {
 	private void getNextNodeIndexPage(String type) {
 		int page = getMaxPage(type);
 		JSONArray index = getNodeIndexPage(page, type);
-		insertNodeIndex(index, page);
+		try {
+			insertNodeIndex(index, page);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 
 	// Gets the first node index page given the type, and
@@ -127,8 +122,12 @@ public class NodeIndexService extends BlockingIntentService {
 	private void refreshIndexPage(String type) {
 		JSONArray index = getNodeIndexPage(0, type);
 		if (index.length() != 0) {
-			dropNodeIndex(type);
-			insertNodeIndex(index, 0);
+			//dropNodeIndex(type);
+			try {
+				insertNodeIndex(index, 0);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

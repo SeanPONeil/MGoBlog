@@ -137,7 +137,7 @@ public class NodeIndexListFragment extends SherlockListFragment implements
 
 		mAdapter = new SimpleCursorAdapter(getActivity(),
 				android.R.layout.simple_list_item_2, null, new String[] {
-						"node_title", "nid" }, new int[] { android.R.id.text1,
+						"title", "nid" }, new int[] { android.R.id.text1,
 						android.R.id.text2 }, 0);
 		setListAdapter(mAdapter);
 
@@ -167,13 +167,11 @@ public class NodeIndexListFragment extends SherlockListFragment implements
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-		Uri baseUri = NodeIndexProvider.NODE_INDEX_URI;
-		String where = "node_index_type = ? and is_sticky = ?";
+		Uri baseUri = NodeIndexProvider.CONTENT_URI;
+		String where = "type = ? and sticky = ?";
 		String whereArgs[] = { indexType, "0" };
 
-		return new CursorLoader(getActivity(), baseUri, new String[] { "_id",
-				"node_index_type", "node_title", "node_created", "nid",
-				"is_sticky" }, where, whereArgs, null);
+		return new CursorLoader(getActivity(), baseUri, new String[] { "_id", "title", "nid"}, where, whereArgs, null);
 	}
 
 	@Override

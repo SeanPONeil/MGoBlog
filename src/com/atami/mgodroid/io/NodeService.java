@@ -58,7 +58,7 @@ public class NodeService extends BlockingIntentService {
 		Log.d(TAG, "NodeService running");
 		
 		try {
-			JSONObject node = APIUtil.getNode(nid, this);
+			JSONObject node = API.getNode(nid, this);
 			insertNode(node);
 		} catch (Exception e) {
 			e.printStackTrace();

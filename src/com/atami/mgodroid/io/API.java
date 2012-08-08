@@ -2,39 +2,61 @@ package com.atami.mgodroid.io;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Scanner;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
-import android.util.Log;
 
-import com.google.common.io.CharStreams;
+/**
+ * Static methods for interacting with the MGoBlog API. All functions in this
+ * class rely on network I/O, and because of this need to be called off of the
+ * main thread.
+ * 
+ * @author Sean
+ */
+public class API {
 
-//Static methods for retrieving content from the MGoBlog Drupal
-//Services module. All network I/O is blocking, and needs to be called
-//from a separate thread (in this case, an IntentService)
-public class APIUtil {
-
-	public static final String TAG = "API";
-
-	// Returns a SessID on successful connect
-	public static JSONObject connect() throws MalformedURLException,
-			IOException, JSONException {
-		String result = post(ServiceUrls.SYSTEM_CONNECT_URL, null, null);
-		return new JSONObject(result);
+	public static class NodeIndexType {
+		public static final int MGOBOARD = 0;
+		public static final int MGOBLOG = 1;
+		public static final int DIARIES = 2;
+		public static final int MGOLICIOUS = 3;
 	}
 
-	// Pulls in a fresh set of Node Index data from MGoBlog
-	public static JSONArray getNodeIndex(String type, int page, Context context)
-			throws MalformedURLException, IOException, JSONException {
-		String url = String.format(ServiceUrls.NODE_INDEX_URL, type,
+	private static final String[] NODE_INDEX_PARAMS = {
+			"parameters[type]=forum", "parameters[promoted]=1",
+			"parameters[type]=blog", "parameters[type]=link" };
+
+	private static final String STICKY_PARAM = "parameters[sticky]=%s";
+
+	/**
+	 * Retrieves a set of node indices.
+	 * 
+	 * @param type The type of node index to retrieve. See API.NodeIndexType
+	 * @param page The page to retrieve. Pages are 0 indexed.
+	 * @param getStickies Boolean value that determines whether or not
+	 * stickies are retrieved.
+	 * @return JSONArray of node index JSONObjects
+	 * @throws MalformedURLException
+	 * @throws IOException
+	 * @throws JSONException
+	 */
+	public static JSONArray getNodeIndex(int type, int page,
+			boolean getStickies) throws MalformedURLException, IOException,
+			JSONException {
+
+		String url = String.format(ServiceUrls.NODE_INDEX_URL,
+				NODE_INDEX_PARAMS[type],
+				String.format(STICKY_PARAM, getStickies ? 1 : 0),
 				Integer.toString(page));
+
 		String result = get(url);
 		return new JSONArray(result);
 	}
@@ -125,27 +147,47 @@ public class APIUtil {
 	//
 	// }
 
+	/**
+	 * Execute a GET request
+	 * 
+	 * @param url
+	 *            the URL to retrieve
+	 * @return content provided by URL as a String
+	 * @throws MalformedURLException
+	 * @throws IOException
+	 */
 	private static String get(String url) throws MalformedURLException,
 			IOException {
-		HttpURLConnection conn;
-		conn = (HttpURLConnection) new URL(url).openConnection();
+		HttpURLConnection conn = (HttpURLConnection) new URL(url)
+				.openConnection();
 		conn.setRequestProperty("Accept-Charset", "UTF-8");
 
 		if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-			return CharStreams.toString(new InputStreamReader(conn
-					.getInputStream(), "UTF-8"));
+			InputStream is = conn.getInputStream();
+			return convertStreamToString(is);
 		} else {
-			Log.d(TAG, conn.getResponseMessage());
-			return null;
+			throw new IOException();
 		}
-
 	}
 
+	/**
+	 * Execute a POST request
+	 * 
+	 * @param url
+	 *            the URL to post to
+	 * @param payload
+	 *            the JSONObject to post
+	 * @param cookie
+	 *            optional cookie data to send with request
+	 * @return content provided by URL as a String
+	 * @throws MalformedURLException
+	 * @throws IOException
+	 */
 	private static String post(String url, JSONObject payload, String cookie)
 			throws MalformedURLException, IOException {
 
-		HttpURLConnection conn;
-		conn = (HttpURLConnection) new URL(url).openConnection();
+		HttpURLConnection conn = (HttpURLConnection) new URL(url)
+				.openConnection();
 		conn.setDoOutput(true);
 		conn.setRequestMethod("POST");
 		conn.setRequestProperty("Accept-Charset", "UTF-8");
@@ -154,22 +196,33 @@ public class APIUtil {
 			conn.setRequestProperty("Cookie", cookie);
 		}
 
-		// Open output stream and send POST request
 		DataOutputStream outStream = new DataOutputStream(
 				conn.getOutputStream());
-		Log.v(TAG, "Begin POST Request");
-		Log.v(TAG, "POST request body: " + payload.toString());
 		outStream.writeBytes(payload.toString());
 		outStream.flush();
 		outStream.close();
-		Log.v(TAG, "POST Response: " + conn.getResponseMessage());
 
 		if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-			return CharStreams.toString(new InputStreamReader(conn
-					.getInputStream(), "UTF-8"));
+			InputStream is = conn.getInputStream();
+			return convertStreamToString(is);
 		} else {
-			return null;
+			throw new IOException();
 		}
+	}
 
+	/**
+	 * Helper method for converting an InputStream into it's String
+	 * representation.
+	 * 
+	 * @param any
+	 *            InputStream is
+	 * @return String version
+	 */
+	private static String convertStreamToString(InputStream is) {
+		try {
+			return new Scanner(is).useDelimiter("\\A").next();
+		} catch (java.util.NoSuchElementException e) {
+			return "";
+		}
 	}
 }

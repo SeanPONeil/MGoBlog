@@ -35,11 +35,11 @@
 
         <provider
             android:name=".provider.NodeIndexProvider"
-            android:authorities="com.mgoblog.nodeindexprovider" >
+            android:authorities="mgoblog.provider" >
         </provider>
         <provider
             android:name=".provider.NodeProvider"
-            android:authorities="com.mgoblog.nodeprovider" >
+            android:authorities="mgoblog.provider" >
         </provider>
 
         <service android:name=".io.NodeIndexService" />
