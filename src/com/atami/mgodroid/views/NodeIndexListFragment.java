@@ -2,9 +2,7 @@ package com.atami.mgodroid.views;
 
 import android.app.Activity;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -25,22 +23,19 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.atami.mgodroid.R;
 import com.atami.mgodroid.io.NodeIndexService;
+import com.atami.mgodroid.io.StatusEvents.NodeIndexStatus;
+import com.atami.mgodroid.io.StatusEvents.Status;
 import com.atami.mgodroid.provider.NodeIndexProvider;
-import com.atami.mgodroid.util.DetachableResultReceiver;
-import com.atami.mgodroid.util.DetachableResultReceiver.Receiver;
+import com.atami.mgodroid.util.BusProvider;
+import com.squareup.otto.Subscribe;
 
 public class NodeIndexListFragment extends SherlockListFragment implements
-		LoaderCallbacks<Cursor>, OnScrollListener, Receiver {
+		LoaderCallbacks<Cursor>, OnScrollListener {
 
 	// This is the Adapter being used to display the list's data.
 	SimpleCursorAdapter mAdapter;
 
-	// The type of content we are displaying. Used by the CursorLoader
-	// to pull the correct nodes indices out of the database.
-	String indexType;
-
-	// Used to receive info from NodeIndexService
-	DetachableResultReceiver receiver;
+	int nodeIndexType;
 
 	ProgressBar mProgressBar;
 
@@ -63,12 +58,12 @@ public class NodeIndexListFragment extends SherlockListFragment implements
 		}
 	}
 
-	public static NodeIndexListFragment newInstance(String type) {
+	public static NodeIndexListFragment newInstance(int type) {
 		NodeIndexListFragment f = new NodeIndexListFragment();
 
 		// Supply index input as an argument.
 		Bundle args = new Bundle();
-		args.putString("node_index_type", type);
+		args.putInt("NodeIndexType", type);
 		f.setArguments(args);
 
 		return f;
@@ -88,16 +83,11 @@ public class NodeIndexListFragment extends SherlockListFragment implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		indexType = getArguments().getString("node_index_type");
+		nodeIndexType = getArguments().getInt("NodeIndexType");
 
 		if (savedInstanceState == null) {
-			receiver = new DetachableResultReceiver(new Handler());
-			NodeIndexService.refreshNodeIndex(indexType, getActivity(),
-					receiver);
-		} else {
-			receiver = savedInstanceState.getParcelable("receiver");
+			NodeIndexService.refreshNodeIndex(nodeIndexType, getActivity());
 		}
-
 	}
 
 	@Override
@@ -113,19 +103,13 @@ public class NodeIndexListFragment extends SherlockListFragment implements
 	@Override
 	public void onPause() {
 		super.onPause();
-		receiver.clearReceiver();
+		BusProvider.getInstance().unregister(this);
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
-		receiver.setReceiver(this);
-	}
-
-	@Override
-	public void onSaveInstanceState(Bundle savedInstanceState) {
-		savedInstanceState.putParcelable("receiver", receiver);
-		super.onSaveInstanceState(savedInstanceState);
+		BusProvider.getInstance().register(this);
 	}
 
 	@Override
@@ -154,8 +138,7 @@ public class NodeIndexListFragment extends SherlockListFragment implements
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.refresh:
-			NodeIndexService.refreshNodeIndex(indexType, getActivity(),
-					receiver);
+			NodeIndexService.refreshNodeIndex(nodeIndexType, getActivity());
 			getListView().setSelection(0);
 			break;
 		default:
@@ -166,12 +149,10 @@ public class NodeIndexListFragment extends SherlockListFragment implements
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-
-		Uri baseUri = NodeIndexProvider.CONTENT_URI;
-		String where = "type = ? and sticky = ?";
-		String whereArgs[] = { indexType, "0" };
-
-		return new CursorLoader(getActivity(), baseUri, new String[] { "_id", "title", "nid"}, where, whereArgs, null);
+		return new CursorLoader(getActivity(), NodeIndexProvider.CONTENT_URI,
+				new String[] { "_id", "title", "nid" },
+				NodeIndexProvider.WHERE[nodeIndexType],
+				NodeIndexProvider.WHERE_ARGS[nodeIndexType], null);
 	}
 
 	@Override
@@ -198,8 +179,7 @@ public class NodeIndexListFragment extends SherlockListFragment implements
 		if (!getNextPageRunning && atEndOfList && list.getChildCount() != 0) {
 			// Launch Intent Service to get next page
 			Log.d("test", "reached end of list");
-			NodeIndexService.getNextNodeIndexPage(indexType, getActivity(),
-					receiver);
+			NodeIndexService.getNextNodeIndexPage(nodeIndexType, getActivity());
 			getNextPageRunning = true;
 		}
 
@@ -209,22 +189,32 @@ public class NodeIndexListFragment extends SherlockListFragment implements
 	public void onScrollStateChanged(AbsListView view, int scrollState) {
 	}
 
-	@Override
-	public void onReceiveResult(int resultCode, Bundle resultData) {
-		switch (resultCode) {
-		case NodeIndexService.STATUS_RUNNING:
-			mProgressBar.setVisibility(View.VISIBLE);
-			break;
-		case NodeIndexService.STATUS_COMPLETE:
-			mProgressBar.setVisibility(View.GONE);
-			break;
-		case NodeIndexService.STATUS_ERROR:
-			Toast.makeText(getActivity(), "Error pulling content from MGoBlog",
-					Toast.LENGTH_SHORT).show();
-			mProgressBar.setVisibility(View.GONE);
-			break;
-		default:
+	@Subscribe
+	public void onNewStatusEvent(final NodeIndexStatus s) {
+		getActivity().runOnUiThread(new Runnable(){
 
-		}
+			@Override
+			public void run() {
+				if (nodeIndexType == s.type) {
+					switch (s.code) {
+					case Status.RUNNING:
+						mProgressBar.setVisibility(View.VISIBLE);
+						break;
+					case Status.COMPLETE:
+						mProgressBar.setVisibility(View.GONE);
+						break;
+					case Status.ERROR:
+						Toast.makeText(getActivity(),
+								"Error pulling content from MGoBlog",
+								Toast.LENGTH_SHORT).show();
+						mProgressBar.setVisibility(View.GONE);
+						break;
+					default:
+
+					}
+				}
+			}
+			
+		});
 	}
 }

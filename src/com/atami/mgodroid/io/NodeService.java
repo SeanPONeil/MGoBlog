@@ -3,6 +3,7 @@ package com.atami.mgodroid.io;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.IntentService;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -12,9 +13,8 @@ import android.os.ResultReceiver;
 import android.util.Log;
 
 import com.atami.mgodroid.provider.NodeProvider;
-import com.atami.mgodroid.util.BlockingIntentService;
 
-public class NodeService extends BlockingIntentService {
+public class NodeService extends IntentService {
 	
 	public static final String TAG = "NodeService";
 	
@@ -51,7 +51,7 @@ public class NodeService extends BlockingIntentService {
 	}
 
 	@Override
-	protected void onHandleBlockingIntent(Intent intent) {
+	protected void onHandleIntent(Intent intent) {
 		String nid = intent.getAction();
 		mReceiver = intent.getParcelableExtra(RESULT_RECEIVER);
 		mReceiver.send(STATUS_RUNNING, Bundle.EMPTY);

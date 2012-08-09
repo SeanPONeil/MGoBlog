@@ -31,7 +31,7 @@ public class API {
 	}
 
 	private static final String[] NODE_INDEX_PARAMS = {
-			"parameters[type]=forum", "parameters[promoted]=1",
+			"parameters[type]=forum", "parameters[promote]=1",
 			"parameters[type]=blog", "parameters[type]=link" };
 
 	private static final String STICKY_PARAM = "parameters[sticky]=%s";
@@ -39,18 +39,20 @@ public class API {
 	/**
 	 * Retrieves a set of node indices.
 	 * 
-	 * @param type The type of node index to retrieve. See API.NodeIndexType
-	 * @param page The page to retrieve. Pages are 0 indexed.
-	 * @param getStickies Boolean value that determines whether or not
-	 * stickies are retrieved.
+	 * @param type
+	 *            The type of node index to retrieve. See API.NodeIndexType
+	 * @param page
+	 *            The page to retrieve. Pages are 0 indexed.
+	 * @param getStickies
+	 *            Boolean value that determines whether or not stickies are
+	 *            retrieved.
 	 * @return JSONArray of node index JSONObjects
 	 * @throws MalformedURLException
 	 * @throws IOException
 	 * @throws JSONException
 	 */
-	public static JSONArray getNodeIndex(int type, int page,
-			boolean getStickies) throws MalformedURLException, IOException,
-			JSONException {
+	public static JSONArray getNodeIndex(int type, int page, boolean getStickies)
+			throws MalformedURLException, IOException, JSONException {
 
 		String url = String.format(ServiceUrls.NODE_INDEX_URL,
 				NODE_INDEX_PARAMS[type],

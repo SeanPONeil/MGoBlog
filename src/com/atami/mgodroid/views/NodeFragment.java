@@ -17,21 +17,16 @@ import android.widget.Toast;
 import com.atami.mgodroid.R;
 import com.atami.mgodroid.io.NodeService;
 import com.atami.mgodroid.provider.NodeProvider;
-import com.atami.mgodroid.util.DetachableResultReceiver;
-import com.atami.mgodroid.util.DetachableResultReceiver.Receiver;
 import com.atami.mgodroid.util.SherlockWebViewFragment;
 
 public class NodeFragment extends SherlockWebViewFragment implements
-		LoaderCallbacks<Cursor>, Receiver {
+		LoaderCallbacks<Cursor>{
 
 	// ID of the current node
 	int nid;
 
 	// Body of the node
 	String body;
-
-	// Used to receive info from NodeService
-	private DetachableResultReceiver receiver;
 	
 	ProgressBar mProgressBar;
 
@@ -51,28 +46,18 @@ public class NodeFragment extends SherlockWebViewFragment implements
 		nid = getArguments().getInt("nid");
 
 		if (savedInstanceState == null) {
-			receiver = new DetachableResultReceiver(new Handler());
 		} else {
-			receiver = savedInstanceState.getParcelable("receiver");
 		}
 	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
-		receiver.clearReceiver();
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
-		receiver.setReceiver(this);
-	}
-
-	@Override
-	public void onSaveInstanceState(Bundle savedInstanceState) {
-		savedInstanceState.putParcelable("receiver", receiver);
-		super.onSaveInstanceState(savedInstanceState);
 	}
 
 	@Override
@@ -116,7 +101,7 @@ public class NodeFragment extends SherlockWebViewFragment implements
 			getWebView().loadDataWithBaseURL(null, body, "text/html", "UTF-8",
 					null);
 		} else {
-			NodeService.refreshNode(nid, getActivity(), receiver);
+			//NodeService.refreshNode(nid, getActivity(), receiver);
 		}
 	}
 
@@ -125,23 +110,23 @@ public class NodeFragment extends SherlockWebViewFragment implements
 
 	}
 
-	@Override
-	public void onReceiveResult(int resultCode, Bundle resultData) {
-		switch (resultCode) {
-		case NodeService.STATUS_RUNNING:
-			mProgressBar.setVisibility(View.VISIBLE);
-			break;
-		case NodeService.STATUS_COMPLETE:
-			mProgressBar.setVisibility(View.GONE);
-			break;
-		case NodeService.STATUS_ERROR:
-			Toast.makeText(getActivity(), "Error pulling content from MGoBlog",
-					Toast.LENGTH_SHORT).show();
-			mProgressBar.setVisibility(View.GONE);
-			break;
-		default:
-
-		}
-	}
+//	@Override
+//	public void onReceiveResult(int resultCode, Bundle resultData) {
+//		switch (resultCode) {
+//		case NodeService.STATUS_RUNNING:
+//			mProgressBar.setVisibility(View.VISIBLE);
+//			break;
+//		case NodeService.STATUS_COMPLETE:
+//			mProgressBar.setVisibility(View.GONE);
+//			break;
+//		case NodeService.STATUS_ERROR:
+//			Toast.makeText(getActivity(), "Error pulling content from MGoBlog",
+//					Toast.LENGTH_SHORT).show();
+//			mProgressBar.setVisibility(View.GONE);
+//			break;
+//		default:
+//
+//		}
+//	}
 
 }

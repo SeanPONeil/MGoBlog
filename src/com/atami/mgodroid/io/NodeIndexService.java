@@ -15,32 +15,46 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 
+import com.atami.mgodroid.io.StatusEvents.NodeIndexStatus;
+import com.atami.mgodroid.io.StatusEvents.Status;
 import com.atami.mgodroid.provider.NodeIndexProvider;
+import com.atami.mgodroid.util.BusProvider;
+import com.squareup.otto.Produce;
 
 public class NodeIndexService extends IntentService {
 
-	//private static String TAG = "NodeIndexService";
+	// private static String TAG = "NodeIndexService";
 
 	public static String GET_NEXT_PAGE = "get_next_page";
 	public static String REFRESH = "node_index_refresh";
 	public static String TYPE = "node_index_type";
 
-	public static final int STATUS_ERROR = 0;
-	public static final int STATUS_COMPLETE = 1;
-	public static final int STATUS_RUNNING = 2;
-
 	private int nodeIndexType;
+	private int status;
 
 	public NodeIndexService() {
 		super("NodeIndexService");
+		BusProvider.getInstance().register(this);
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		BusProvider.getInstance().unregister(this);
+	}
+
+	@Produce
+	public NodeIndexStatus produceStatus() {
+		return new NodeIndexStatus(nodeIndexType, status);
 	}
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
 		String action = intent.getAction();
 		nodeIndexType = intent.getIntExtra(TYPE, -1);
-		// mReceiver.send(STATUS_RUNNING, Bundle.EMPTY);
-		// Log.d(TAG, action + " running");
+
+		status = Status.RUNNING;
+		BusProvider.getInstance().post(produceStatus());
 
 		try {
 			if (action.equals(GET_NEXT_PAGE)) {
@@ -55,14 +69,20 @@ public class NodeIndexService extends IntentService {
 			}
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
+			status = Status.ERROR;
+			BusProvider.getInstance().post(produceStatus());
 		} catch (IOException e) {
 			e.printStackTrace();
+			status = Status.ERROR;
+			BusProvider.getInstance().post(produceStatus());
 		} catch (JSONException e) {
 			e.printStackTrace();
+			status = Status.ERROR;
+			BusProvider.getInstance().post(produceStatus());
 		}
 
-		// mReceiver.send(STATUS_COMPLETE, Bundle.EMPTY);
-		// Log.d(TAG, action + " completed");
+		status = Status.COMPLETE;
+		BusProvider.getInstance().post(produceStatus());
 	}
 
 	/**
@@ -93,11 +113,12 @@ public class NodeIndexService extends IntentService {
 	}
 
 	/**
-	 * Iterates over each object in the JSONArray index, creating
-	 * a new row for each object. Each object is iterated over its
-	 * own fields, using the field names as the key in the content
-	 * provider row.
-	 * @param index JSONArray of node index JSONObjects
+	 * Iterates over each object in the JSONArray index, creating a new row for
+	 * each object. Each object is iterated over its own fields, using the field
+	 * names as the key in the content provider row.
+	 * 
+	 * @param index
+	 *            JSONArray of node index JSONObjects
 	 * @throws JSONException
 	 */
 	private void insertNodeIndex(JSONArray index) throws JSONException {
@@ -117,8 +138,11 @@ public class NodeIndexService extends IntentService {
 
 	/**
 	 * Helper method for refreshing the rows for a given node index
-	 * @param nodeIndexType an int constant identifying the node index
-	 * @param context used to start the IntentService
+	 * 
+	 * @param nodeIndexType
+	 *            an int constant identifying the node index
+	 * @param context
+	 *            used to start the IntentService
 	 */
 	public static void refreshNodeIndex(int nodeIndexType, Context context) {
 		final Intent i = new Intent(context, NodeIndexService.class);
@@ -129,13 +153,16 @@ public class NodeIndexService extends IntentService {
 
 	/**
 	 * Helper method for getting the next page of rows for a given node index
-	 * @param indexType an int constant identifying the node index
-	 * @param context used to start the IntentService
+	 * 
+	 * @param indexType
+	 *            an int constant identifying the node index
+	 * @param context
+	 *            used to start the IntentService
 	 */
-	public static void getNextNodeIndexPage(String indexType, Context context) {
+	public static void getNextNodeIndexPage(int nodeIndexType, Context context) {
 		Intent i = new Intent(context, NodeIndexService.class);
 		i.setAction(NodeIndexService.GET_NEXT_PAGE);
-		i.putExtra(NodeIndexService.TYPE, indexType);
+		i.putExtra(NodeIndexService.TYPE, nodeIndexType);
 		context.startService(i);
 	}
 }
