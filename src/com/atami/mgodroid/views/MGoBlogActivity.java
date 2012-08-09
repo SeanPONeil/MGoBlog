@@ -10,16 +10,17 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.widget.FrameLayout;
 
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.atami.mgodroid.R;
+import com.atami.mgodroid.util.BusProvider;
+import com.atami.mgodroid.views.NodeIndexListFragment.NodeIndexItemClick;
+import com.squareup.otto.Subscribe;
 import com.viewpagerindicator.PageIndicator;
 import com.viewpagerindicator.TitlePageIndicator;
 
-public class MGoBlogActivity extends SherlockFragmentActivity implements
-		NodeIndexListFragment.OnNodeIndexItemClickListener {
+public class MGoBlogActivity extends SherlockFragmentActivity {
 
 	// Left pane
 	ViewPager mPager;
@@ -36,29 +37,41 @@ public class MGoBlogActivity extends SherlockFragmentActivity implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_layout);
-		
+
 		mPager = (ViewPager) findViewById(R.id.NodeIndexViewPager);
 		mIndicator = (TitlePageIndicator) findViewById(R.id.indicator);
 		nodeFrame = (FrameLayout) findViewById(R.id.NodeFrame);
-		
+
 		mAdapter = new NodeIndexListFragmentAdapter(getSupportFragmentManager());
 		mPager.setAdapter(mAdapter);
 		mIndicator.setViewPager(mPager);
 
 		mIsDualPane = getResources().getBoolean(R.bool.has_two_panes);
 	}
-
+	
 	@Override
-	public void onNodeIndexItemClick(int nid) {
+	protected void onPause() {
+		super.onPause();
+		BusProvider.getInstance().unregister(this);
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		BusProvider.getInstance().register(this);
+	}
+	
+	@Subscribe
+	public void onNodeIndexItemClick(NodeIndexItemClick c){
 		if (mIsDualPane) {
-			NodeFragment nodeFragment = NodeFragment.newInstance(nid);
+			NodeFragment nodeFragment = NodeFragment.newInstance(c.nid);
 			FragmentTransaction ft = getSupportFragmentManager()
 					.beginTransaction();
 			ft.add(R.id.NodeFrame, nodeFragment).commit();
 		} else {
 			Log.d("DEBUG", "reached non dual pane");
 			Intent intent = new Intent(this, NodeActivity.class);
-			intent.putExtra("nid", nid);
+			intent.putExtra("nid", c.nid);
 			startActivity(intent);
 		}
 	}
@@ -69,28 +82,29 @@ public class MGoBlogActivity extends SherlockFragmentActivity implements
 		inflater.inflate(R.menu.mgoblog, menu);
 		return true;
 	}
-	
-	private class NodeIndexListFragmentAdapter extends FragmentPagerAdapter{
-		
-		protected final String[] NODE_INDEX_TITLES = { "MGoBoard", "MGoBlog", "Diaries", "mgo.licio.us" };
 
-	    public NodeIndexListFragmentAdapter(FragmentManager fm) {
-	        super(fm);
-	    }
+	private class NodeIndexListFragmentAdapter extends FragmentPagerAdapter {
 
-	    @Override
-	    public Fragment getItem(int position) {
-	        return NodeIndexListFragment.newInstance(position);
-	    }
+		protected final String[] NODE_INDEX_TITLES = { "MGoBoard", "MGoBlog",
+				"Diaries", "mgo.licio.us" };
 
-	    @Override
-	    public int getCount() {
-	        return NODE_INDEX_TITLES.length;
-	    }
-	    
-	    @Override
-	    public CharSequence getPageTitle(int position) {
-	        return NODE_INDEX_TITLES[position];
-	    }
+		public NodeIndexListFragmentAdapter(FragmentManager fm) {
+			super(fm);
+		}
+
+		@Override
+		public Fragment getItem(int position) {
+			return NodeIndexListFragment.newInstance(position);
+		}
+
+		@Override
+		public int getCount() {
+			return NODE_INDEX_TITLES.length;
+		}
+
+		@Override
+		public CharSequence getPageTitle(int position) {
+			return NODE_INDEX_TITLES[position];
+		}
 	}
 }

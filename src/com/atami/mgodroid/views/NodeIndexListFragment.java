@@ -1,6 +1,5 @@
 package com.atami.mgodroid.views;
 
-import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
@@ -8,12 +7,8 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.View;
-import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.atami.mgodroid.io.NodeIndexService;
@@ -27,55 +22,32 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleLis
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.squareup.otto.Subscribe;
 
-public class NodeIndexListFragment extends SherlockPullToRefreshListFragment implements
-		LoaderCallbacks<Cursor>, OnRefreshListener<ListView>, OnLastItemVisibleListener{
+public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
+		implements LoaderCallbacks<Cursor>, OnRefreshListener<ListView>,
+		OnLastItemVisibleListener {
 
 	// This is the Adapter being used to display the list's data.
 	SimpleCursorAdapter mAdapter;
 
 	int nodeIndexType;
 
-	ProgressBar mProgressBar;
+	class NodeIndexItemClick {
+		int nid;
 
-	OnNodeIndexItemClickListener mNodeIndexItemClickListener = null;
-
-	// Represents a listener that will be notified of node selections
-	public interface OnNodeIndexItemClickListener {
-		public void onNodeIndexItemClick(int nid);
-	}
-
-	boolean getNextPageRunning = true;
-
-	@Override
-	public void onListItemClick(ListView l, View v, int position, long id) {
-		if (mNodeIndexItemClickListener != null) {
-			mAdapter.getCursor().moveToPosition(position);
-			int nid = mAdapter.getCursor().getInt(
-					mAdapter.getCursor().getColumnIndex("nid"));
-			mNodeIndexItemClickListener.onNodeIndexItemClick(nid);
+		public NodeIndexItemClick(int nid) {
+			this.nid = nid;
 		}
 	}
 
 	public static NodeIndexListFragment newInstance(int type) {
 		NodeIndexListFragment f = new NodeIndexListFragment();
-		
+
 		// Supply index input as an argument.
 		Bundle args = new Bundle();
 		args.putInt("NodeIndexType", type);
 		f.setArguments(args);
 
 		return f;
-	}
-
-	@Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-		try {
-			mNodeIndexItemClickListener = (OnNodeIndexItemClickListener) activity;
-		} catch (ClassCastException e) {
-			throw new ClassCastException(activity.toString()
-					+ " must implement OnNodeIndexItemClickListener");
-		}
 	}
 
 	@Override
@@ -117,15 +89,6 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment imp
 
 		getLoaderManager().initLoader(0, null, this);
 	}
-	
-	@Override
-	public void onRefresh(PullToRefreshBase<ListView> refreshView) {
-		getPullToRefreshListView().setLastUpdatedLabel(DateUtils.formatDateTime(getActivity(),
-				System.currentTimeMillis(), DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE
-						| DateUtils.FORMAT_ABBREV_ALL));
-
-		NodeIndexService.refreshNodeIndex(nodeIndexType, getActivity());
-	}
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -144,7 +107,18 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment imp
 	public void onLoaderReset(Loader<Cursor> loader) {
 		mAdapter.swapCursor(null);
 	}
-	
+
+	@Override
+	public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+		getPullToRefreshListView().setLastUpdatedLabel(
+				DateUtils.formatDateTime(getActivity(),
+						System.currentTimeMillis(), DateUtils.FORMAT_SHOW_TIME
+								| DateUtils.FORMAT_SHOW_DATE
+								| DateUtils.FORMAT_ABBREV_ALL));
+
+		NodeIndexService.refreshNodeIndex(nodeIndexType, getActivity());
+	}
+
 	@Override
 	public void onLastItemVisible() {
 		NodeIndexService.getNextNodeIndexPage(nodeIndexType, getActivity());
@@ -152,7 +126,7 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment imp
 
 	@Subscribe
 	public void onNewStatusEvent(final NodeIndexStatus s) {
-		getActivity().runOnUiThread(new Runnable(){
+		getActivity().runOnUiThread(new Runnable() {
 
 			@Override
 			public void run() {
@@ -175,8 +149,16 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment imp
 					}
 				}
 			}
-			
+
 		});
+	}
+	
+	@Override
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		mAdapter.getCursor().moveToPosition(position);
+		int nid = mAdapter.getCursor().getInt(
+				mAdapter.getCursor().getColumnIndex("nid"));
+		BusProvider.getInstance().post(new NodeIndexItemClick(nid));
 	}
 
 }
