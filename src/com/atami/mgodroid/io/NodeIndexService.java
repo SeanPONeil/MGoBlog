@@ -55,7 +55,7 @@ public class NodeIndexService extends IntentService {
 
 		status = Status.RUNNING;
 		BusProvider.getInstance().post(produceStatus());
-
+		
 		try {
 			if (action.equals(GET_NEXT_PAGE)) {
 				JSONArray index;

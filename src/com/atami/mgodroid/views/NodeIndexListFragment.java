@@ -7,6 +7,7 @@ import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,20 +18,19 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockListFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.atami.mgodroid.R;
 import com.atami.mgodroid.io.NodeIndexService;
 import com.atami.mgodroid.io.StatusEvents.NodeIndexStatus;
 import com.atami.mgodroid.io.StatusEvents.Status;
 import com.atami.mgodroid.provider.NodeIndexProvider;
 import com.atami.mgodroid.util.BusProvider;
+import com.atami.mgodroid.util.SherlockPullToRefreshListFragment;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.squareup.otto.Subscribe;
 
-public class NodeIndexListFragment extends SherlockListFragment implements
-		LoaderCallbacks<Cursor>, OnScrollListener {
+public class NodeIndexListFragment extends SherlockPullToRefreshListFragment implements
+		LoaderCallbacks<Cursor>, OnScrollListener, OnRefreshListener<ListView> {
 
 	// This is the Adapter being used to display the list's data.
 	SimpleCursorAdapter mAdapter;
@@ -91,16 +91,6 @@ public class NodeIndexListFragment extends SherlockListFragment implements
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		super.onCreateView(inflater, container, savedInstanceState);
-		View mListView = inflater.inflate(R.layout.node_index_list, container,
-				false);
-		mProgressBar = (ProgressBar) mListView.findViewById(R.id.progress_bar);
-		return mListView;
-	}
-
-	@Override
 	public void onPause() {
 		super.onPause();
 		BusProvider.getInstance().unregister(this);
@@ -109,6 +99,7 @@ public class NodeIndexListFragment extends SherlockListFragment implements
 	@Override
 	public void onResume() {
 		super.onResume();
+		getPullToRefreshListView().onRefreshComplete();
 		BusProvider.getInstance().register(this);
 	}
 
@@ -118,6 +109,7 @@ public class NodeIndexListFragment extends SherlockListFragment implements
 		setHasOptionsMenu(true);
 
 		getListView().setOnScrollListener(this);
+		getPullToRefreshListView().setOnRefreshListener(this);
 
 		mAdapter = new SimpleCursorAdapter(getActivity(),
 				android.R.layout.simple_list_item_2, null, new String[] {
@@ -127,25 +119,34 @@ public class NodeIndexListFragment extends SherlockListFragment implements
 
 		getLoaderManager().initLoader(0, null, this);
 	}
-
+	
 	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		inflater.inflate(R.menu.node_index, menu);
-		super.onCreateOptionsMenu(menu, inflater);
+	public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+		getPullToRefreshListView().setLastUpdatedLabel(DateUtils.formatDateTime(getActivity(),
+				System.currentTimeMillis(), DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE
+						| DateUtils.FORMAT_ABBREV_ALL));
+
+		NodeIndexService.refreshNodeIndex(nodeIndexType, getActivity());
 	}
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.refresh:
-			NodeIndexService.refreshNodeIndex(nodeIndexType, getActivity());
-			getListView().setSelection(0);
-			break;
-		default:
-			super.onOptionsItemSelected(item);
-		}
-		return true;
-	}
+//	@Override
+//	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//		inflater.inflate(R.menu.node_index, menu);
+//		super.onCreateOptionsMenu(menu, inflater);
+//	}
+//
+//	@Override
+//	public boolean onOptionsItemSelected(MenuItem item) {
+//		switch (item.getItemId()) {
+//		case R.id.refresh:
+//			NodeIndexService.refreshNodeIndex(nodeIndexType, getActivity());
+//			getListView().setSelection(0);
+//			break;
+//		default:
+//			super.onOptionsItemSelected(item);
+//		}
+//		return true;
+//	}
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -198,16 +199,16 @@ public class NodeIndexListFragment extends SherlockListFragment implements
 				if (nodeIndexType == s.type) {
 					switch (s.code) {
 					case Status.RUNNING:
-						mProgressBar.setVisibility(View.VISIBLE);
+						getPullToRefreshListView().setRefreshing();
 						break;
 					case Status.COMPLETE:
-						mProgressBar.setVisibility(View.GONE);
+						getPullToRefreshListView().onRefreshComplete();
 						break;
 					case Status.ERROR:
 						Toast.makeText(getActivity(),
 								"Error pulling content from MGoBlog",
 								Toast.LENGTH_SHORT).show();
-						mProgressBar.setVisibility(View.GONE);
+						getPullToRefreshListView().onRefreshComplete();
 						break;
 					default:
 
