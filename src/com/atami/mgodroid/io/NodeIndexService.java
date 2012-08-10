@@ -31,6 +31,7 @@ public class NodeIndexService extends IntentService {
 
 	private int nodeIndexType;
 	private int status;
+	private String action;
 
 	public NodeIndexService() {
 		super("NodeIndexService");
@@ -45,12 +46,12 @@ public class NodeIndexService extends IntentService {
 
 	@Produce
 	public NodeIndexStatus produceStatus() {
-		return new NodeIndexStatus(nodeIndexType, status);
+		return new NodeIndexStatus(nodeIndexType, action, status);
 	}
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		String action = intent.getAction();
+		action = intent.getAction();
 		nodeIndexType = intent.getIntExtra(TYPE, -1);
 
 		status = Status.RUNNING;

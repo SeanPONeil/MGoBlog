@@ -12,10 +12,12 @@ public class StatusEvents {
 
 	public static class NodeIndexStatus extends Status {
 		public int type;
+		public String action;
 		
-		public NodeIndexStatus(int type, int code){
+		public NodeIndexStatus(int type, String action, int code){
 			this.type = type;
 			this.code = code;
+			this.action = action;
 		}
 	}
 

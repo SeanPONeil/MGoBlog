@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.atami.mgodroid.R;
 import com.atami.mgodroid.io.NodeIndexService;
 import com.atami.mgodroid.io.StatusEvents.NodeIndexStatus;
 import com.atami.mgodroid.io.StatusEvents.Status;
@@ -77,15 +78,19 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		setHasOptionsMenu(true);
-
-		getPullToRefreshListView().setOnLastItemVisibleListener(this);
-		getPullToRefreshListView().setOnRefreshListener(this);
+		
+		View footerView = getLayoutInflater(savedInstanceState).inflate(R.layout.node_index_footer, null, false);
+		footerView.setClickable(false);
+		getPullToRefreshListView().getRefreshableView().addFooterView(footerView);
 
 		mAdapter = new SimpleCursorAdapter(getActivity(),
 				android.R.layout.simple_list_item_2, null, new String[] {
 						"title", "nid" }, new int[] { android.R.id.text1,
 						android.R.id.text2 }, 0);
 		setListAdapter(mAdapter);
+		
+		getPullToRefreshListView().setOnLastItemVisibleListener(this);
+		getPullToRefreshListView().setOnRefreshListener(this);
 
 		getLoaderManager().initLoader(0, null, this);
 	}
@@ -133,16 +138,30 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 				if (nodeIndexType == s.type) {
 					switch (s.code) {
 					case Status.RUNNING:
-						getPullToRefreshListView().setRefreshing();
+						if(s.action == NodeIndexService.REFRESH)
+							getPullToRefreshListView().setRefreshing();
+						else if(s.action == NodeIndexService.GET_NEXT_PAGE){
+							//TODO
+						}
+							
 						break;
 					case Status.COMPLETE:
-						getPullToRefreshListView().onRefreshComplete();
+						if(s.action == NodeIndexService.REFRESH)
+							getPullToRefreshListView().onRefreshComplete();
+						else if(s.action == NodeIndexService.GET_NEXT_PAGE){
+							//TODO
+						}
+							
 						break;
 					case Status.ERROR:
 						Toast.makeText(getActivity(),
 								"Error pulling content from MGoBlog",
 								Toast.LENGTH_SHORT).show();
-						getPullToRefreshListView().onRefreshComplete();
+						if(s.action == NodeIndexService.REFRESH)
+							getPullToRefreshListView().onRefreshComplete();
+						else if(s.action == NodeIndexService.GET_NEXT_PAGE){
+							//TODO
+						}
 						break;
 					default:
 
