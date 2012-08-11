@@ -3,31 +3,27 @@ package com.atami.mgodroid.views;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.widget.ProgressBar;
+import android.widget.TextView;
 
-import com.atami.mgodroid.R;
-import com.atami.mgodroid.io.NodeService;
 import com.atami.mgodroid.provider.NodeProvider;
 import com.atami.mgodroid.util.BusProvider;
-import com.atami.mgodroid.util.SherlockWebViewFragment;
 
-public class NodeFragment extends SherlockWebViewFragment implements
-		LoaderCallbacks<Cursor>{
-
-	// ID of the current node
+public class NodeTitleFragment extends Fragment implements LoaderCallbacks<Cursor>{
+	
 	int nid;
+	String title;
+	String comment_count;
 	
-	String body;
+	TextView titleView;
+	TextView commentCountView;
 	
-	ProgressBar mProgressBar;
-
 	public static NodeFragment newInstance(int nid) {
 		NodeFragment f = new NodeFragment();
 
@@ -37,19 +33,30 @@ public class NodeFragment extends SherlockWebViewFragment implements
 
 		return f;
 	}
-
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		nid = getArguments().getInt("nid");
-		body = new String();
-
-		if (savedInstanceState == null) {
-			NodeService.refreshNode(nid, getActivity());
-		} else {
-		}
+		title = new String();
+		comment_count = new String();
 	}
-
+	
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		super.onCreateView(inflater, container, savedInstanceState);
+		
+		View v = inflater.inflate(android.R.layout.simple_list_item_2, null);
+		titleView = (TextView) v.findViewById(android.R.id.text1);
+		commentCountView = (TextView) v.findViewById(android.R.id.text2);
+		
+		titleView.setText(title);
+		commentCountView.setText(comment_count);
+		
+		return v;
+	}
+	
 	@Override
 	public void onPause() {
 		super.onPause();
@@ -61,22 +68,7 @@ public class NodeFragment extends SherlockWebViewFragment implements
 		super.onResume();
 		BusProvider.getInstance().register(getActivity());
 	}
-
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		super.onCreateView(inflater, container, savedInstanceState);
-		View view = inflater.inflate(R.layout.node, container, false);
-		setWebView((WebView) view.findViewById(R.id.node_webview));
-		
-		getWebView().getSettings().setJavaScriptEnabled(true);
-		getWebView().getSettings().setDefaultFontSize(14);
-		
-		getWebView().loadDataWithBaseURL(null, body, "text/html", "UTF-8",
-				null);
-		return view;
-	}
-
+	
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
@@ -98,9 +90,9 @@ public class NodeFragment extends SherlockWebViewFragment implements
 	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 		if (data.getCount() > 0) {
 			data.moveToFirst();
-			body = data.getString(data.getColumnIndex("body"));
-			getWebView().loadDataWithBaseURL(null, body, "text/html", "UTF-8",
-					null);
+			title = data.getString(data.getColumnIndex("title"));
+			comment_count = data.getString(data.getColumnIndex("comment_count"));
+			
 		} else {
 			//NodeService.refreshNode(nid, getActivity(), receiver);
 		}
@@ -108,26 +100,7 @@ public class NodeFragment extends SherlockWebViewFragment implements
 
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
-		body = null;
-	}
 
-//	@Override
-//	public void onReceiveResult(int resultCode, Bundle resultData) {
-//		switch (resultCode) {
-//		case NodeService.STATUS_RUNNING:
-//			mProgressBar.setVisibility(View.VISIBLE);
-//			break;
-//		case NodeService.STATUS_COMPLETE:
-//			mProgressBar.setVisibility(View.GONE);
-//			break;
-//		case NodeService.STATUS_ERROR:
-//			Toast.makeText(getActivity(), "Error pulling content from MGoBlog",
-//					Toast.LENGTH_SHORT).show();
-//			mProgressBar.setVisibility(View.GONE);
-//			break;
-//		default:
-//
-//		}
-//	}
+	}
 
 }
