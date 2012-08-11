@@ -83,8 +83,8 @@ public class API {
 		return new JSONObject(result);
 	}
 
-	public static JSONObject getNode(String nid, Context context)
-			throws Exception {
+	public static JSONObject getNode(int nid) throws MalformedURLException,
+			IOException, JSONException {
 
 		String url = String.format(ServiceUrls.NODE_GET_URL, nid);
 		String result = get(url);

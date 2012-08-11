@@ -3,7 +3,6 @@ package com.atami.mgodroid.views;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -12,11 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.atami.mgodroid.R;
 import com.atami.mgodroid.io.NodeService;
 import com.atami.mgodroid.provider.NodeProvider;
+import com.atami.mgodroid.util.BusProvider;
 import com.atami.mgodroid.util.SherlockWebViewFragment;
 
 public class NodeFragment extends SherlockWebViewFragment implements
@@ -24,9 +23,6 @@ public class NodeFragment extends SherlockWebViewFragment implements
 
 	// ID of the current node
 	int nid;
-
-	// Body of the node
-	String body;
 	
 	ProgressBar mProgressBar;
 
@@ -46,6 +42,7 @@ public class NodeFragment extends SherlockWebViewFragment implements
 		nid = getArguments().getInt("nid");
 
 		if (savedInstanceState == null) {
+			NodeService.refreshNode(nid, getActivity());
 		} else {
 		}
 	}
@@ -53,11 +50,13 @@ public class NodeFragment extends SherlockWebViewFragment implements
 	@Override
 	public void onPause() {
 		super.onPause();
+		BusProvider.getInstance().unregister(getActivity());
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
+		BusProvider.getInstance().register(getActivity());
 	}
 
 	@Override
@@ -84,12 +83,11 @@ public class NodeFragment extends SherlockWebViewFragment implements
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-		Uri baseUri = NodeProvider.NODES_URI;
+		Uri baseUri = NodeProvider.CONTENT_URI;
 		String where = "nid = ?";
 		String whereArgs[] = { String.valueOf(nid) };
 
-		return new CursorLoader(getActivity(), baseUri, new String[] { "title",
-				"comment_count", "created", "body", "path", "link" }, where,
+		return new CursorLoader(getActivity(), baseUri, new String[] { "body" }, where,
 				whereArgs, null);
 	}
 

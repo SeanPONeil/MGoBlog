@@ -1,5 +1,9 @@
 package com.atami.mgodroid.io;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.Iterator;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -8,72 +12,80 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.os.ResultReceiver;
-import android.util.Log;
 
+import com.atami.mgodroid.io.StatusEvents.NodeStatus;
+import com.atami.mgodroid.io.StatusEvents.Status;
 import com.atami.mgodroid.provider.NodeProvider;
+import com.atami.mgodroid.util.BusProvider;
+import com.squareup.otto.Produce;
 
 public class NodeService extends IntentService {
-	
+
 	public static final String TAG = "NodeService";
-	
+
 	public static final String NID = "nid";
-	
-	private ResultReceiver mReceiver;
-	public static String RESULT_RECEIVER = "receiver";
-	public static final int STATUS_ERROR = 0;
-	public static final int STATUS_COMPLETE = 1;
-	public static final int STATUS_RUNNING = 2;
+
+	private int nid;
+	private int status;
 
 	public NodeService() {
 		super("NodeService");
+		BusProvider.getInstance().register(this);
 	}
-	
-	private void insertNode(JSONObject node) throws JSONException{
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		BusProvider.getInstance().unregister(this);
+	}
+
+	@Produce
+	public NodeStatus produceStatus() {
+		return new NodeStatus(nid, status);
+	}
+
+	private void insertNode(JSONObject node) throws JSONException {
 		ContentResolver cr = getContentResolver();
 		ContentValues cv = new ContentValues();
-		
-		cv.put("nid", node.getString("nid"));
-		cv.put("title", node.getString("title"));
-		cv.put("comment_count", node.getString("comment_count"));
-		cv.put("created", node.getString("created"));
-		cv.put("body", node.getString("body"));
-		cv.put("path", node.getString("path"));
-		
-		//mgo.licio.us nodes have a different structure
-		if(node.has("field_link")){
-			JSONObject field_link = (JSONObject) node.get("field_link");
-			cv.put("link", field_link.getString("url"));
+
+		Iterator<?> keys = node.keys();
+
+		while (keys.hasNext()) {
+			String key = (String) keys.next();
+			cv.put(key, node.getString(key));
 		}
-		
-		cr.insert(NodeProvider.NODES_URI, cv);
+
+		cr.insert(NodeProvider.CONTENT_URI, cv);
 	}
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		String nid = intent.getAction();
-		mReceiver = intent.getParcelableExtra(RESULT_RECEIVER);
-		mReceiver.send(STATUS_RUNNING, Bundle.EMPTY);
-		Log.d(TAG, "NodeService running");
-		
+		nid = intent.getIntExtra(NID, -1);
+
+		status = Status.RUNNING;
+		BusProvider.getInstance().post(produceStatus());
+
 		try {
-			JSONObject node = API.getNode(nid, this);
+			JSONObject node = API.getNode(nid);
 			insertNode(node);
-		} catch (Exception e) {
+		} catch (MalformedURLException e) {
 			e.printStackTrace();
-			mReceiver.send(STATUS_ERROR, Bundle.EMPTY);
-		}finally{
-			Log.d(TAG, "NodeService finished");
-			mReceiver.send(STATUS_COMPLETE, Bundle.EMPTY);
+			status = Status.ERROR;
+			BusProvider.getInstance().post(produceStatus());
+		} catch (IOException e) {
+			e.printStackTrace();
+			status = Status.ERROR;
+			BusProvider.getInstance().post(produceStatus());
+		} catch (JSONException e) {
+			e.printStackTrace();
+			status = Status.ERROR;
+			BusProvider.getInstance().post(produceStatus());
 		}
 	}
-	
-	public static void refreshNode(int nid, Context context,
-			ResultReceiver receiver) {
+
+	public static void refreshNode(int nid, Context context) {
 		Intent i = new Intent(context, NodeService.class);
-		i.setAction(String.valueOf(nid));
-		i.putExtra(NodeService.RESULT_RECEIVER, receiver);
+		i.putExtra(NID, nid);
 		context.startService(i);
 	}
 

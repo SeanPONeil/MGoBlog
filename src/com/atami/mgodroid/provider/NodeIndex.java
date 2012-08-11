@@ -4,11 +4,9 @@ import it.mmo.classcontentprovider.annotations.Authority;
 import it.mmo.classcontentprovider.annotations.column.Autoincrement;
 import it.mmo.classcontentprovider.annotations.column.Column;
 import it.mmo.classcontentprovider.annotations.column.PrimaryKey;
-import it.mmo.classcontentprovider.annotations.table.MimeType;
 import it.mmo.classcontentprovider.annotations.table.Table;
 
 @Table(name = "node_indices")
-@MimeType(company = "com.atami")
 @Authority(name = "mgoblog.provider")
 public class NodeIndex {
 
