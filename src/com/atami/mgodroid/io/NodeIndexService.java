@@ -17,7 +17,7 @@ import android.database.Cursor;
 
 import com.atami.mgodroid.io.StatusEvents.NodeIndexStatus;
 import com.atami.mgodroid.io.StatusEvents.Status;
-import com.atami.mgodroid.provider.NodeIndexProvider;
+import com.atami.mgodroid.provider.MGoBlogProvider;
 import com.atami.mgodroid.util.BusProvider;
 import com.squareup.otto.Produce;
 
@@ -91,9 +91,9 @@ public class NodeIndexService extends IntentService {
 	 */
 	private void dropNodeIndex() {
 		ContentResolver cr = getContentResolver();
-		cr.delete(NodeIndexProvider.CONTENT_URI,
-				NodeIndexProvider.WHERE[nodeIndexType],
-				NodeIndexProvider.WHERE_ARGS[nodeIndexType]);
+		cr.delete(MGoBlogProvider.NODE_INDICES_CONTENT_URI,
+				MGoBlogProvider.WHERE[nodeIndexType],
+				MGoBlogProvider.WHERE_ARGS[nodeIndexType]);
 	}
 
 	/**
@@ -105,10 +105,10 @@ public class NodeIndexService extends IntentService {
 	 */
 	private int getNextPageNumber() {
 		ContentResolver cr = getContentResolver();
-		Cursor c = cr.query(NodeIndexProvider.CONTENT_URI,
+		Cursor c = cr.query(MGoBlogProvider.NODE_INDICES_CONTENT_URI,
 				new String[] { "count(*) AS count" },
-				NodeIndexProvider.WHERE[nodeIndexType],
-				NodeIndexProvider.WHERE_ARGS[nodeIndexType], null);
+				MGoBlogProvider.WHERE[nodeIndexType],
+				MGoBlogProvider.WHERE_ARGS[nodeIndexType], null);
 		c.moveToFirst();
 		return c.getInt(0) / 20;
 	}
@@ -133,7 +133,7 @@ public class NodeIndexService extends IntentService {
 				String key = (String) keys.next();
 				cv.put(key, o.getString(key));
 			}
-			cr.insert(NodeIndexProvider.CONTENT_URI, cv);
+			cr.insert(MGoBlogProvider.NODE_INDICES_CONTENT_URI, cv);
 		}
 	}
 

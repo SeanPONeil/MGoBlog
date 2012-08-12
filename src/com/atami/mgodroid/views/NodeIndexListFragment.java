@@ -15,7 +15,7 @@ import com.atami.mgodroid.R;
 import com.atami.mgodroid.io.NodeIndexService;
 import com.atami.mgodroid.io.StatusEvents.NodeIndexStatus;
 import com.atami.mgodroid.io.StatusEvents.Status;
-import com.atami.mgodroid.provider.NodeIndexProvider;
+import com.atami.mgodroid.provider.MGoBlogProvider;
 import com.atami.mgodroid.util.BusProvider;
 import com.atami.mgodroid.util.SherlockPullToRefreshListFragment;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -97,10 +97,10 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-		return new CursorLoader(getActivity(), NodeIndexProvider.CONTENT_URI,
+		return new CursorLoader(getActivity(), MGoBlogProvider.NODE_INDICES_CONTENT_URI,
 				new String[] { "_id", "title", "nid" },
-				NodeIndexProvider.WHERE[nodeIndexType],
-				NodeIndexProvider.WHERE_ARGS[nodeIndexType], null);
+				MGoBlogProvider.WHERE[nodeIndexType],
+				MGoBlogProvider.WHERE_ARGS[nodeIndexType], null);
 	}
 
 	@Override

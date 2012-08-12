@@ -32,11 +32,7 @@
         </activity>
 
         <provider
-            android:name=".provider.NodeIndexProvider"
-            android:authorities="mgoblog.provider" >
-        </provider>
-        <provider
-            android:name=".provider.NodeProvider"
+            android:name=".provider.MGoBlogProvider"
             android:authorities="mgoblog.provider" >
         </provider>
 
