@@ -7,6 +7,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -174,9 +175,9 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 	
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-		mAdapter.getCursor().moveToPosition(position);
-		int nid = mAdapter.getCursor().getInt(
-				mAdapter.getCursor().getColumnIndex("nid"));
+		Cursor c = (Cursor) l.getItemAtPosition(position);
+		int nid = c.getInt(c.getColumnIndex("nid"));
+		//String title = c.getString(c.getColumnIndex("title"));
 		BusProvider.getInstance().post(new NodeIndexItemClick(nid));
 	}
 
