@@ -7,7 +7,6 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -132,45 +131,38 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 
 	@Subscribe
 	public void onNewStatusEvent(final NodeIndexStatus s) {
-		getActivity().runOnUiThread(new Runnable() {
-
-			@Override
-			public void run() {
-				if (nodeIndexType == s.type) {
-					switch (s.code) {
-					case Status.RUNNING:
-						if(s.action == NodeIndexService.REFRESH)
-							getPullToRefreshListView().setRefreshing();
-						else if(s.action == NodeIndexService.GET_NEXT_PAGE){
-							//TODO
-						}
-							
-						break;
-					case Status.COMPLETE:
-						if(s.action == NodeIndexService.REFRESH)
-							getPullToRefreshListView().onRefreshComplete();
-						else if(s.action == NodeIndexService.GET_NEXT_PAGE){
-							//TODO
-						}
-							
-						break;
-					case Status.ERROR:
-						Toast.makeText(getActivity(),
-								"Error pulling content from MGoBlog",
-								Toast.LENGTH_SHORT).show();
-						if(s.action == NodeIndexService.REFRESH)
-							getPullToRefreshListView().onRefreshComplete();
-						else if(s.action == NodeIndexService.GET_NEXT_PAGE){
-							//TODO
-						}
-						break;
-					default:
-
-					}
+		if (nodeIndexType == s.type) {
+			switch (s.code) {
+			case Status.RUNNING:
+				if(s.action == NodeIndexService.REFRESH)
+					getPullToRefreshListView().setRefreshing();
+				else if(s.action == NodeIndexService.GET_NEXT_PAGE){
+					//TODO
 				}
-			}
+					
+				break;
+			case Status.COMPLETE:
+				if(s.action == NodeIndexService.REFRESH)
+					getPullToRefreshListView().onRefreshComplete();
+				else if(s.action == NodeIndexService.GET_NEXT_PAGE){
+					//TODO
+				}
+					
+				break;
+			case Status.ERROR:
+				Toast.makeText(getActivity(),
+						"Error pulling content from MGoBlog",
+						Toast.LENGTH_SHORT).show();
+				if(s.action == NodeIndexService.REFRESH)
+					getPullToRefreshListView().onRefreshComplete();
+				else if(s.action == NodeIndexService.GET_NEXT_PAGE){
+					//TODO
+				}
+				break;
+			default:
 
-		});
+			}
+		}
 	}
 	
 	@Override
