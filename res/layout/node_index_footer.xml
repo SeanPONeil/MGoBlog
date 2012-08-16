@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
+    android:id="@+id/nodeIndexFooter"
     android:weightSum="2" >
 
     <ProgressBar

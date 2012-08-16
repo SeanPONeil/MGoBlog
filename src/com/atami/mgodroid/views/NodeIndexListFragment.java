@@ -167,6 +167,9 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 	
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
+		if(v.getId() == R.id.nodeIndexFooter){
+			return;
+		}
 		Cursor c = (Cursor) l.getItemAtPosition(position);
 		int nid = c.getInt(c.getColumnIndex("nid"));
 		//String title = c.getString(c.getColumnIndex("title"));
