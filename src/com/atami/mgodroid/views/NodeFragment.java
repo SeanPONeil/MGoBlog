@@ -33,8 +33,6 @@ public class NodeFragment extends SherlockWebViewFragment implements
 
 	String body;
 
-	ProgressBar mProgressBar;
-
 	public static NodeFragment newInstance(int nid) {
 		NodeFragment f = new NodeFragment();
 
