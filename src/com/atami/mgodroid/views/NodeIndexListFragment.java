@@ -81,7 +81,7 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 		
 		View footerView = getLayoutInflater(savedInstanceState).inflate(R.layout.node_index_footer, null, false);
 		footerView.setClickable(false);
-		getPullToRefreshListView().getRefreshableView().addFooterView(footerView);
+		getListView().addFooterView(footerView);
 
 		mAdapter = new SimpleCursorAdapter(getActivity(),
 				android.R.layout.simple_list_item_2, null, new String[] {

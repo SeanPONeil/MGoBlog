@@ -41,5 +41,10 @@ public class SherlockPullToRefreshListFragment extends SherlockListFragment {
 	protected PullToRefreshListView getPullToRefreshListView() {
 		return mPullToRefreshListView;
 	}
+	
+	@Override
+	public ListView getListView(){
+		return mPullToRefreshListView.getRefreshableView();
+	}
 
 }
