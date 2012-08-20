@@ -16,7 +16,7 @@
      limitations under the License.
 -->
 
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="Theme.mgoblog" parent="@style/Theme.Sherlock">
         <item name="actionBarItemBackground">@drawable/selectable_background_mgoblog</item>
@@ -79,6 +79,11 @@
     
     <style name="mgoblog_ProgressBar" parent="@style/Widget.Sherlock.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/progress_horizontal_mgoblog</item>
+    </style>
+    
+    <style name="TitlePageIndicator">
+        <item name="android:background">@color/dark_blue_mgoblog</item>
+        <item name="footerColor">@color/pressed_mgoblog</item>
     </style>
 
 </resources>

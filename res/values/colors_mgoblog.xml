@@ -18,4 +18,5 @@
 
 <resources>
     <color name="pressed_mgoblog">#CCe9dd00</color>
+    <color name="dark_blue_mgoblog">#00001A</color>
 </resources>
