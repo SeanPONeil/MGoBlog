@@ -6,26 +6,33 @@ import android.os.Bundle;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
-import com.atami.mgodroid.R;
 import com.atami.mgodroid.io.NodeService;
+import com.atami.mgodroid.io.StatusEvents.NodeStatus;
+import com.atami.mgodroid.io.StatusEvents.Status;
 import com.atami.mgodroid.provider.NodeProvider;
 import com.atami.mgodroid.util.BusProvider;
 import com.atami.mgodroid.util.SherlockWebViewFragment;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.squareup.otto.Subscribe;
 
 public class NodeFragment extends SherlockWebViewFragment implements
-		LoaderCallbacks<Cursor>{
+		LoaderCallbacks<Cursor>, OnRefreshListener<WebView> {
 
 	// ID of the current node
 	int nid;
-	
+
 	String body;
-	
+
 	ProgressBar mProgressBar;
 
 	public static NodeFragment newInstance(int nid) {
@@ -45,7 +52,7 @@ public class NodeFragment extends SherlockWebViewFragment implements
 		body = new String();
 
 		if (savedInstanceState == null) {
-			NodeService.refreshNode(nid, getActivity());
+			NodeService.refreshNode(nid, getSherlockActivity());
 		} else {
 		}
 	}
@@ -53,34 +60,34 @@ public class NodeFragment extends SherlockWebViewFragment implements
 	@Override
 	public void onPause() {
 		super.onPause();
-		BusProvider.getInstance().unregister(getActivity());
+		BusProvider.getInstance().unregister(this);
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
-		BusProvider.getInstance().register(getActivity());
+		getPullToRefreshWebView().onRefreshComplete();
+		BusProvider.getInstance().register(this);
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
-		View view = inflater.inflate(R.layout.node, container, false);
-		setWebView((WebView) view.findViewById(R.id.node_webview));
-		
+
 		getWebView().getSettings().setJavaScriptEnabled(true);
 		getWebView().getSettings().setDefaultFontSize(14);
-		
-		getWebView().loadDataWithBaseURL(null, body, "text/html", "UTF-8",
-				null);
-		return view;
+
+		getWebView()
+				.loadDataWithBaseURL(null, body, "text/html", "UTF-8", null);
+		return getPullToRefreshWebView();
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		setHasOptionsMenu(true);
+		getPullToRefreshWebView().setOnRefreshListener(this);
 		getLoaderManager().initLoader(0, null, this);
 	}
 
@@ -90,8 +97,8 @@ public class NodeFragment extends SherlockWebViewFragment implements
 		String where = "nid = ?";
 		String whereArgs[] = { String.valueOf(nid) };
 
-		return new CursorLoader(getActivity(), baseUri, new String[] { "body" }, where,
-				whereArgs, null);
+		return new CursorLoader(getActivity(), baseUri,
+				new String[] { "body" }, where, whereArgs, null);
 	}
 
 	@Override
@@ -102,7 +109,7 @@ public class NodeFragment extends SherlockWebViewFragment implements
 			getWebView().loadDataWithBaseURL(null, body, "text/html", "UTF-8",
 					null);
 		} else {
-			//NodeService.refreshNode(nid, getActivity(), receiver);
+			// NodeService.refreshNode(nid, getActivity(), receiver);
 		}
 	}
 
@@ -111,23 +118,39 @@ public class NodeFragment extends SherlockWebViewFragment implements
 		body = null;
 	}
 
-//	@Override
-//	public void onReceiveResult(int resultCode, Bundle resultData) {
-//		switch (resultCode) {
-//		case NodeService.STATUS_RUNNING:
-//			mProgressBar.setVisibility(View.VISIBLE);
-//			break;
-//		case NodeService.STATUS_COMPLETE:
-//			mProgressBar.setVisibility(View.GONE);
-//			break;
-//		case NodeService.STATUS_ERROR:
-//			Toast.makeText(getActivity(), "Error pulling content from MGoBlog",
-//					Toast.LENGTH_SHORT).show();
-//			mProgressBar.setVisibility(View.GONE);
-//			break;
-//		default:
-//
-//		}
-//	}
+	@Override
+	public void onRefresh(PullToRefreshBase<WebView> refreshView) {
+		getPullToRefreshWebView().setLastUpdatedLabel(
+				DateUtils.formatDateTime(getActivity(),
+						System.currentTimeMillis(), DateUtils.FORMAT_SHOW_TIME
+								| DateUtils.FORMAT_SHOW_DATE
+								| DateUtils.FORMAT_ABBREV_ALL));
+
+		NodeService.refreshNode(nid, getSherlockActivity());
+	}
+
+	@Subscribe
+	public void onNewStatusEvent(final NodeStatus s) {
+		if (nid == s.nid) {
+			switch (s.code) {
+			case Status.RUNNING:
+				Log.d("debug", "received running event");
+				getPullToRefreshWebView().setRefreshing();
+				break;
+			case Status.COMPLETE:
+				Log.d("debug", "received complete event");
+				getPullToRefreshWebView().onRefreshComplete();
+				break;
+			case Status.ERROR:
+				Toast.makeText(getActivity(),
+						"Error pulling content from MGoBlog",
+						Toast.LENGTH_SHORT).show();
+					getPullToRefreshWebView().onRefreshComplete();
+				break;
+			default:
+
+			}
+		}
+	}
 
 }

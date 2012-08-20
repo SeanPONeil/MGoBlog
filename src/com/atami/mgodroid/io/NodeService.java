@@ -64,6 +64,14 @@ public class NodeService extends IntentService {
 
 		status = Status.RUNNING;
 		BusProvider.getInstance().post(produceStatus());
+		
+		Thread.currentThread();
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
 		try {
 			JSONObject node = API.getNode(nid);
@@ -81,6 +89,9 @@ public class NodeService extends IntentService {
 			status = Status.ERROR;
 			BusProvider.getInstance().post(produceStatus());
 		}
+		
+		status = Status.COMPLETE;
+		BusProvider.getInstance().post(produceStatus());
 	}
 
 	public static void refreshNode(int nid, Context context) {

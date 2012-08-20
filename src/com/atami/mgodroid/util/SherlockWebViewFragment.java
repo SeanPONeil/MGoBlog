@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 
 import com.actionbarsherlock.app.SherlockFragment;
+import com.handmark.pulltorefresh.library.PullToRefreshWebView;
 
 /**
  * A SherlockFragment that displays a WebView.
@@ -14,7 +15,7 @@ import com.actionbarsherlock.app.SherlockFragment;
  * The WebView is automatically paused or resumed when the Fragment is paused or resumed.
  */
 public class SherlockWebViewFragment extends SherlockFragment {
-    private WebView mWebView;
+    private PullToRefreshWebView mWebView;
     private boolean mIsWebViewAvailable;
 
     public SherlockWebViewFragment() {
@@ -27,9 +28,9 @@ public class SherlockWebViewFragment extends SherlockFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         if (mWebView != null) {
-            mWebView.destroy();
+            mWebView.getRefreshableView().destroy();
         }
-        mWebView = new WebView(getSherlockActivity());
+        mWebView = new PullToRefreshWebView(getSherlockActivity());
         mIsWebViewAvailable = true;
         return mWebView;
     }
@@ -40,7 +41,7 @@ public class SherlockWebViewFragment extends SherlockFragment {
     @Override
     public void onPause() {
         super.onPause();
-        mWebView.onPause();
+        mWebView.getRefreshableView().onPause();
     }
 
     /**
@@ -48,7 +49,7 @@ public class SherlockWebViewFragment extends SherlockFragment {
      */
     @Override
     public void onResume() {
-        mWebView.onResume();
+        mWebView.getRefreshableView().onResume();
         super.onResume();
     }
 
@@ -68,7 +69,7 @@ public class SherlockWebViewFragment extends SherlockFragment {
     @Override
     public void onDestroy() {
         if (mWebView != null) {
-            mWebView.destroy();
+            mWebView.getRefreshableView().destroy();
             mWebView = null;
         }
         super.onDestroy();
@@ -78,13 +79,17 @@ public class SherlockWebViewFragment extends SherlockFragment {
      * Gets the WebView.
      */
     public WebView getWebView() {
-        return mIsWebViewAvailable ? mWebView : null;
+        return mIsWebViewAvailable ? mWebView.getRefreshableView() : null;
+    }
+    
+    public PullToRefreshWebView getPullToRefreshWebView(){
+    	return mIsWebViewAvailable ? mWebView : null;
     }
     
     /**
      * Sets the WebView, if inflating from XML in a child class
      */
-    public void setWebView(WebView wv){
+    public void setWebView(PullToRefreshWebView wv){
     	mWebView = wv;
     }
 }

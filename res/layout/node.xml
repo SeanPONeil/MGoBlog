@@ -3,19 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <WebView
+    <com.handmark.pulltorefresh.library.PullToRefreshWebView
         android:id="@+id/node_webview"
+        xmlns:ptr="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/progress_bar" />
-
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:indeterminateOnly="true"
-        android:visibility="gone" />
+        android:layout_height="match_parent" />
 
 </RelativeLayout>
