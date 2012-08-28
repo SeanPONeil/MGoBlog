@@ -33,9 +33,11 @@
         <item name="android:actionDropDownStyle">@style/mgoblog_DropDownNav</item>
         <item name="android:actionBarStyle">@style/mgoblog_transparent_ActionBar</item>
         <item name="android:panelBackground">@drawable/menu_hardkey_panel_mgoblog</item>
+        
         <item name="android:windowBackground">@color/dark_blue_mgoblog</item>
         
         <item name="vpiTitlePageIndicatorStyle">@style/CustomTitlePageIndicator</item>
+        
     </style>
 
     <style name="mgoblog_solid_ActionBar" parent="@style/Widget.Sherlock.ActionBar.Solid">
@@ -91,7 +93,12 @@
         <item name="footerIndicatorHeight">3dp</item>
         <item name="footerIndicatorStyle">underline</item>
         <item name="android:textColor">@color/titles_mgoblog</item>
+        <item name="selectedColor">@color/titles_mgoblog</item>
         <item name="selectedBold">true</item>
+    </style>
+    
+    <style name="mgoblog_NodeIndexListView" parent="@android:style/Widget.ListView">
+        <item name="android:background">@color/light_blue_mgoblog</item>
     </style>
 
 </resources>
