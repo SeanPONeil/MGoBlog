@@ -24,15 +24,16 @@
         <item name="dropDownListViewStyle">@style/mgoblog_DropDownListView</item>
         <item name="actionBarTabStyle">@style/mgoblog_ActionBarTabStyle</item>
         <item name="actionDropDownStyle">@style/mgoblog_DropDownNav</item>
-        <item name="actionBarStyle">@style/mgoblog_solid_ActionBar</item>
+        <item name="actionBarStyle">@style/mgoblog_transparent_ActionBar</item>
 
         <item name="android:actionBarItemBackground">@drawable/selectable_background_mgoblog</item>
         <item name="android:popupMenuStyle">@style/mgoblog_PopupMenu</item>
         <item name="android:dropDownListViewStyle">@style/mgoblog_DropDownListView</item>
         <item name="android:actionBarTabStyle">@style/mgoblog_ActionBarTabStyle</item>
         <item name="android:actionDropDownStyle">@style/mgoblog_DropDownNav</item>
-        <item name="android:actionBarStyle">@style/mgoblog_solid_ActionBar</item>
+        <item name="android:actionBarStyle">@style/mgoblog_transparent_ActionBar</item>
         <item name="android:panelBackground">@drawable/menu_hardkey_panel_mgoblog</item>
+        <item name="android:windowBackground">@color/dark_blue_mgoblog</item>
     </style>
 
     <style name="mgoblog_solid_ActionBar" parent="@style/Widget.Sherlock.ActionBar.Solid">
@@ -79,11 +80,6 @@
     
     <style name="mgoblog_ProgressBar" parent="@style/Widget.Sherlock.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/progress_horizontal_mgoblog</item>
-    </style>
-    
-    <style name="TitlePageIndicator">
-        <item name="android:background">@color/dark_blue_mgoblog</item>
-        <item name="footerColor">@color/pressed_mgoblog</item>
     </style>
 
 </resources>

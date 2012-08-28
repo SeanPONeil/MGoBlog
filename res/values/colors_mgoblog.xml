@@ -17,6 +17,7 @@
 -->
 
 <resources>
-    <color name="pressed_mgoblog">#CCe9dd00</color>
-    <color name="dark_blue_mgoblog">#00001A</color>
+    <color name="pressed_mgoblog">#CCffff00</color>
+    <color name="dark_blue_mgoblog">#000022</color>
+    <color name="yellow_mgoblog">#FFFF00</color>
 </resources>
