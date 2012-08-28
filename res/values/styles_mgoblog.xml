@@ -34,6 +34,8 @@
         <item name="android:actionBarStyle">@style/mgoblog_transparent_ActionBar</item>
         <item name="android:panelBackground">@drawable/menu_hardkey_panel_mgoblog</item>
         <item name="android:windowBackground">@color/dark_blue_mgoblog</item>
+        
+        <item name="vpiTitlePageIndicatorStyle">@style/CustomTitlePageIndicator</item>
     </style>
 
     <style name="mgoblog_solid_ActionBar" parent="@style/Widget.Sherlock.ActionBar.Solid">
@@ -80,6 +82,16 @@
     
     <style name="mgoblog_ProgressBar" parent="@style/Widget.Sherlock.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/progress_horizontal_mgoblog</item>
+    </style>
+    
+    <style name="CustomTitlePageIndicator">
+        <item name="android:background">@color/dark_blue_mgoblog</item>
+        <item name="footerColor">@color/yellow_mgoblog</item>
+        <item name="footerLineHeight">1dp</item>
+        <item name="footerIndicatorHeight">3dp</item>
+        <item name="footerIndicatorStyle">underline</item>
+        <item name="android:textColor">@color/titles_mgoblog</item>
+        <item name="selectedBold">true</item>
     </style>
 
 </resources>

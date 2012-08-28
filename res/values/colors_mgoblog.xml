@@ -20,4 +20,5 @@
     <color name="pressed_mgoblog">#CCffff00</color>
     <color name="dark_blue_mgoblog">#000022</color>
     <color name="yellow_mgoblog">#FFFF00</color>
+    <color name="titles_mgoblog">#F4EFDE</color>
 </resources>
