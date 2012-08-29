@@ -2,6 +2,9 @@ package com.atami.mgodroid.io;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 
 import org.json.JSONArray;
@@ -131,7 +134,14 @@ public class NodeIndexService extends IntentService {
 
 			while (keys.hasNext()) {
 				String key = (String) keys.next();
-				cv.put(key, o.getString(key));
+				if(key.equals("created")){
+					final Calendar cal = Calendar.getInstance();
+					cal.setTimeInMillis(Long.valueOf(o.getString(key))*1000);
+					Date date = cal.getTime();
+					cv.put(key, DateFormat.getDateInstance().format(date));
+				}else{
+					cv.put(key, o.getString(key));
+				}
 			}
 			cr.insert(MGoBlogProvider.NODE_INDICES_CONTENT_URI, cv);
 		}

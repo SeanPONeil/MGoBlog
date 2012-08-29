@@ -87,7 +87,7 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 
 		mAdapter = new SimpleCursorAdapter(getActivity(),
 				android.R.layout.simple_list_item_2, null, new String[] {
-						"title", "nid" }, new int[] { android.R.id.text1,
+						"title", "created" }, new int[] { android.R.id.text1,
 						android.R.id.text2 }, 0) {
 
 			@Override
@@ -108,7 +108,7 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 		return new CursorLoader(getActivity(),
 				MGoBlogProvider.NODE_INDICES_CONTENT_URI, new String[] { "_id",
-						"title", "nid" }, MGoBlogProvider.WHERE[nodeIndexType],
+						"title", "created" }, MGoBlogProvider.WHERE[nodeIndexType],
 				MGoBlogProvider.WHERE_ARGS[nodeIndexType], null);
 	}
 
