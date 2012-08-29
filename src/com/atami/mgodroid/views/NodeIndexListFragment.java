@@ -8,6 +8,7 @@ import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.format.DateUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -78,17 +79,25 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		setHasOptionsMenu(true);
-		
-		View footerView = getLayoutInflater(savedInstanceState).inflate(R.layout.node_index_footer, null, false);
+
+		View footerView = getLayoutInflater(savedInstanceState).inflate(
+				R.layout.node_index_footer, null, false);
 		footerView.setClickable(false);
 		getListView().addFooterView(footerView);
 
 		mAdapter = new SimpleCursorAdapter(getActivity(),
 				android.R.layout.simple_list_item_2, null, new String[] {
 						"title", "nid" }, new int[] { android.R.id.text1,
-						android.R.id.text2 }, 0);
+						android.R.id.text2 }, 0) {
+
+			@Override
+			public View getView(int position, View convertView, ViewGroup parent) {
+				return super.getView(position, convertView, parent);
+			}
+
+		};
 		setListAdapter(mAdapter);
-		
+
 		getPullToRefreshListView().setOnLastItemVisibleListener(this);
 		getPullToRefreshListView().setOnRefreshListener(this);
 
@@ -97,9 +106,9 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-		return new CursorLoader(getActivity(), MGoBlogProvider.NODE_INDICES_CONTENT_URI,
-				new String[] { "_id", "title", "nid" },
-				MGoBlogProvider.WHERE[nodeIndexType],
+		return new CursorLoader(getActivity(),
+				MGoBlogProvider.NODE_INDICES_CONTENT_URI, new String[] { "_id",
+						"title", "nid" }, MGoBlogProvider.WHERE[nodeIndexType],
 				MGoBlogProvider.WHERE_ARGS[nodeIndexType], null);
 	}
 
@@ -134,29 +143,29 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 		if (nodeIndexType == s.type) {
 			switch (s.code) {
 			case Status.RUNNING:
-				if(s.action == NodeIndexService.REFRESH)
+				if (s.action == NodeIndexService.REFRESH)
 					getPullToRefreshListView().setRefreshing();
-				else if(s.action == NodeIndexService.GET_NEXT_PAGE){
-					//TODO
+				else if (s.action == NodeIndexService.GET_NEXT_PAGE) {
+					// TODO
 				}
-					
+
 				break;
 			case Status.COMPLETE:
-				if(s.action == NodeIndexService.REFRESH)
+				if (s.action == NodeIndexService.REFRESH)
 					getPullToRefreshListView().onRefreshComplete();
-				else if(s.action == NodeIndexService.GET_NEXT_PAGE){
-					//TODO
+				else if (s.action == NodeIndexService.GET_NEXT_PAGE) {
+					// TODO
 				}
-					
+
 				break;
 			case Status.ERROR:
 				Toast.makeText(getActivity(),
 						"Error pulling content from MGoBlog",
 						Toast.LENGTH_SHORT).show();
-				if(s.action == NodeIndexService.REFRESH)
+				if (s.action == NodeIndexService.REFRESH)
 					getPullToRefreshListView().onRefreshComplete();
-				else if(s.action == NodeIndexService.GET_NEXT_PAGE){
-					//TODO
+				else if (s.action == NodeIndexService.GET_NEXT_PAGE) {
+					// TODO
 				}
 				break;
 			default:
@@ -164,15 +173,15 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 			}
 		}
 	}
-	
+
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-		if(v.getId() == R.id.nodeIndexFooter){
+		if (v.getId() == R.id.nodeIndexFooter) {
 			return;
 		}
 		Cursor c = (Cursor) l.getItemAtPosition(position);
 		int nid = c.getInt(c.getColumnIndex("nid"));
-		//String title = c.getString(c.getColumnIndex("title"));
+		// String title = c.getString(c.getColumnIndex("title"));
 		BusProvider.getInstance().post(new NodeIndexItemClick(nid));
 	}
 

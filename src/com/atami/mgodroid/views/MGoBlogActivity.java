@@ -47,6 +47,9 @@ public class MGoBlogActivity extends SherlockFragmentActivity {
 		mIndicator.setViewPager(mPager);
 
 		mIsDualPane = getResources().getBoolean(R.bool.has_two_panes);
+		
+		getSupportActionBar().setTitle(R.string.app_name);
+		getSupportActionBar().setSubtitle(R.string.app_subtitle);
 	}
 	
 	@Override
@@ -67,7 +70,7 @@ public class MGoBlogActivity extends SherlockFragmentActivity {
 			NodeFragment nodeFragment = NodeFragment.newInstance(c.nid);
 			FragmentTransaction ft = getSupportFragmentManager()
 					.beginTransaction();
-			ft.add(R.id.NodeFrame, nodeFragment).commit();
+			ft.replace(R.id.NodeFrame, nodeFragment).commit();
 		} else {
 			Log.d("DEBUG", "reached non dual pane");
 			Intent intent = new Intent(this, NodeActivity.class);

@@ -18,4 +18,5 @@
     <string name="hello">Hello World, MGoBlog!</string>
     <string name="app_name">MGoBlog</string>
     <string name="footer_loading">Loading&#8230;</string>
+    <string name="app_subtitle">this love\'s for gentlemen only</string>
 </resources>

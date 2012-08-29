@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.atami.mgodroid.io.NodeService;
@@ -95,8 +94,8 @@ public class NodeFragment extends SherlockWebViewFragment implements
 		String where = "nid = ?";
 		String whereArgs[] = { String.valueOf(nid) };
 
-		return new CursorLoader(getActivity(), baseUri,
-				new String[] { "body" }, where, whereArgs, null);
+		return new CursorLoader(getActivity(), baseUri, new String[] { "body",
+				"title", "comment_count" }, where, whereArgs, null);
 	}
 
 	@Override
@@ -106,6 +105,12 @@ public class NodeFragment extends SherlockWebViewFragment implements
 			body = data.getString(data.getColumnIndex("body"));
 			getWebView().loadDataWithBaseURL(null, body, "text/html", "UTF-8",
 					null);
+
+			// Set title and comment count in action bar
+			getSherlockActivity().getSupportActionBar().setTitle(
+					data.getString(data.getColumnIndex("title")));
+			getSherlockActivity().getSupportActionBar().setSubtitle(
+					data.getString(data.getColumnIndex("comment_count")));
 		} else {
 			// NodeService.refreshNode(nid, getActivity(), receiver);
 		}
@@ -143,7 +148,7 @@ public class NodeFragment extends SherlockWebViewFragment implements
 				Toast.makeText(getActivity(),
 						"Error pulling content from MGoBlog",
 						Toast.LENGTH_SHORT).show();
-					getPullToRefreshWebView().onRefreshComplete();
+				getPullToRefreshWebView().onRefreshComplete();
 				break;
 			default:
 
