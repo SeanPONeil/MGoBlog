@@ -10,6 +10,7 @@ import android.text.format.DateUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.atami.mgodroid.R;
@@ -33,6 +34,7 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 
 	int nodeIndexType;
 
+	// Event class used to send
 	class NodeIndexItemClick {
 		int nid;
 
@@ -92,7 +94,17 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 
 			@Override
 			public View getView(int position, View convertView, ViewGroup parent) {
-				return super.getView(position, convertView, parent);
+				convertView = super.getView(position, convertView, parent);
+				Object o = convertView.getTag();
+				if(o instanceof TextView){
+					TextView title = (TextView) o;
+					title.setTextColor(getResources().getColor(R.color.titles_mgoblog));
+				}else{
+					TextView title = (TextView) convertView.findViewById(android.R.id.text1);
+					title.setTextColor(getResources().getColor(R.color.titles_mgoblog));
+					convertView.setTag(title);
+				}
+				return convertView;
 			}
 
 		};
@@ -108,7 +120,8 @@ public class NodeIndexListFragment extends SherlockPullToRefreshListFragment
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 		return new CursorLoader(getActivity(),
 				MGoBlogProvider.NODE_INDICES_CONTENT_URI, new String[] { "_id",
-						"title", "created" }, MGoBlogProvider.WHERE[nodeIndexType],
+						"nid", "title", "created" },
+				MGoBlogProvider.WHERE[nodeIndexType],
 				MGoBlogProvider.WHERE_ARGS[nodeIndexType], null);
 	}
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- File created by the Android Action Bar Style Generator
+<!--
+     File created by the Android Action Bar Style Generator
 
      Copyright (C) 2012 readyState Software Ltd
 
@@ -25,7 +26,6 @@
         <item name="actionBarTabStyle">@style/mgoblog_ActionBarTabStyle</item>
         <item name="actionDropDownStyle">@style/mgoblog_DropDownNav</item>
         <item name="actionBarStyle">@style/mgoblog_transparent_ActionBar</item>
-
         <item name="android:actionBarItemBackground">@drawable/selectable_background_mgoblog</item>
         <item name="android:popupMenuStyle">@style/mgoblog_PopupMenu</item>
         <item name="android:dropDownListViewStyle">@style/mgoblog_DropDownListView</item>
@@ -33,10 +33,13 @@
         <item name="android:actionDropDownStyle">@style/mgoblog_DropDownNav</item>
         <item name="android:actionBarStyle">@style/mgoblog_transparent_ActionBar</item>
         <item name="android:panelBackground">@drawable/menu_hardkey_panel_mgoblog</item>
-        
         <item name="android:windowBackground">@color/dark_blue_mgoblog</item>
-        
         <item name="vpiTitlePageIndicatorStyle">@style/CustomTitlePageIndicator</item>
+        
+        <!-- PullToRefresh attrs can't be put in their own style -->
+        <item name="ptrHeaderBackground">@color/dark_blue_mgoblog</item>
+        <item name="ptrAdapterViewBackground">@color/dark_blue_mgoblog</item>
+        <item name="ptrHeaderTextColor">@color/titles_mgoblog</item>
         
     </style>
 
@@ -45,7 +48,6 @@
         <item name="backgroundStacked">@drawable/ab_stacked_solid_mgoblog</item>
         <item name="backgroundSplit">@drawable/ab_bottom_solid_mgoblog</item>
         <item name="progressBarStyle">@style/mgoblog_ProgressBar</item>
-
         <item name="android:background">@drawable/ab_solid_mgoblog</item>
         <item name="android:backgroundStacked">@drawable/ab_stacked_solid_mgoblog</item>
         <item name="android:backgroundSplit">@drawable/ab_bottom_solid_mgoblog</item>
@@ -55,37 +57,34 @@
     <style name="mgoblog_transparent_ActionBar" parent="@style/Widget.Sherlock.ActionBar">
         <item name="background">@drawable/ab_transparent_mgoblog</item>
         <item name="progressBarStyle">@style/mgoblog_ProgressBar</item>
-        
         <item name="android:background">@drawable/ab_transparent_mgoblog</item>
         <item name="android:progressBarStyle">@style/mgoblog_ProgressBar</item>
     </style>
-	
-    <style name="mgoblog_PopupMenu" parent="@style/Widget.Sherlock.ListPopupWindow">	
-        <item name="android:popupBackground">@drawable/menu_dropdown_panel_mgoblog</item>	
+
+    <style name="mgoblog_PopupMenu" parent="@style/Widget.Sherlock.ListPopupWindow">
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_mgoblog</item>
     </style>
-	
+
     <style name="mgoblog_DropDownListView" parent="@style/Widget.Sherlock.ListView.DropDown">
         <item name="android:listSelector">@drawable/selectable_background_mgoblog</item>
     </style>
 
     <style name="mgoblog_ActionBarTabStyle" parent="@style/Widget.Sherlock.ActionBar.TabView">
         <item name="background">@drawable/tab_indicator_ab_mgoblog</item>
-
         <item name="android:background">@drawable/tab_indicator_ab_mgoblog</item>
     </style>
-	
+
     <style name="mgoblog_DropDownNav" parent="@style/Widget.Sherlock.Spinner.DropDown.ActionBar">
         <item name="background">@drawable/spinner_background_ab_mgoblog</item>
-
         <item name="android:background">@drawable/spinner_background_ab_mgoblog</item>
         <item name="android:popupBackground">@drawable/menu_dropdown_panel_mgoblog</item>
         <item name="android:dropDownSelector">@drawable/selectable_background_mgoblog</item>
     </style>
-    
+
     <style name="mgoblog_ProgressBar" parent="@style/Widget.Sherlock.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/progress_horizontal_mgoblog</item>
     </style>
-    
+
     <style name="CustomTitlePageIndicator">
         <item name="android:background">@color/dark_blue_mgoblog</item>
         <item name="footerColor">@color/yellow_mgoblog</item>
@@ -95,10 +94,6 @@
         <item name="android:textColor">@color/titles_mgoblog</item>
         <item name="selectedColor">@color/titles_mgoblog</item>
         <item name="selectedBold">true</item>
-    </style>
-    
-    <style name="mgoblog_NodeIndexListView" parent="@android:style/Widget.ListView">
-        <item name="android:background">@color/light_blue_mgoblog</item>
     </style>
 
 </resources>

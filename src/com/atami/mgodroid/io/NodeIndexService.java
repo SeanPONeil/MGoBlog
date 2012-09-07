@@ -3,6 +3,7 @@ package com.atami.mgodroid.io;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
@@ -17,6 +18,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.text.format.DateUtils;
 
 import com.atami.mgodroid.io.StatusEvents.NodeIndexStatus;
 import com.atami.mgodroid.io.StatusEvents.Status;
@@ -59,7 +61,7 @@ public class NodeIndexService extends IntentService {
 
 		status = Status.RUNNING;
 		BusProvider.getInstance().post(produceStatus());
-		
+
 		try {
 			if (action.equals(GET_NEXT_PAGE)) {
 				JSONArray index;
@@ -134,12 +136,10 @@ public class NodeIndexService extends IntentService {
 
 			while (keys.hasNext()) {
 				String key = (String) keys.next();
-				if(key.equals("created")){
-					final Calendar cal = Calendar.getInstance();
-					cal.setTimeInMillis(Long.valueOf(o.getString(key))*1000);
-					Date date = cal.getTime();
-					cv.put(key, DateFormat.getDateInstance().format(date));
-				}else{
+				if (key.equals("created")) {
+					String elapsed = DateUtils.getRelativeTimeSpanString(Long.valueOf(o.getString(key)) * 1000).toString();
+					cv.put(key, elapsed);
+				} else {
 					cv.put(key, o.getString(key));
 				}
 			}
