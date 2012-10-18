@@ -1,57 +1,34 @@
-# built application files
-*.apk
-*.ap_
+#Android generated
+bin
+gen
+lint.xml
 
-# files for the dex VM
-*.dex
-
-# Java class files
-*.class
-
-# generated files
-bin/
-gen/
-
-# Local configuration file (sdk path, etc)
-local.properties
-
-
-# Mac OS X related
-
-.DS_Store
-
-# Thumbnails
-._*
-
-# Files that might appear on external disk
-.Spotlight-V100
-.Trashes
-
-# Eclipse related
-
-*.pydevproject
+#Eclipse
 .project
-.metadata
-bin/**
-tmp/**
-tmp/**/*
-*.tmp
-*.bak
-*.swp
-*~.nib
-local.properties
 .classpath
-.settings/
-.loadpath
+.settings
+.checkstyle
 
-# External tool builders
-.externalToolBuilders/
+#IntelliJ IDEA
+.idea
+*.iml
+*.ipr
+*.iws
+classes
+gen-external-apklibs
 
-# Locally stored "Eclipse launch configurations"
-*.launch
+#Maven
+target
+release.properties
+pom.xml.*
 
-# CDT-specific
-.cproject
+#Ant
+build.xml
+ant.properties
+local.properties
+proguard.cfg
+proguard-project.txt
 
-# PDT-specific
-.buildpath
+#Other
+.DS_Store
+tmp
