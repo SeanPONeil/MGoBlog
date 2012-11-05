@@ -19,4 +19,14 @@
     <string name="app_name">MGoBlog</string>
     <string name="footer_loading">Loading&#8230;</string>
     <string name="app_subtitle">this love\'s for gentlemen only</string>
+
+    <string name="mgoboard_title">MGoBoard</string>
+    <string name="mgoblog_title">MGoBlog</string>
+    <string name="diaries_title">Diaries</string>
+    <string name="mgolicious_title">mgo.licio.us</string>
+
+    <string name="mgoboard_type">forum</string>
+    <string name="mgoblog_type">story</string>
+    <string name="diaries_type">blog</string>
+    <string name="mgolicious_type">link</string>
 </resources>
