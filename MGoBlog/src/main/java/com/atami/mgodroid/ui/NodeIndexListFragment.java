@@ -1,37 +1,30 @@
 package com.atami.mgodroid.ui;
 
-import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager.LoaderCallbacks;
-import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.atami.mgodroid.R;
 import com.atami.mgodroid.core.APIModule.MGoBlogAPI;
 import com.atami.mgodroid.core.NodeIndex;
-import com.atami.mgodroid.io.StatusEvents.NodeIndexStatus;
-import com.atami.mgodroid.io.StatusEvents.Status;
-import com.atami.mgodroid.util.SherlockPullToRefreshListFragment;
-import com.github.rtyley.android.sherlock.roboguice.fragment.RoboSherlockListFragment;
-import com.google.inject.Inject;
+import com.atami.mgodroid.ui.base.PullToRefreshListFragment;
+import com.github.kevinsawicki.wishlist.AsyncLoader;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleListener;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
-import roboguice.inject.InjectResource;
 
+import javax.inject.Inject;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NodeIndexListFragment extends RoboSherlockListFragment
-		implements LoaderCallbacks<List<NodeIndex>> {
+public class NodeIndexListFragment extends PullToRefreshListFragment
+        implements OnLastItemVisibleListener, OnRefreshListener<ListView>,
+        LoaderManager.LoaderCallbacks<List<NodeIndex>> {
 
     @Inject
     MGoBlogAPI api;
@@ -39,118 +32,147 @@ public class NodeIndexListFragment extends RoboSherlockListFragment
     //Type parameter used in API call
     private String typeParam;
 
-    // Whether or not we are in dual-pane mode
-    @InjectResource(R.bool.has_two_panes)
-    boolean mIsDualPane;
+    // This is the Adapter being used to display the list's data.
+    NodeIndexAdapter mAdapter;
 
-	// This is the Adapter being used to display the list's data.
-	ArrayAdapter<String> mAdapter;
+    //Constants differentiating different loading types
+    private static final int REFRESH = 1;
+    private static final int NEXT_PAGE = 2;
 
-	public static NodeIndexListFragment newInstance(String type) {
-		NodeIndexListFragment f = new NodeIndexListFragment();
+    public static NodeIndexListFragment newInstance(String type) {
+        NodeIndexListFragment f = new NodeIndexListFragment();
 
-		// Supply index input as an argument.
-		Bundle args = new Bundle();
-		args.putString("type", type);
-		f.setArguments(args);
+        Bundle args = new Bundle();
+        args.putString("type", type);
+        f.setArguments(args);
 
-		return f;
-	}
+        return f;
+    }
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		typeParam = getArguments().getString("type");
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        typeParam = getArguments().getString("type");
+    }
 
-		if (savedInstanceState == null) {
-			//NodeIndexService.refreshNodeIndex(nodeIndexType, getActivity());
-		}
-	}
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
 
-	@Override
-	public void onPause() {
-		super.onPause();
-		//BusProvider.getInstance().unregister(this);
-	}
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
 
-	@Override
-	public void onResume() {
-		super.onResume();
-		//getPullToRefreshListView().onRefreshComplete();
-		//BusProvider.getInstance().register(this);
-	}
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if (mAdapter != null) {
+            String json = new Gson().toJson(mAdapter.getNodeIndexes());
+            outState.putString("data", json);
+        }
+        super.onSaveInstanceState(outState);
+    }
 
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		setHasOptionsMenu(true);
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        getPullToRefreshListView().getRefreshableView().setDivider(getResources().getDrawable(R.drawable.list_divider));
+    }
 
-		//View footerView = getLayoutInflater(savedInstanceState).inflate(
-		//		R.layout.node_index_footer, null, false);
-		//footerView.setClickable(false);
-		//getListView().addFooterView(footerView);
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
 
-        mAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1);
+        //View footerView = getLayoutInflater(savedInstanceState).inflate(
+        //		R.layout.node_index_footer, null, false);
+        //footerView.setClickable(false);
+        //getListView().addFooterView(footerView);
 
-		setListAdapter(mAdapter);
+        if (savedInstanceState != null) {
+            String json = savedInstanceState.getString("data");
+            Type type = new TypeToken<List<NodeIndex>>() {
+            }.getType();
+            List<NodeIndex> nodeIndexes = new Gson().fromJson(json, type);
+            mAdapter = new NodeIndexAdapter(getActivity(), android.R.layout.simple_list_item_2, nodeIndexes);
+        } else {
+            mAdapter = new NodeIndexAdapter(getActivity(), android.R.layout.simple_list_item_2,
+                    new ArrayList<NodeIndex>());
+        }
 
-		//getPullToRefreshListView().setOnLastItemVisibleListener(this);
-		//getPullToRefreshListView().setOnRefreshListener(this);
+        setListAdapter(mAdapter);
 
-		getLoaderManager().initLoader(0, null, this);
-	}
+        getPullToRefreshListView().setOnLastItemVisibleListener(this);
+        getPullToRefreshListView().setOnRefreshListener(this);
 
-	@Override
-	public Loader<List<NodeIndex>> onCreateLoader(int id, Bundle args) {
+        getLoaderManager().initLoader(REFRESH, null, this);
+        if (getLoaderManager().hasRunningLoaders()) {
+            getPullToRefreshListView().setRefreshing();
+        }
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        bus.post(mAdapter.getItem(position));
+    }
+
+    @Override
+    public void onLastItemVisible() {
+        if (!getLoaderManager().hasRunningLoaders()) {
+            getLoaderManager().restartLoader(NEXT_PAGE, null, this);
+        }
+    }
+
+    @Override
+    public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+        getPullToRefreshListView().setLastUpdatedLabel(
+                DateUtils.formatDateTime(getActivity(),
+                        System.currentTimeMillis(), DateUtils.FORMAT_SHOW_TIME
+                        | DateUtils.FORMAT_SHOW_DATE
+                        | DateUtils.FORMAT_ABBREV_ALL));
+        getLoaderManager().restartLoader(REFRESH, null, this);
+    }
+
+    @Override
+    public Loader<List<NodeIndex>> onCreateLoader(final int id, Bundle bundle) {
         return new AsyncLoader<List<NodeIndex>>(getActivity()) {
             @Override
             public List<NodeIndex> loadInBackground() {
-                Log.d("test", "starting api call");
-                List<NodeIndex> l = api.getNodeIndex(typeParam, "0");
-                Log.d("test", "finished");
-                Log.d("test", l.toString());
-                return l;
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+                switch (id) {
+                    case REFRESH:
+                        return api.getNodeIndex(typeParam, "0", "0");
+                    case NEXT_PAGE:
+                        return api.getNodeIndex(typeParam, String.valueOf(mAdapter.getNodeIndexes().size() / 20), "0");
+                    default:
+                        return null;
+                }
             }
         };
-	}
+    }
 
-	@Override
-	public void onLoadFinished(Loader<List<NodeIndex>> loader, List<NodeIndex> data) {
-        for(NodeIndex node: data){
-            mAdapter.add(node.getTitle());
+    @Override
+    public void onLoadFinished(Loader<List<NodeIndex>> loader, List<NodeIndex> nodeIndexes) {
+        switch (loader.getId()) {
+            case REFRESH:
+                mAdapter.setNodeIndexes(nodeIndexes);
+                break;
+            case NEXT_PAGE:
+                List<NodeIndex> currentList = mAdapter.getNodeIndexes();
+                currentList.addAll(nodeIndexes);
+                mAdapter.setNodeIndexes(currentList);
         }
-	}
+        mAdapter.notifyDataSetChanged();
+        getPullToRefreshListView().onRefreshComplete();
+    }
 
-	@Override
-	public void onLoaderReset(Loader<List<NodeIndex>> loader) {
-		mAdapter.clear();
-	}
-
-//	@Override
-//	public void onRefresh(PullToRefreshBase<ListView> refreshView) {
-//		getPullToRefreshListView().setLastUpdatedLabel(
-//				DateUtils.formatDateTime(getActivity(),
-//						System.currentTimeMillis(), DateUtils.FORMAT_SHOW_TIME
-//								| DateUtils.FORMAT_SHOW_DATE
-//								| DateUtils.FORMAT_ABBREV_ALL));
-//
-//		NodeIndexService.refreshNodeIndex(nodeIndexType, getActivity());
-//	}
-
-//	@Override
-//	public void onLastItemVisible() {
-		//NodeIndexService.getNextNodeIndexPage(nodeIndexType, getActivity());
-//	}
-
-	@Override
-	public void onListItemClick(ListView l, View v, int position, long id) {
-		if (v.getId() == R.id.nodeIndexFooter) {
-			return;
-		}
-		Cursor c = (Cursor) l.getItemAtPosition(position);
-		int nid = c.getInt(c.getColumnIndex("nid"));
-		// String title = c.getString(c.getColumnIndex("title"));
-		//BusProvider.getInstance().post(new NodeIndexItemClick(nid));
-	}
-
+    @Override
+    public void onLoaderReset(Loader<List<NodeIndex>> loader) {
+        mAdapter.getNodeIndexes().clear();
+    }
 }

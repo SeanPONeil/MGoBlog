@@ -1,8 +1,11 @@
 package com.atami.mgodroid.core;
 
 
+import com.google.gson.Gson;
+
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 
 public class NodeIndex {
@@ -150,5 +153,10 @@ public class NodeIndex {
 
     public void setUri(String uri) {
         this.uri = uri;
+    }
+
+    public String toJSON(){
+        Gson gson = new Gson();
+        return gson.toJson(this);
     }
 }

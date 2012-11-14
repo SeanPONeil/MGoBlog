@@ -29,4 +29,10 @@
     <string name="mgoblog_type">story</string>
     <string name="diaries_type">blog</string>
     <string name="mgolicious_type">link</string>
+    
+    <string name="network_error">Unable to connect to MGoBlog</string>
+    <string name="session_expired">Session expired</string>
+    <string name="client_error">Error code: %d</string>
+    <string name="server_error">Server error: %d</string>
+    <string name="cache_error">Error reading from cache</string>
 </resources>

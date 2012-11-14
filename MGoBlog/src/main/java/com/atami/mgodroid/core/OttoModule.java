@@ -17,18 +17,30 @@ package com.atami.mgodroid.core;
 
 import android.os.Handler;
 import android.os.Looper;
-import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
+import com.atami.mgodroid.ui.MGoBlogActivity;
+import com.atami.mgodroid.ui.NodeActivity;
+import com.atami.mgodroid.ui.NodeIndexListFragment;
+import com.atami.mgodroid.ui.base.BaseActivity;
+import com.atami.mgodroid.ui.base.BaseFragment;
+import com.atami.mgodroid.ui.base.BaseListFragment;
 import com.squareup.otto.Bus;
+import dagger.Module;
+import dagger.Provides;
 
-public final class OttoModule extends AbstractModule {
+import javax.inject.Singleton;
 
-    @Override
-    protected void configure() {
-    }
+@Module(
+        entryPoints = {
+                MGoBlogActivity.class,
+                NodeIndexListFragment.class,
+                NodeActivity.class
+        }
+)
+public class OttoModule {
 
     @Provides
-    Bus bus(){
+    @Singleton
+    Bus bus() {
         return new AsyncBus();
     }
 

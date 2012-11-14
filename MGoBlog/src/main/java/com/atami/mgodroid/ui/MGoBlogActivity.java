@@ -1,66 +1,60 @@
 package com.atami.mgodroid.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
-import android.widget.FrameLayout;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.atami.mgodroid.R;
-import com.atami.mgodroid.core.APIModule.MGoBlogAPI;
-import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
-import com.google.inject.Inject;
-import com.squareup.otto.Bus;
+import com.atami.mgodroid.core.NodeIndex;
+import com.atami.mgodroid.ui.base.BaseActivity;
+import com.squareup.otto.Subscribe;
 import com.viewpagerindicator.TitlePageIndicator;
-import roboguice.inject.InjectResource;
-import roboguice.inject.InjectView;
 
-public class MGoBlogActivity extends RoboSherlockFragmentActivity {
+public class MGoBlogActivity extends BaseActivity {
 
     // Left pane
-    @InjectView(R.id.NodeIndexViewPager)
     ViewPager mPager;
-
-    @InjectView(R.id.indicator)
     TitlePageIndicator mIndicator;
 
     // Right pane
     //@InjectView(R.id.NodeFrame)
+    //@Nullable
     //FrameLayout nodeFrame;
 
-    //Action Bar
-    @InjectResource(R.string.app_name)
-    String appName;
-    @InjectResource(R.string.app_subtitle)
-    String appSubtitle;
+    // Whether or not we are in dual-pane mode
+    boolean mIsDualPane;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_layout);
-        getSupportActionBar().setTitle(appName);
-        getSupportActionBar().setSubtitle(appSubtitle);
+        getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
+        getSupportActionBar().setSubtitle(getResources().getString(R.string.app_subtitle));
+
+        mPager = (ViewPager) findViewById(R.id.NodeIndexViewPager);
+        mIndicator = (TitlePageIndicator) findViewById(R.id.indicator);
 
         mPager.setAdapter(new NodeIndexListFragmentAdapter(getResources(), getSupportFragmentManager()));
         mIndicator.setViewPager(mPager);
+
+        mIsDualPane = getResources().getBoolean(R.bool.has_two_panes);
     }
 
-//	@Subscribe
-//	public void onNodeIndexItemClick(NodeIndexItemClick c){
-//		if (mIsDualPane) {
-//			NodeFragment nodeFragment = NodeFragment.newInstance(c.nid);
-//			FragmentTransaction ft = getSupportFragmentManager()
-//					.beginTransaction();
-//			ft.replace(R.id.NodeFrame, nodeFragment).commit();
-//		} else {
-//			Log.d("DEBUG", "reached non dual pane");
-//			Intent intent = new Intent(this, NodeActivity.class);
-//			intent.putExtra("nid", c.nid);
-//			startActivity(intent);
-//		}
-//	}
+    @Subscribe
+    public void onNodeIndexItemClick(NodeIndex nodeIndex) {
+        if (mIsDualPane) {
+            NodeFragment nodeFragment = NodeFragment.newInstance(nodeIndex.getNid());
+            FragmentTransaction ft = getSupportFragmentManager()
+                    .beginTransaction();
+            ft.replace(R.id.NodeFrame, nodeFragment).commit();
+        } else {
+            Intent intent = new Intent(this, NodeActivity.class);
+            intent.putExtra("nid", nodeIndex.getNid());
+            startActivity(intent);
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

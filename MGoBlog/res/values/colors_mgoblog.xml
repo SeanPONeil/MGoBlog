@@ -17,12 +17,16 @@
 -->
 
 <resources>
-    <color name="pressed_mgoblog">#CCffff00</color>
-    <color name="dark_blue_mgoblog">#000022</color>
+    <color name="pressed_mgoblog">#CCF2CD17</color>
+    <color name="blue">#000022</color>
+    <color name="blue_alternate">#002358</color>
     <color name="light_blue_mgoblog">#000043</color>
-    <color name="yellow_mgoblog">#FFFF00</color>
+    <color name="yellow_mgoblog">#CCF2CD17</color>
     <color name="titles_mgoblog">#F4EFDE</color>
     <color name="white_mgoblog">#FFFFFF</color>
-    <color name="list_item_even_mgoblog">#DDDDFF</color>
-    <color name="list_item_odd_mgoblog">#EEEEEE</color>
+    <color name="list_item_background">#DBEBF5</color>
+    <color name="list_item_background_alternate">#CFE4F2</color>
+    <color name="list_item_start_color">#E6F1F8</color>
+    <color name="list_item_center_color">#EBF4F9</color>
+    <color name="list_item_end_color">#FFFFFF</color>
 </resources>
