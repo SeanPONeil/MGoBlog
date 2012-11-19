@@ -19,39 +19,82 @@
 <resources>
 
     <style name="Theme.mgoblog" parent="@style/Theme.Sherlock.Light.DarkActionBar">
+        <item name="actionBarItemBackground">@drawable/selectable_background_mgoblog</item>
+        <item name="popupMenuStyle">@style/mgoblog_PopupMenu</item>
+        <item name="dropDownListViewStyle">@style/mgoblog_DropDownListView</item>
+        <item name="actionBarTabStyle">@style/mgoblog_ActionBarTabStyle</item>
+        <item name="actionDropDownStyle">@style/mgoblog_DropDownNav</item>
+        <item name="actionBarStyle">@style/mgoblog_solid_ActionBar</item>
 
-        <!-- ViewPagerIndicator -->
-        <item name="vpiTitlePageIndicatorStyle">@style/CustomTitlePageIndicator</item>
-        <item name="vpiTabPageIndicatorStyle">@style/CustomTabPageIndicator</item>
+        <item name="android:actionBarItemBackground">@drawable/selectable_background_mgoblog</item>
+        <item name="android:popupMenuStyle">@style/mgoblog_PopupMenu</item>
+        <item name="android:dropDownListViewStyle">@style/mgoblog_DropDownListView</item>
+        <item name="android:actionBarTabStyle">@style/mgoblog_ActionBarTabStyle</item>
+        <item name="android:actionDropDownStyle">@style/mgoblog_DropDownNav</item>
+        <item name="android:actionBarStyle">@style/mgoblog_solid_ActionBar</item>
+        <item name="android:panelBackground">@drawable/menu_hardkey_panel_mgoblog</item>
+        
+                <!-- Light.DarkActionBar specific -->
+        <item name="actionBarWidgetTheme">@style/Theme.mgoblog.widget</item>
+        <item name="android:actionBarWidgetTheme">@style/Theme.mgoblog.widget</item>
 
         <!-- PullToRefresh attrs can't be put in their own style -->
-        <item name="ptrHeaderBackground">@color/blue</item>
-        <item name="ptrAdapterViewBackground">@color/blue</item>
-        <item name="ptrHeaderTextColor">@color/titles_mgoblog</item>
         <item name="ptrAnimationStyle">flip</item>
-
     </style>
 
-    <style name="CustomTitlePageIndicator">
-        <item name="android:background">@color/blue_alternate</item>
-        <item name="footerColor">@color/yellow_mgoblog</item>
-        <item name="footerLineHeight">2dp</item>
-        <item name="footerIndicatorHeight">4dp</item>
-        <item name="footerIndicatorStyle">underline</item>
-        <item name="android:textColor">@color/titles_mgoblog</item>
-        <item name="selectedColor">@color/titles_mgoblog</item>
-        <item name="selectedBold">true</item>
+    <style name="mgoblog_solid_ActionBar" parent="@style/Widget.Sherlock.Light.ActionBar.Solid.Inverse">
+        <item name="background">@drawable/ab_solid_mgoblog</item>
+        <item name="backgroundStacked">@drawable/ab_stacked_solid_mgoblog</item>
+        <item name="backgroundSplit">@drawable/ab_bottom_solid_mgoblog</item>
+        <item name="progressBarStyle">@style/mgoblog_ProgressBar</item>
+
+        <item name="android:background">@drawable/ab_solid_mgoblog</item>
+        <item name="android:backgroundStacked">@drawable/ab_stacked_solid_mgoblog</item>
+        <item name="android:backgroundSplit">@drawable/ab_bottom_solid_mgoblog</item>
+        <item name="android:progressBarStyle">@style/mgoblog_ProgressBar</item>
     </style>
 
-    <style name="CustomTabPageIndicator" parent="Widget.TabPageIndicator">
-        <item name="android:textColor">#FF555555</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:dividerPadding">10dp</item>
-        <item name="android:showDividers">middle</item>
-        <item name="android:paddingLeft">8dp</item>
-        <item name="android:paddingRight">8dp</item>
-        <item name="android:fadingEdge">horizontal</item>
-        <item name="android:fadingEdgeLength">8dp</item>
+    <style name="mgoblog_transparent_ActionBar" parent="@style/Widget.Sherlock.ActionBar">
+        <item name="background">@drawable/ab_transparent_mgoblog</item>
+        <item name="progressBarStyle">@style/mgoblog_ProgressBar</item>
+        
+        <item name="android:background">@drawable/ab_transparent_mgoblog</item>
+        <item name="android:progressBarStyle">@style/mgoblog_ProgressBar</item>
+    </style>
+	
+    <style name="mgoblog_PopupMenu" parent="@style/Widget.Sherlock.ListPopupWindow">	
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_mgoblog</item>	
+    </style>
+	
+    <style name="mgoblog_DropDownListView" parent="@style/Widget.Sherlock.ListView.DropDown">
+        <item name="android:listSelector">@drawable/selectable_background_mgoblog</item>
+    </style>
+
+    <style name="mgoblog_ActionBarTabStyle" parent="@style/Widget.Sherlock.ActionBar.TabView">
+        <item name="background">@drawable/tab_indicator_ab_mgoblog</item>
+
+        <item name="android:background">@drawable/tab_indicator_ab_mgoblog</item>
+    </style>
+	
+    <style name="mgoblog_DropDownNav" parent="@style/Widget.Sherlock.Spinner.DropDown.ActionBar">
+        <item name="background">@drawable/spinner_background_ab_mgoblog</item>
+
+        <item name="android:background">@drawable/spinner_background_ab_mgoblog</item>
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_mgoblog</item>
+        <item name="android:dropDownSelector">@drawable/selectable_background_mgoblog</item>
+    </style>
+    
+    <style name="mgoblog_ProgressBar" parent="@style/Widget.Sherlock.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/progress_horizontal_mgoblog</item>
+    </style>
+    
+    <!-- this style is only referenced in a Light.DarkActionBar based theme -->
+    <style name="Theme.mgoblog.widget" parent="@style/Theme.Sherlock">
+        <item name="popupMenuStyle">@style/mgoblog_PopupMenu</item>
+        <item name="dropDownListViewStyle">@style/mgoblog_DropDownListView</item>
+        
+        <item name="android:popupMenuStyle">@style/mgoblog_PopupMenu</item>
+        <item name="android:dropDownListViewStyle">@style/mgoblog_DropDownListView</item>
     </style>
 
 </resources>

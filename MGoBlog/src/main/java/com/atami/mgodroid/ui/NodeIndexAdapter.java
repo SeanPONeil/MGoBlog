@@ -64,7 +64,7 @@ public class NodeIndexAdapter extends ArrayAdapter<NodeIndex> {
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        view.setBackground(resources.getDrawable(R.drawable.list_item_gradient));
+        //view.setBackground(resources.getDrawable(R.drawable.list_item_gradient));
 
 //        if(position % 2 == 0){
 //            view.setBackground(R.drawable.list_item_gradient);
