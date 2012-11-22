@@ -1,29 +1,25 @@
-package com.atami.mgodroid.ui;
+package com.atami.mgodroid.ui.base;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.atami.mgodroid.R;
 
 import java.util.ArrayList;
 
-public class NodeIndexListFragmentAdapter extends FragmentPagerAdapter implements
-        ViewPager.OnPageChangeListener, ActionBar.TabListener {
-
+/**
+ * Base class for implementing "swipeable" Action Bar tabs.
+ */
+public class TabsAdapter extends FragmentPagerAdapter
+        implements ActionBar.TabListener, ViewPager.OnPageChangeListener {
     private final Context mContext;
     private final ActionBar mActionBar;
     private final ViewPager mViewPager;
     private final ArrayList<TabInfo> mTabs = new ArrayList<TabInfo>();
-
-    private Resources res;
 
     static final class TabInfo {
         private final Class<?> clss;
@@ -35,14 +31,13 @@ public class NodeIndexListFragmentAdapter extends FragmentPagerAdapter implement
         }
     }
 
-    public NodeIndexListFragmentAdapter(SherlockFragmentActivity activity, ViewPager pager) {
+    public TabsAdapter(SherlockFragmentActivity activity, ViewPager pager) {
         super(activity.getSupportFragmentManager());
         mContext = activity;
         mActionBar = activity.getSupportActionBar();
         mViewPager = pager;
         mViewPager.setAdapter(this);
         mViewPager.setOnPageChangeListener(this);
-        res = mContext.getResources();
     }
 
     public void addTab(ActionBar.Tab tab, Class<?> clss, Bundle args) {
@@ -54,43 +49,32 @@ public class NodeIndexListFragmentAdapter extends FragmentPagerAdapter implement
         notifyDataSetChanged();
     }
 
-    @Override
+
     public int getCount() {
         return mTabs.size();
     }
 
-    @Override
     public Fragment getItem(int position) {
         TabInfo info = mTabs.get(position);
-        switch (position) {
-            case 0:
-                return NodeIndexListFragment.newInstance(res.getString(R.string.mgoboard_type));
-            case 1:
-                return NodeIndexListFragment.newInstance(res.getString(R.string.mgoblog_type));
-            case 2:
-                return NodeIndexListFragment.newInstance(res.getString(R.string.diaries_type));
-            case 3:
-                return NodeIndexListFragment.newInstance(res.getString(R.string.mgolicious_type));
-            default:
-                return Fragment.instantiate(mContext, info.clss.getName(), info.args);
-        }
+        return Fragment.instantiate(mContext, info.clss.getName(), info.args);
     }
 
-    @Override
+
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
     }
 
-    @Override
+
     public void onPageSelected(int position) {
         mActionBar.setSelectedNavigationItem(position);
     }
 
-    @Override
+
     public void onPageScrollStateChanged(int state) {
     }
 
-    @Override
+
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+        mViewPager.setCurrentItem(tab.getPosition());
         Object tag = tab.getTag();
         for (int i = 0; i < mTabs.size(); i++) {
             if (mTabs.get(i) == tag) {
@@ -99,11 +83,24 @@ public class NodeIndexListFragmentAdapter extends FragmentPagerAdapter implement
         }
     }
 
-    @Override
     public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
     }
 
-    @Override
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
+    }
+
+    public void onTabReselected(ActionBar.Tab tab, android.app.FragmentTransaction ft) {
+    }
+
+    public void onTabSelected(ActionBar.Tab tab, android.app.FragmentTransaction ft) {
+        Object tag = tab.getTag();
+        for (int i = 0; i < mTabs.size(); i++) {
+            if (mTabs.get(i) == tag) {
+                mViewPager.setCurrentItem(i);
+            }
+        }
+    }
+
+    public void onTabUnselected(ActionBar.Tab tab, android.app.FragmentTransaction ft) {
     }
 }
