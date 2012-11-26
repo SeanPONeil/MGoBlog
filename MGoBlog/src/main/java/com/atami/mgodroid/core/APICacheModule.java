@@ -15,7 +15,7 @@ import javax.inject.Singleton;
 public class APICacheModule {
 
     @Provides @Singleton
-    NodeIndexCache provideAPICache(Bus bus, MGoBlogAPIModule.MGoBlogAPI api){
+    NodeIndexCache provideNodeIndexCache(Bus bus, MGoBlogAPIModule.MGoBlogAPI api){
         return new NodeIndexCache(bus, api);
     }
 }
