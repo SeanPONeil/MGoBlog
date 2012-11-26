@@ -84,7 +84,7 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
 
     @Override
     public void onLastItemVisible() {
-        bus.post(new NodeIndexRefreshEvent(type, String.valueOf(mAdapter.getNodeIndexes().size()/20)));
+        cache.refreshNodeIndex(type, String.valueOf(mAdapter.getNodeIndexes().size()/20));
     }
 
     @Override
@@ -94,7 +94,7 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
                         System.currentTimeMillis(), DateUtils.FORMAT_SHOW_TIME
                         | DateUtils.FORMAT_SHOW_DATE
                         | DateUtils.FORMAT_ABBREV_ALL));
-        bus.post(new NodeIndexRefreshEvent(type, "0"));
+        cache.refreshNodeIndex(type, "0");
     }
 
     @Subscribe

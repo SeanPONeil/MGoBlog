@@ -71,6 +71,32 @@ public class NodeIndexCache {
         return new NodeIndexUpdateEvent(lastUpdatedNodeIndex);
     }
 
+    public synchronized void refreshNodeIndex(final String type, final String page){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<NodeIndex> list = api.getNodeIndex(type, page, "0");
+                if (page == "0") {
+                    nodeIndexes.remove(type);
+                    nodeIndexes.put(type, list);
+                    bus.post(produceNodeIndexUpdateEvent());
+                    NodeIndex.deleteAll(type);
+                    for(NodeIndex ni: list){
+                        ni.save();
+                    }
+                }else{
+                    List<NodeIndex> currentList = nodeIndexes.get(type);
+                    currentList.addAll(list);
+                    nodeIndexes.put(type, currentList);
+                    bus.post(produceNodeIndexUpdateEvent());
+                    for(NodeIndex ni: currentList){
+                        ni.save();
+                    }
+                }
+            }
+        }).start();
+    }
+
     @Subscribe
     public void onNodeIndexRefreshEvent(final NodeIndexRefreshEvent event) {
         new Thread(new Runnable() {
