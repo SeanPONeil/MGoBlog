@@ -26,6 +26,9 @@
         <activity android:name=".ui.NodeActivity">
 
         </activity>
+
+        <meta-data android:name="AA_DB_NAME" android:value="MGoBlog.db" />
+        <meta-data android:name="AA_DB_VERSION" android:value="1" />
     </application>
 
 </manifest>

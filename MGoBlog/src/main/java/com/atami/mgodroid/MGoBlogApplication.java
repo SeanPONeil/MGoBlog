@@ -2,22 +2,28 @@ package com.atami.mgodroid;
 
 
 import android.app.Application;
-import com.atami.mgodroid.core.APIModule;
+import com.activeandroid.ActiveAndroid;
+import com.atami.mgodroid.core.APICacheModule;
+import com.atami.mgodroid.core.MGoBlogAPIModule;
 import com.atami.mgodroid.core.OttoModule;
 import dagger.ObjectGraph;
 
-public class MGoBlogApplication extends Application{
+public class MGoBlogApplication extends Application {
 
     private ObjectGraph objectGraph;
 
+    public static final String[] nodeIndexTypes = {"forum", "story", "blog", "link"};
+
     @Override
-    public void onCreate(){
+    public void onCreate() {
         super.onCreate();
 
-        objectGraph = ObjectGraph.create(new APIModule(), new OttoModule());
+        ActiveAndroid.initialize(this);
+        objectGraph = ObjectGraph.create(new MGoBlogAPIModule(), new OttoModule(), new APICacheModule());
     }
 
-    public ObjectGraph objectGraph(){
+    public ObjectGraph objectGraph() {
         return objectGraph;
     }
+
 }

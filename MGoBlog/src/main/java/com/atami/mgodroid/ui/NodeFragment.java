@@ -1,19 +1,16 @@
 package com.atami.mgodroid.ui;
 
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
-import com.atami.mgodroid.core.APIModule.MGoBlogAPI;
+import com.atami.mgodroid.core.MGoBlogAPIModule;
 import com.atami.mgodroid.core.Node;
 import com.atami.mgodroid.ui.base.WebViewFragment;
-import com.github.kevinsawicki.wishlist.AsyncLoader;
 
 import javax.inject.Inject;
 
-public class NodeFragment extends WebViewFragment implements LoaderManager.LoaderCallbacks<Node> {
+public class NodeFragment extends WebViewFragment {
 
     @Inject
-    MGoBlogAPI api;
+    MGoBlogAPIModule.MGoBlogAPI api;
 
     // ID of the current node
     int nid;
@@ -53,35 +50,5 @@ public class NodeFragment extends WebViewFragment implements LoaderManager.Loade
 
         getWebView().getSettings().setJavaScriptEnabled(true);
         getWebView().getSettings().setDefaultFontSize(14);
-
-        getLoaderManager().initLoader(0, null, this);
-    }
-
-    @Override
-    public Loader<Node> onCreateLoader(int id, Bundle bundle) {
-        return new AsyncLoader<Node>(getActivity()) {
-            @Override
-            public Node loadInBackground() {
-                try {
-                    return api.getNode(String.valueOf(nid));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-        };
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Node> loader, Node node) {
-        this.node = node;
-        getSherlockActivity().getSupportActionBar().setTitle(node.getTitle());
-        getSherlockActivity().getSupportActionBar().setSubtitle(String.valueOf(node.getComment_count()) + " comments");
-        getWebView().loadDataWithBaseURL("http://mgoblog.com/", node.getBody(), "text/html", "UTF-8", null);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Node> loader) {
-        node = null;
     }
 }

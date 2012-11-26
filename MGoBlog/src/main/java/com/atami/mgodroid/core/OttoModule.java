@@ -20,9 +20,6 @@ import android.os.Looper;
 import com.atami.mgodroid.ui.MGoBlogActivity;
 import com.atami.mgodroid.ui.NodeActivity;
 import com.atami.mgodroid.ui.NodeIndexListFragment;
-import com.atami.mgodroid.ui.base.BaseActivity;
-import com.atami.mgodroid.ui.base.BaseFragment;
-import com.atami.mgodroid.ui.base.BaseListFragment;
 import com.squareup.otto.Bus;
 import dagger.Module;
 import dagger.Provides;
@@ -33,17 +30,20 @@ import javax.inject.Singleton;
         entryPoints = {
                 MGoBlogActivity.class,
                 NodeIndexListFragment.class,
-                NodeActivity.class
+                NodeActivity.class,
+                NodeIndexCache.class
         }
 )
 public class OttoModule {
 
-    @Provides
-    @Singleton
+    @Provides @Singleton
     Bus bus() {
         return new AsyncBus();
     }
 
+    /**
+     * Otto EventBus that posts all events on the Android main thread
+     */
     private static class AsyncBus extends Bus {
         private final Handler mainThread = new Handler(Looper.getMainLooper());
 

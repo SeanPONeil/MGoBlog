@@ -74,6 +74,11 @@
             <version>1.5</version>
             <groupId>de.keyboardsurfer.android.widget</groupId>
         </dependency>
+        <dependency>
+            <artifactId>activeandroid</artifactId>
+            <version>3.1-BETA</version>
+            <groupId>com.activeandroid</groupId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

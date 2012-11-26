@@ -79,7 +79,8 @@ public class PullToRefreshListFragment extends BaseListFragment {
 	 * @return The {@link PullToRefreshListView} which will replace the
 	 *         ListView.
 	 */
-	protected PullToRefreshListView onCreatePullToRefreshListView(LayoutInflater inflater, Bundle savedInstanceState) {
+	protected PullToRefreshListView onCreatePullToRefreshListView(LayoutInflater inflater, Bundle savedInstanceState){
+        PullToRefreshListView lv = new PullToRefreshListView(getActivity());
 		return new PullToRefreshListView(getActivity());
 	}
 
