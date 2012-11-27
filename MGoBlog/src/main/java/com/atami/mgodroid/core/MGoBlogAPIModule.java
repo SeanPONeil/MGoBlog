@@ -10,6 +10,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import retrofit.http.*;
 
 import javax.inject.Named;
+import javax.inject.Singleton;
 import java.util.List;
 
 @Module(
@@ -34,7 +35,7 @@ public class MGoBlogAPIModule {
         Node getNode(@Named("nid") int nid);
     }
 
-    @Provides
+    @Provides @Singleton
     MGoBlogAPI provideMGoBlogAPI() {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setServer(new Server(API_URL))

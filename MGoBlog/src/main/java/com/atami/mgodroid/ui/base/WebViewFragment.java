@@ -37,7 +37,7 @@ public class WebViewFragment extends BaseFragment {
      */
     @Override
     public void onPause() {
-        //mWebView.onPause();
+        mWebView.onPause();
         super.onPause();
 
     }
@@ -48,7 +48,7 @@ public class WebViewFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        //mWebView.onResume();
+        mWebView.onResume();
     }
 
     /**

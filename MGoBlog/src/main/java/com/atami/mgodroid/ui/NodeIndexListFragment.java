@@ -1,5 +1,6 @@
 package com.atami.mgodroid.ui;
 
+import android.accounts.NetworkErrorException;
 import android.os.Bundle;
 import android.text.format.DateUtils;
 import android.view.View;
@@ -14,9 +15,14 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleLis
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
+import de.neofonie.mobile.app.android.widget.crouton.Crouton;
+import de.neofonie.mobile.app.android.widget.crouton.Style;
+import retrofit.http.RestException;
 
 import javax.inject.Inject;
 import java.util.List;
+
+import static retrofit.http.RestException.NetworkException;
 
 public class NodeIndexListFragment extends PullToRefreshListFragment
         implements OnLastItemVisibleListener, OnRefreshListener<ListView> {
@@ -47,6 +53,7 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         type = getArguments().getString("type");
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -58,7 +65,6 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setHasOptionsMenu(true);
 
         //View footerView = getLayoutInflater(savedInstanceState).inflate(
         //		R.layout.node_index_footer, null, false);
@@ -97,6 +103,12 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
         List<NodeIndex> list = cache.getNodeIndexes().get(type);
         mAdapter.setNodeIndexes(list);
         mAdapter.notifyDataSetChanged();
+        getPullToRefreshListView().onRefreshComplete();
+    }
+
+    @Subscribe
+    public void onNetworkError(NetworkException e){
+        Crouton.makeText(getActivity(), e.getMessage(), Style.INFO).show();
         getPullToRefreshListView().onRefreshComplete();
     }
 }
