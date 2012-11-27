@@ -7,6 +7,9 @@ import com.squareup.otto.Bus;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.TextNode;
+import org.jsoup.select.NodeTraversor;
+import org.jsoup.select.NodeVisitor;
 
 import static com.atami.mgodroid.core.MGoBlogAPIModule.MGoBlogAPI;
 
@@ -51,6 +54,7 @@ public class NodeCache {
                 }
                 node.setBody(doc.toString());
 
+                //TODO: Find plain text links and wrap them in an anchor tag
 
                 nodes.put(nid, node);
                 bus.post(new NodeUpdateEvent(node));
