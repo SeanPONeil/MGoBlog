@@ -1,13 +1,20 @@
+[![Build Status](https://secure.travis-ci.org/SeanPONeil/MGoBlog.png)](http://travis-ci.org/SeanPONeil/MGoBlog)
+
 MGoBlog
 =======
 
 MGoBlog written from the ground up to be ICS friendly
 
-Dependencies
-------------
-[ActionBarSherlock](https://github.com/JakeWharton/ActionBarSherlock)
-[Android-PullToRefresh](https://github.com/chrisbanes/Android-PullToRefresh)
-[Android-ClassContentProvider](https://github.com/SeanPONeil/Android-ClassContentProvider)
-[ViewPagerIndicator](https://github.com/JakeWharton/Android-ViewPagerIndicator/)
+Compilation
+-----------
 
-Note: this is still actively in development, so not all features have been implemented yet
+MGoBlog is built using Maven and there is a very minimal amount of setup required for compilation.
+
+Two environment variables are required which point to your Android SDK and native Android SDK. A common
+place to put these is in a `.bash_profile` file in your home directory.
+
+    export ANDROID_HOME=/path/to/android/sdk
+    export ANDROID_NDK_HOME=/path/to/android/ndk
+
+With these two environment variables loaded you can compile the modules and sample application by running
+`mvn clean install`. Each module's built artifact will be in its respective `target/` folder.
