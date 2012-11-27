@@ -8,9 +8,6 @@ import com.atami.mgodroid.ui.base.BaseActivity;
 public class NodeActivity extends BaseActivity {
 
     int nid;
-
-    ViewPager viewPager;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,9 +21,5 @@ public class NodeActivity extends BaseActivity {
         setContentView(R.layout.node_pane);
 
         nid = getIntent().getIntExtra("nid", 0);
-
-        viewPager = (ViewPager) findViewById(R.id.NodeViewPager);
-
-        viewPager.setAdapter(new NodeFragmentAdapter(getSupportFragmentManager(), nid));
     }
 }

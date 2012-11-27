@@ -5,13 +5,19 @@ import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
+import com.activeandroid.serializer.TypeSerializer;
 import com.google.gson.Gson;
+import org.joda.time.DateTime;
 
+import java.util.Date;
 import java.util.List;
+
+import static com.activeandroid.util.SQLiteUtils.SQLiteType;
 
 @Table(name = "NodeIndexes")
 public class NodeIndex extends Model {
 
+    //ActiveAndroid queries
     public static List<NodeIndex> getAll(String type) {
         return new Select()
                 .from(NodeIndex.class)
@@ -143,7 +149,7 @@ public class NodeIndex extends Model {
         return changed;
     }
 
-    public void setChanged(int changed) {
+    public void setChanged(long changed) {
         this.changed = changed;
     }
 
