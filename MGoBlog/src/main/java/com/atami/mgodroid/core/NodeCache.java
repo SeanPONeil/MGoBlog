@@ -4,11 +4,9 @@ package com.atami.mgodroid.core;
 import android.util.SparseArray;
 import com.atami.mgodroid.core.events.NodeUpdateEvent;
 import com.squareup.otto.Bus;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 import static com.atami.mgodroid.core.MGoBlogAPIModule.MGoBlogAPI;
 
@@ -28,7 +26,7 @@ public class NodeCache {
         return nodes;
     }
 
-    public NodeCache(Bus bus, MGoBlogAPI api){
+    public NodeCache(Bus bus, MGoBlogAPI api) {
         this.bus = bus;
         this.api = api;
         bus.register(this);
@@ -36,19 +34,30 @@ public class NodeCache {
         //updateNodesFromDisk();
     }
 
-    public synchronized void refreshNode(final int nid){
+    public synchronized void refreshNode(final int nid) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 Node node = api.getNode(nid);
+
+                //Add MGoBlog css before storing
+                Document doc = Jsoup.parseBodyFragment(node.getBody());
+                Element headNode = doc.head();
+                headNode.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"node_body.css\"></style>");
+
+                //Wrap video embeds in divs for CSS purposes
+                for(Element embed: doc.select("embed, iframe, object")){
+                    embed.wrap("<div class=\"video-container\"></div>");
+                }
+                node.setBody(doc.toString());
+
+
                 nodes.put(nid, node);
                 bus.post(new NodeUpdateEvent(node));
                 //node.save();
             }
         }).start();
     }
-
-
 
 
 }

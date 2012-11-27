@@ -1,6 +1,7 @@
 package com.atami.mgodroid.ui;
 
 import android.os.Bundle;
+import android.webkit.WebSettings;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -43,17 +44,18 @@ public class NodeFragment extends WebViewFragment {
         super.onActivityCreated(savedInstanceState);
 
         getWebView().getSettings().setJavaScriptEnabled(true);
-        getWebView().getSettings().setDefaultFontSize(14);
+        getWebView().getSettings().setDefaultFontSize(16);
+        getWebView().getSettings().setPluginState(WebSettings.PluginState.ON);
 
         Node node = cache.getNodes().get(nid);
         if (node != null) {
-            getWebView().loadDataWithBaseURL(null, node.getBody(), "text/html", "UTF-8", null);
+            getWebView().loadDataWithBaseURL("file:///android_asset/", node.getBody(), "text/html", "UTF-8", null);
         }
     }
 
     @Subscribe
     public void onNodeUpdate(NodeUpdateEvent event) {
-        getWebView().loadDataWithBaseURL(null, event.node.getBody(), "text/html", "UTF-8", null);
+        getWebView().loadDataWithBaseURL("file:///android_asset/", event.node.getBody(), "text/html", "UTF-8", null);
         //stop refreshing
     }
 

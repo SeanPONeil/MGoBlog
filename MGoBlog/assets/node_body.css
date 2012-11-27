@@ -1,0 +1,64 @@
+img { 
+	max-width: 100%; 
+	height: auto;
+} 
+
+blockquote {
+	border: 1px solid black;
+	background-color: #F8FFA4;
+}
+
+blockquote p {
+	margin: 3px;
+}
+
+table {
+	background-color: #EEE;
+}
+
+tbody {
+	border-top: none;
+}
+
+th {
+	font-weight: bold;
+	border-bottom: 1px solid #CCC;
+	background-color: #004;
+	color: yellow;
+	font-variant: small-caps;
+	font-family: helvetica,sans serif;
+	padding: 2px;
+}
+
+tr {
+	border-bottom: 1px solid #CCC;
+	padding: 0.1em 0.6em;
+}
+
+td {
+	border: 1px solid #CCC;
+	padding: 2px;
+	border-image: initial;
+}
+
+video {
+	max-width: 100%;
+	height: auto;
+}
+.video-container {
+	position: relative;
+	padding-bottom: 56.25%;
+	padding-top: 30px;
+	height: 0;
+	overflow: hidden;
+}
+
+.video-container iframe,
+.video-container object,
+.video-container embed {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
