@@ -28,26 +28,25 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
  * ListFragment. This implementation simply replaces the ListView that
  * ListFragment creates with a new PullToRefreshListView. This means that
  * ListFragment still works 100% (e.g. <code>setListShown(...)</code>).
- * 
+ * <p/>
  * The new PullToRefreshListView is created in the method
  * <code>onCreatePullToRefreshListView()</code>. If you wish to customise the
  * PullToRefreshListView then override this method and return your customised
  * instance.
- * 
+ *
  * @author Chris Banes
  * @author Sean O'Neil
- * 
  */
 public class PullToRefreshListFragment extends BaseListFragment {
 
-	private PullToRefreshListView mPullToRefreshListView;
+    private PullToRefreshListView mPullToRefreshListView;
 
-	@Override
-	public final View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View layout = super.onCreateView(inflater, container, savedInstanceState);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View layout = super.onCreateView(inflater, container, savedInstanceState);
 
-		ListView lv = (ListView) layout.findViewById(android.R.id.list);
-		ViewGroup parent = (ViewGroup) lv.getParent();
+        ListView lv = (ListView) layout.findViewById(android.R.id.list);
+        ViewGroup parent = (ViewGroup) lv.getParent();
 
         //Remove ListView and add PullToRefreshListView in its place
         int lvIndex = parent.indexOfChild(lv);
@@ -55,33 +54,31 @@ public class PullToRefreshListFragment extends BaseListFragment {
         mPullToRefreshListView = onCreatePullToRefreshListView(inflater, savedInstanceState);
         parent.addView(mPullToRefreshListView, lvIndex, lv.getLayoutParams());
 
-		return layout;
-	}
+        return layout;
+    }
 
-	/**
-	 * @return The {@link PullToRefreshListView} attached to this ListFragment.
-	 */
-	public final PullToRefreshListView getPullToRefreshListView() {
-		return mPullToRefreshListView;
-	}
+    /**
+     * @return The {@link PullToRefreshListView} attached to this ListFragment.
+     */
+    public final PullToRefreshListView getPullToRefreshListView() {
+        return mPullToRefreshListView;
+    }
 
-	/**
-	 * Returns the {@link PullToRefreshListView} which will replace the ListView
-	 * created from ListFragment. You should override this method if you wish to
-	 * customise the {@link PullToRefreshListView} from the default.
-	 * 
-	 * @param inflater
-	 *            - LayoutInflater which can be used to inflate from XML.
-	 * @param savedInstanceState
-	 *            - Bundle passed through from
-	 *            {@link ListFragment#onCreateView(LayoutInflater, ViewGroup, Bundle)
-	 *            onCreateView(...)}
-	 * @return The {@link PullToRefreshListView} which will replace the
-	 *         ListView.
-	 */
-	protected PullToRefreshListView onCreatePullToRefreshListView(LayoutInflater inflater, Bundle savedInstanceState){
+    /**
+     * Returns the {@link PullToRefreshListView} which will replace the ListView
+     * created from ListFragment. You should override this method if you wish to
+     * customise the {@link PullToRefreshListView} from the default.
+     *
+     * @param inflater           - LayoutInflater which can be used to inflate from XML.
+     * @param savedInstanceState - Bundle passed through from
+     *                           {@link ListFragment#onCreateView(LayoutInflater, ViewGroup, Bundle)
+     *                           onCreateView(...)}
+     * @return The {@link PullToRefreshListView} which will replace the
+     *         ListView.
+     */
+    protected PullToRefreshListView onCreatePullToRefreshListView(LayoutInflater inflater, Bundle savedInstanceState) {
         PullToRefreshListView lv = new PullToRefreshListView(getActivity());
-		return new PullToRefreshListView(getActivity());
-	}
+        return new PullToRefreshListView(getActivity());
+    }
 
 }

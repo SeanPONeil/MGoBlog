@@ -52,7 +52,7 @@ public class NodeIndexAdapter extends ArrayAdapter<NodeIndex> {
 
         if (view == null) {
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(android.R.layout.simple_list_item_2, null);
+            view = inflater.inflate(R.layout.list_item_two_line, null);
             TextView title = (TextView) view.findViewById(android.R.id.text2);
             TextView created = (TextView) view.findViewById(android.R.id.text1);
             viewHolder = new ViewHolder(title, created);

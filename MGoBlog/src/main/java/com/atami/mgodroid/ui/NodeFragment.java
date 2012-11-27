@@ -1,6 +1,7 @@
 package com.atami.mgodroid.ui;
 
 import android.content.Context;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,14 +56,18 @@ public class NodeFragment extends WebViewFragment {
         Node node = cache.getNodes().get(nid);
         if (node != null) {
             getWebView().loadDataWithBaseURL("file:///android_asset/", node.getBody(), "text/html", "UTF-8", null);
+            getWebView().setVisibility(View.VISIBLE);
             getSherlockActivity().getSupportActionBar().setTitle(node.getTitle());
             getSherlockActivity().getSupportActionBar().setSubtitle(node.getCommentCount() + " comments");
+        }else{
+            getWebView().setVisibility(View.INVISIBLE);
         }
     }
 
     @Subscribe
     public void onNodeUpdate(NodeUpdateEvent event) {
         getWebView().loadDataWithBaseURL("file:///android_asset/", event.node.getBody(), "text/html", "UTF-8", null);
+        getWebView().setVisibility(View.VISIBLE);
         getSherlockActivity().getSupportActionBar().setTitle(event.node.getTitle());
         getSherlockActivity().getSupportActionBar().setSubtitle(event.node.getCommentCount() + " comments");
         setRefreshActionItemState(false);

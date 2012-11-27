@@ -1,9 +1,13 @@
 package com.atami.mgodroid.ui;
 
-import android.accounts.NetworkErrorException;
+import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.format.DateUtils;
+import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 import com.atami.mgodroid.R;
 import com.atami.mgodroid.core.NodeIndex;
@@ -17,7 +21,6 @@ import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import de.neofonie.mobile.app.android.widget.crouton.Crouton;
 import de.neofonie.mobile.app.android.widget.crouton.Style;
-import retrofit.http.RestException;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -57,9 +60,17 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        inflater.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater.inflate(R.layout.listview, container);
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getPullToRefreshListView().getRefreshableView().setDivider(getResources().getDrawable(R.drawable.list_divider));
+        getPullToRefreshListView().getRefreshableView().setBackground(getResources().getDrawable(R.drawable
+                .screen_background_holo_light));
     }
 
     @Override
@@ -71,7 +82,7 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
         //footerView.setClickable(false);
         //getListView().addFooterView(footerView);
 
-        mAdapter = new NodeIndexAdapter(getActivity(), android.R.layout.simple_list_item_2, cache.getNodeIndexes().get(type));
+        mAdapter = new NodeIndexAdapter(getActivity(), R.layout.list_item_two_line, cache.getNodeIndexes().get(type));
         setListAdapter(mAdapter);
 
         getPullToRefreshListView().setOnLastItemVisibleListener(this);
@@ -107,7 +118,7 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
     }
 
     @Subscribe
-    public void onNetworkError(NetworkException e){
+    public void onNetworkError(NetworkException e) {
         Crouton.makeText(getActivity(), e.getMessage(), Style.INFO).show();
         getPullToRefreshListView().onRefreshComplete();
     }

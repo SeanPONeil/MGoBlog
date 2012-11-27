@@ -43,6 +43,7 @@
     <FrameLayout
         android:id="@+id/NodeFrame"
         android:layout_height="fill_parent"
+        android:layout_width="0dp"
         android:layout_weight="1" />
 
 </LinearLayout> <!-- END_INCLUDE(all) -->
