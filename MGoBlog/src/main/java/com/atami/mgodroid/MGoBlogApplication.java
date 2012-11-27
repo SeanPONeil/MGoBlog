@@ -12,8 +12,6 @@ public class MGoBlogApplication extends Application {
 
     private ObjectGraph objectGraph;
 
-    public static final String[] nodeIndexTypes = {"forum", "story", "blog", "link"};
-
     @Override
     public void onCreate() {
         super.onCreate();

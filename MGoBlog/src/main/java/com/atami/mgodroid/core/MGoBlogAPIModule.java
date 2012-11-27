@@ -16,7 +16,8 @@ import java.util.List;
         entryPoints = {
                 NodeIndexListFragment.class,
                 NodeFragment.class,
-                NodeIndexCache.class
+                NodeIndexCache.class,
+                NodeCache.class
         }
 )
 public class MGoBlogAPIModule {
@@ -30,7 +31,7 @@ public class MGoBlogAPIModule {
                                      @Named("page") String page, @Named("parameters[sticky]") String sticky);
 
         @GET("node/{nid}.json")
-        void getNode(@Named("nid") String nid, Callback<Node> callback);
+        Node getNode(@Named("nid") int nid);
     }
 
     @Provides

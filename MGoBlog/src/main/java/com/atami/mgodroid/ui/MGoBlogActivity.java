@@ -2,7 +2,6 @@ package com.atami.mgodroid.ui;
 
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
@@ -41,7 +40,7 @@ public class MGoBlogActivity extends BaseActivity implements MGoBlogConstants {
         mPager = (ViewPager) findViewById(R.id.NodeIndexViewPager);
         mAdapter = new TabsAdapter(this, mPager);
 
-        for(int i=0; i<nodeIndexCount; i++){
+        for (int i = 0; i < nodeIndexCount; i++) {
             Bundle args = new Bundle();
             args.putString("type", nodeIndexTypes[i]);
             mAdapter.addTab(bar.newTab().setText(nodeIndexTitles[i]), NodeIndexListFragment.class, args);

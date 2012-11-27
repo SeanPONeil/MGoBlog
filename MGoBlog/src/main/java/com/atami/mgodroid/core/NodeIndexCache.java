@@ -1,6 +1,7 @@
 package com.atami.mgodroid.core;
 
 import com.atami.mgodroid.MGoBlogApplication;
+import com.atami.mgodroid.MGoBlogConstants;
 import com.atami.mgodroid.core.MGoBlogAPIModule.MGoBlogAPI;
 import com.atami.mgodroid.core.events.NodeIndexUpdateEvent;
 import com.squareup.otto.Bus;
@@ -10,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class NodeIndexCache {
+public class NodeIndexCache implements MGoBlogConstants{
 
     Bus bus;
 
@@ -32,7 +33,7 @@ public class NodeIndexCache {
         this.api = api;
         bus.register(this);
         nodeIndexes = Collections.synchronizedMap(new HashMap<String, List<NodeIndex>>());
-        updateNodeIndexesFromDisk(MGoBlogApplication.nodeIndexTypes);
+        updateNodeIndexesFromDisk(nodeIndexTypes);
     }
 
     private void updateNodeIndexesFromDisk(final String[] nodeIndexTypes) {

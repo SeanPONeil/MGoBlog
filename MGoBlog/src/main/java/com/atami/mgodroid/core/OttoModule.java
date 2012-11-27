@@ -31,7 +31,8 @@ import javax.inject.Singleton;
                 MGoBlogActivity.class,
                 NodeIndexListFragment.class,
                 NodeActivity.class,
-                NodeIndexCache.class
+                NodeIndexCache.class,
+                NodeCache.class
         }
 )
 public class OttoModule {

@@ -18,8 +18,6 @@ public class NodeIndexAdapter extends ArrayAdapter<NodeIndex> {
 
     private List<NodeIndex> nodeIndexes;
 
-    private Resources resources;
-
     /**
      * Holds on to Views to avoid costly findViewById calls
      */
@@ -36,7 +34,6 @@ public class NodeIndexAdapter extends ArrayAdapter<NodeIndex> {
     public NodeIndexAdapter(Context context, int textViewResourceId, List<NodeIndex> nodeIndexes) {
         super(context, textViewResourceId, nodeIndexes);
         this.nodeIndexes = nodeIndexes;
-        resources = getContext().getResources();
     }
 
     @Override
