@@ -1,6 +1,9 @@
 package com.atami.mgodroid.ui;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.webkit.WebSettings;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -21,6 +24,8 @@ public class NodeFragment extends WebViewFragment {
 
     // ID of the current node
     int nid;
+
+    private Menu nodeMenu;
 
     public static NodeFragment newInstance(int nid) {
         NodeFragment f = new NodeFragment();
@@ -60,12 +65,30 @@ public class NodeFragment extends WebViewFragment {
         getWebView().loadDataWithBaseURL("file:///android_asset/", event.node.getBody(), "text/html", "UTF-8", null);
         getSherlockActivity().getSupportActionBar().setTitle(event.node.getTitle());
         getSherlockActivity().getSupportActionBar().setSubtitle(event.node.getCommentCount() + " comments");
-        //stop refreshing
+        setRefreshActionItemState(false);
+    }
+
+    public void setRefreshActionItemState(boolean refreshing) {
+        if (nodeMenu == null) {
+            return;
+        }
+        final MenuItem refreshItem = nodeMenu.findItem(R.id.refresh);
+        if (refreshItem != null) {
+            if (refreshing) {
+                LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context
+                        .LAYOUT_INFLATER_SERVICE);
+                View refreshView = inflater.inflate(R.layout.refresh_menu_item, null);
+                refreshItem.setActionView(refreshView);
+            } else {
+                refreshItem.setActionView(null);
+            }
+        }
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-         inflater.inflate(R.menu.node_body, menu);
+        inflater.inflate(R.menu.node_body, menu);
+        nodeMenu = menu;
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -73,6 +96,7 @@ public class NodeFragment extends WebViewFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.refresh:
+                setRefreshActionItemState(true);
                 cache.refreshNode(nid);
                 return true;
             default:
