@@ -5,9 +5,8 @@ import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.ListView;
 import com.atami.mgodroid.R;
-import com.atami.mgodroid.core.NodeIndexCache;
 import com.atami.mgodroid.core.NodeIndex;
-import com.atami.mgodroid.core.events.NodeIndexRefreshEvent;
+import com.atami.mgodroid.core.NodeIndexCache;
 import com.atami.mgodroid.core.events.NodeIndexUpdateEvent;
 import com.atami.mgodroid.ui.base.PullToRefreshListFragment;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -34,19 +33,15 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
     // This is the Adapter being used to display the list's data.
     private NodeIndexAdapter mAdapter;
 
-    //Constants differentiating different loading types
-    private static final int REFRESH = 1;
-    private static final int NEXT_PAGE = 2;
-
-    public static NodeIndexListFragment newInstance(String type) {
-        NodeIndexListFragment f = new NodeIndexListFragment();
-
-        Bundle args = new Bundle();
-        args.putString("type", type);
-        f.setArguments(args);
-
-        return f;
-    }
+//    public static NodeIndexListFragment newInstance(String type) {
+//        NodeIndexListFragment f = new NodeIndexListFragment();
+//
+//        Bundle args = new Bundle();
+//        args.putString("type", type);
+//        f.setArguments(args);
+//
+//        return f;
+//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,12 +74,12 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        bus.post(mAdapter.getItem(position));
+        bus.post(mAdapter.getItem(position - 1));
     }
 
     @Override
     public void onLastItemVisible() {
-        cache.refreshNodeIndex(type, String.valueOf(mAdapter.getNodeIndexes().size()/20));
+        cache.refreshNodeIndex(type, String.valueOf(mAdapter.getNodeIndexes().size() / 20));
     }
 
     @Override
