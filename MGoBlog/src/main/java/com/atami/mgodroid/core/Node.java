@@ -55,4 +55,12 @@ public class Node {
     public void setBody(String body) {
         this.body = body;
     }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public int getCommentCount() {
+        return comment_count;
+    }
 }
