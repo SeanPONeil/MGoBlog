@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/SeanPONeil/MGoBlog.png)](http://travis-ci.org/SeanPONeil/MGoBlog)
+
 MGoBlog
 =======
 
