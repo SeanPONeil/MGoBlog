@@ -40,7 +40,7 @@
 
         <!-- PullToRefresh attrs can't be put in their own style -->
         <item name="ptrHeaderBackground">@color/dark_blue_mgoblog</item>
-        <item name="ptrAdapterViewBackground">@color/dark_blue_mgoblog</item>
+        <item name="ptrAdapterViewBackground">@color/grey_background</item>
         <item name="ptrHeaderTextColor">@color/titles_mgoblog</item>
         <item name="ptrAnimationStyle">flip</item>
     </style>

@@ -21,5 +21,6 @@
     <color name="dark_blue_mgoblog">#000022</color>
     <color name="titles_mgoblog">#F4EFDE</color>
     <color name="background_holo_light">#fff3f3f3</color>
+    <color name="grey_background">#F3F3F3</color>
     <drawable name="screen_background_holo_light">#fff3f3f3</drawable>
 </resources>
