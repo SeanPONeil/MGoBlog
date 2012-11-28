@@ -1,10 +1,8 @@
 package com.atami.mgodroid.ui;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.format.DateUtils;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,13 +62,6 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
         inflater.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.listview, container);
         return super.onCreateView(inflater, container, savedInstanceState);
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        getPullToRefreshListView().getRefreshableView().setBackground(getResources().getDrawable(R.drawable
-                .screen_background_holo_light));
     }
 
     @Override

@@ -6,6 +6,7 @@
                  android:layout_height="wrap_content"
                  android:minHeight="?android:attr/listPreferredItemHeight"
                  android:mode="twoLine"
+                 android:background="@drawable/screen_background_holo_light"
         >
 
     <TextView android:id="@android:id/text1"
