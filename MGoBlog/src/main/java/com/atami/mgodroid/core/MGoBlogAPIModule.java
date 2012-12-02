@@ -7,7 +7,10 @@ import com.google.gson.GsonBuilder;
 import dagger.Module;
 import dagger.Provides;
 import org.apache.http.impl.client.DefaultHttpClient;
-import retrofit.http.*;
+import retrofit.http.GET;
+import retrofit.http.GsonConverter;
+import retrofit.http.RestAdapter;
+import retrofit.http.Server;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -17,7 +20,7 @@ import java.util.List;
         entryPoints = {
                 NodeIndexListFragment.class,
                 NodeFragment.class,
-                NodeIndexCache.class,
+                NodeIndexManager.class,
                 NodeCache.class
         }
 )
@@ -31,11 +34,15 @@ public class MGoBlogAPIModule {
         List<NodeIndex> getNodeIndex(@Named("parameters[type]") String type,
                                      @Named("page") String page, @Named("parameters[sticky]") String sticky);
 
+        @GET("node.json")
+        List<NodeIndex> getFrontPage(@Named("parameters[promoted]") String promoted, @Named("page") String page);
+
         @GET("node/{nid}.json")
         Node getNode(@Named("nid") int nid);
     }
 
-    @Provides @Singleton
+    @Provides
+    @Singleton
     MGoBlogAPI provideMGoBlogAPI() {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setServer(new Server(API_URL))
