@@ -20,6 +20,38 @@ public class NodeIndex extends Model {
                 .execute();
     }
 
+    public static List<NodeIndex> getBoard() {
+        return new Select()
+                .from(NodeIndex.class)
+                .where("type = forum")
+                .orderBy("created DESC")
+                .execute();
+    }
+
+    public static List<NodeIndex> getFrontPage() {
+        return new Select()
+                .from(NodeIndex.class)
+                .where("promoted = 1")
+                .orderBy("created DESC")
+                .execute();
+    }
+
+    public static List<NodeIndex> getDiaries() {
+        return new Select()
+                .from(NodeIndex.class)
+                .where("type = blog")
+                .orderBy("created DESC")
+                .execute();
+    }
+
+    public static List<NodeIndex> getLinks() {
+        return new Select()
+                .from(NodeIndex.class)
+                .where("type = link")
+                .orderBy("created DESC")
+                .execute();
+    }
+
     public static void deleteAll(String type) {
         new Delete()
                 .from(NodeIndex.class)
