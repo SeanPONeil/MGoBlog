@@ -20,7 +20,7 @@ import java.util.List;
         entryPoints = {
                 NodeIndexListFragment.class,
                 NodeFragment.class,
-                NodeIndexManager.class,
+                NodeIndexCache.class,
                 NodeCache.class
         }
 )
