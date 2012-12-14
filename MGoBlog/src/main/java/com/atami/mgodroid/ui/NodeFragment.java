@@ -52,10 +52,6 @@ public class NodeFragment extends WebViewFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        if (savedInstanceState == null) {
-            bus.post(new NodeRefreshEvent());
-        }
-
         getWebView().getSettings().setJavaScriptEnabled(true);
         getWebView().getSettings().setDefaultFontSize(16);
         getWebView().getSettings().setPluginState(WebSettings.PluginState.ON);
@@ -156,6 +152,7 @@ public class NodeFragment extends WebViewFragment {
             setRetainInstance(true);
             node = null;
             getFromDisk();
+            refresh();
         }
 
 
