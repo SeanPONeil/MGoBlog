@@ -1,13 +1,17 @@
 package com.atami.mgodroid.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.MenuItem;
@@ -144,7 +148,17 @@ public class MGoBlogActivity extends BaseActivity implements MGoBlogConstants{
         public void onViewCreated(View view, Bundle savedInstanceState) {
             super.onViewCreated(view, savedInstanceState);
 
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1);
+            getListView().setBackgroundColor(getResources().getColor(R.color.dark_blue_mgoblog));
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1){
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent) {
+                    convertView = super.getView(position, convertView, parent);
+                    TextView title = (TextView) convertView.findViewById(android.R.id.text1);
+                    title.setTextColor(getResources().getColor(R.color.titles_mgoblog));
+                    return convertView;
+                }
+            };
             for(int i=0; i < nodeIndexCount; i++) {
                 adapter.add(nodeIndexTitles[i]);
             }

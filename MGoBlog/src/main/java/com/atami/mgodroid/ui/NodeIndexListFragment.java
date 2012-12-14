@@ -99,9 +99,11 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
 
     @Subscribe
     public void onNodeIndexUpdate(NodeIndexUpdateEvent event) {
-        List<NodeIndex> list = event.nodeIndexes;
-        mAdapter.setNodeIndexes(list);
-        mAdapter.notifyDataSetChanged();
+        if(type.equals(event.type)){
+            List<NodeIndex> list = event.nodeIndexes;
+            mAdapter.setNodeIndexes(list);
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     @Subscribe
