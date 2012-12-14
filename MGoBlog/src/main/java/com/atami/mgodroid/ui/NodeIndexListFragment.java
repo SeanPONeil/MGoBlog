@@ -64,9 +64,6 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
         super.onActivityCreated(savedInstanceState);
 
         getSherlockActivity().getSupportActionBar().setTitle(title);
-        if(title.equals("MGoBlog")){
-            getSherlockActivity().getSupportActionBar().setSubtitle(R.string.app_subtitle);
-        }
 
         //View footerView = getLayoutInflater(savedInstanceState).inflate(
         //		R.layout.node_index_footer, null, false);
