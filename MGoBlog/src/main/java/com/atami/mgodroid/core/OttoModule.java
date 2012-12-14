@@ -18,7 +18,6 @@ package com.atami.mgodroid.core;
 import android.os.Handler;
 import android.os.Looper;
 import com.atami.mgodroid.ui.MGoBlogActivity;
-import com.atami.mgodroid.ui.NodeActivity;
 import com.atami.mgodroid.ui.NodeIndexListFragment;
 import com.squareup.otto.Bus;
 import dagger.Module;
@@ -26,18 +25,19 @@ import dagger.Provides;
 
 import javax.inject.Singleton;
 
+import static com.atami.mgodroid.ui.NodeIndexListFragment.NodeIndexWorkerFragment;
+
 @Module(
         entryPoints = {
                 MGoBlogActivity.class,
-                NodeIndexListFragment.class,
-                NodeActivity.class,
-                NodeIndexCache.class,
-                NodeCache.class
+                NodeIndexWorkerFragment.class,
+                NodeIndexListFragment.class
         }
 )
 public class OttoModule {
 
-    @Provides @Singleton
+    @Provides
+    @Singleton
     Bus bus() {
         return new AsyncBus();
     }

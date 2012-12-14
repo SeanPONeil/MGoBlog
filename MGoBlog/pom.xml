@@ -84,6 +84,12 @@
             <artifactId>jsoup</artifactId>
             <version>1.7.1</version>
         </dependency>
+        <dependency>
+            <groupId>net.simonvt</groupId>
+            <artifactId>android-menudrawer</artifactId>
+            <version>1.0.0</version>
+            <type>apklib</type>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

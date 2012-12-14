@@ -20,8 +20,8 @@ import javax.inject.Inject;
 
 public class NodeFragment extends WebViewFragment {
 
-    @Inject
-    NodeCache cache;
+    //@Inject
+    //NodeCache cache;
 
     // ID of the current node
     int nid;
@@ -53,7 +53,7 @@ public class NodeFragment extends WebViewFragment {
         getWebView().getSettings().setDefaultFontSize(16);
         getWebView().getSettings().setPluginState(WebSettings.PluginState.ON);
 
-        Node node = cache.getNodes().get(nid);
+        Node node = null;
         if (node != null) {
             getWebView().loadDataWithBaseURL("file:///android_asset/", node.getBody(), "text/html", "UTF-8", null);
             getWebView().setVisibility(View.VISIBLE);
@@ -102,7 +102,7 @@ public class NodeFragment extends WebViewFragment {
         switch (item.getItemId()) {
             case R.id.refresh:
                 setRefreshActionItemState(true);
-                cache.refreshNode(nid);
+                //cache.refreshNode(nid);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

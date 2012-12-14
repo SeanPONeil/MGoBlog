@@ -1,8 +1,6 @@
 package com.atami.mgodroid.core;
 
 
-import com.atami.mgodroid.ui.NodeFragment;
-import com.atami.mgodroid.ui.NodeIndexListFragment;
 import com.google.gson.GsonBuilder;
 import dagger.Module;
 import dagger.Provides;
@@ -13,15 +11,13 @@ import retrofit.http.RestAdapter;
 import retrofit.http.Server;
 
 import javax.inject.Named;
-import javax.inject.Singleton;
 import java.util.List;
+
+import static com.atami.mgodroid.ui.NodeIndexListFragment.NodeIndexWorkerFragment;
 
 @Module(
         entryPoints = {
-                NodeIndexListFragment.class,
-                NodeFragment.class,
-                NodeIndexCache.class,
-                NodeCache.class
+                NodeIndexWorkerFragment.class
         }
 )
 public class MGoBlogAPIModule {
@@ -42,7 +38,6 @@ public class MGoBlogAPIModule {
     }
 
     @Provides
-    @Singleton
     MGoBlogAPI provideMGoBlogAPI() {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setServer(new Server(API_URL))

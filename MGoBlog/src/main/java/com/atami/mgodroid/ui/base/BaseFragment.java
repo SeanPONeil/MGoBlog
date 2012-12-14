@@ -13,7 +13,7 @@ import javax.inject.Inject;
 public class BaseFragment extends SherlockFragment {
 
     @Inject
-    Bus bus;
+    protected Bus bus;
 
     @Override
     public void onCreate(Bundle state) {
