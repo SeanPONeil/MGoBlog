@@ -3,12 +3,21 @@ package com.atami.mgodroid.core;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Select;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 @Table(name = "nodes")
 public class Node extends Model{
+
+    public static Node get(int nid) {
+        return new Select()
+                .from(Node.class)
+                .where("nid = ?", nid)
+                .executeSingle();
+    }
 
     public class Taxonomy {
 

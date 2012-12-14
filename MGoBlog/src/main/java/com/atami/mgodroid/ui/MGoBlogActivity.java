@@ -43,10 +43,6 @@ public class MGoBlogActivity extends BaseActivity implements MGoBlogConstants{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_layout);
 
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-            getSupportActionBar().setSubtitle(R.string.app_subtitle);
-        }
-
         if(savedInstanceState == null){
             Fragment nodeIndex = NodeIndexListFragment.newInstance(nodeIndexTitles[1], nodeIndexTypes[1]);
             Fragment nodeIndexWorker = NodeIndexListFragment.WorkerFragment.newInstance(nodeIndexTypes[1]);
@@ -83,6 +79,14 @@ public class MGoBlogActivity extends BaseActivity implements MGoBlogConstants{
         });
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            getSupportActionBar().setSubtitle(R.string.app_subtitle);
+        }
     }
 
     @Subscribe

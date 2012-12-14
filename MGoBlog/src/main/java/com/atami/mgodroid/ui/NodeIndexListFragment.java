@@ -134,7 +134,7 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
 
     public static class WorkerFragment extends BaseFragment {
 
-        public static final String TAG = "WorkerFragment";
+        public static final String TAG = NodeIndexListFragment.class.getName() + "WorkerFragment";
 
         @Inject
         MGoBlogAPIModule.MGoBlogAPI api;
@@ -165,30 +165,26 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
             getFromDisk();
         }
 
-        public void changeType(String type){
-            this.type = type;
-            getFromDisk();
-        }
-
-        private void getFromDisk(){
+        private void getFromDisk() {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     nodeIndexes = NodeIndex.getAll(type);
                     bus.post(produceNodeIndexes());
-                    if(nodeIndexes.isEmpty()){
+                    if (nodeIndexes.isEmpty()) {
                         refresh();
                     }
                 }
             }).start();
         }
 
-        private void refresh(){
+        private void refresh() {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
                         refreshing = true;
+                        bus.post(produceStatus());
                         List<NodeIndex> list = api.getNodeIndex(type, "0", "0");
                         NodeIndex.deleteAll(type);
                         nodeIndexes = list;
@@ -207,12 +203,13 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
             }).start();
         }
 
-        private void getNextPage(){
+        private void getNextPage() {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
                         gettingNextPage = true;
+                        bus.post(produceStatus());
                         List<NodeIndex> list = api.getNodeIndex(type, String.valueOf(nodeIndexes.size() / 20), "0");
                         nodeIndexes.addAll(list);
                         bus.post(produceNodeIndexes());
@@ -233,14 +230,14 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
 
         @Subscribe
         public void onNodeIndexRefresh(NodeIndexRefreshEvent event) {
-            if(!refreshing){
+            if (!refreshing) {
                 refresh();
             }
         }
 
         @Subscribe
         public void onNodeIndexNextPageEvent(NodeIndexNextPageEvent event) {
-            if(!gettingNextPage){
+            if (!gettingNextPage) {
                 getNextPage();
             }
         }

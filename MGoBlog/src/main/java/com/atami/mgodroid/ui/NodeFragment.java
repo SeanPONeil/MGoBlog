@@ -1,7 +1,6 @@
 package com.atami.mgodroid.ui;
 
 import android.content.Context;
-import android.opengl.Visibility;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,18 +9,22 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.atami.mgodroid.R;
+import com.atami.mgodroid.core.MGoBlogAPIModule;
 import com.atami.mgodroid.core.Node;
-import com.atami.mgodroid.core.NodeCache;
+import com.atami.mgodroid.core.events.NodeRefreshEvent;
+import com.atami.mgodroid.core.events.NodeStatusEvent;
 import com.atami.mgodroid.core.events.NodeUpdateEvent;
+import com.atami.mgodroid.ui.base.BaseFragment;
 import com.atami.mgodroid.ui.base.WebViewFragment;
+import com.squareup.otto.Produce;
 import com.squareup.otto.Subscribe;
+import de.neofonie.mobile.app.android.widget.crouton.Crouton;
+import de.neofonie.mobile.app.android.widget.crouton.Style;
+import retrofit.http.RestException;
 
 import javax.inject.Inject;
 
 public class NodeFragment extends WebViewFragment {
-
-    //@Inject
-    //NodeCache cache;
 
     // ID of the current node
     int nid;
@@ -59,17 +62,34 @@ public class NodeFragment extends WebViewFragment {
             getWebView().setVisibility(View.VISIBLE);
             getSherlockActivity().getSupportActionBar().setTitle(node.getTitle());
             getSherlockActivity().getSupportActionBar().setSubtitle(node.getCommentCount() + " comments");
-        }else{
+        } else {
             getWebView().setVisibility(View.INVISIBLE);
         }
     }
 
     @Subscribe
     public void onNodeUpdate(NodeUpdateEvent event) {
-        getWebView().loadDataWithBaseURL("file:///android_asset/", event.node.getBody(), "text/html", "UTF-8", null);
-        getWebView().setVisibility(View.VISIBLE);
-        getSherlockActivity().getSupportActionBar().setTitle(event.node.getTitle());
-        getSherlockActivity().getSupportActionBar().setSubtitle(event.node.getCommentCount() + " comments");
+        if(event.node != null){
+            getWebView().loadDataWithBaseURL("file:///android_asset/", event.node.getBody(), "text/html", "UTF-8", null);
+            getWebView().setVisibility(View.VISIBLE);
+            getSherlockActivity().getSupportActionBar().setTitle(event.node.getTitle());
+            getSherlockActivity().getSupportActionBar().setSubtitle(event.node.getCommentCount() + " comments");
+            setRefreshActionItemState(false);
+        }
+    }
+
+    @Subscribe
+    public void onNodeStatusUpdate(NodeStatusEvent event){
+        if(event.refreshing){
+            setRefreshActionItemState(true);
+        }else{
+            setRefreshActionItemState(false);
+        }
+    }
+
+    @Subscribe
+    public void onNetworkError(RestException.NetworkException e) {
+        Crouton.makeText(getActivity(), e.getMessage(), Style.INFO).show();
         setRefreshActionItemState(false);
     }
 
@@ -102,10 +122,99 @@ public class NodeFragment extends WebViewFragment {
         switch (item.getItemId()) {
             case R.id.refresh:
                 setRefreshActionItemState(true);
-                //cache.refreshNode(nid);
+                bus.post(new NodeRefreshEvent());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public static class WorkerFragment extends BaseFragment {
+
+        public static final String TAG = NodeFragment.class.getName() + "WorkerFragment";
+
+        @Inject
+        MGoBlogAPIModule.MGoBlogAPI api;
+
+        int nid;
+
+        Node node;
+
+        boolean refreshing = false;
+
+        public static WorkerFragment newInstance(int nid) {
+            WorkerFragment f = new WorkerFragment();
+
+            Bundle args = new Bundle();
+            args.putInt("nid", nid);
+            f.setArguments(args);
+
+            return f;
+        }
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            nid = getArguments().getInt("nid");
+            setRetainInstance(true);
+            node = null;
+            getFromDisk();
+        }
+
+
+        private void getFromDisk() {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    node = Node.get(nid);
+                    bus.post(produceNode());
+                    if (node == null) {
+                        refresh();
+                    }
+                }
+            }).start();
+        }
+
+        private void refresh() {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        refreshing = true;
+                        bus.post(produceStatus());
+                        Node newNode = api.getNode(nid);
+                        if(node != null){
+                            node.delete();
+                        }
+                        node = newNode;
+                        bus.post(produceNode());
+                        node.save();
+                    } catch (RestException.NetworkException e) {
+                        e.printStackTrace();
+                        bus.post(e);
+                    } finally {
+                        refreshing = false;
+                        bus.post(produceStatus());
+                    }
+                }
+            }).start();
+        }
+
+        @Subscribe
+        public void onNodeRefresh(NodeRefreshEvent event) {
+            if (!refreshing) {
+                refresh();
+            }
+        }
+
+        @Produce
+        public NodeUpdateEvent produceNode() {
+            return new NodeUpdateEvent(node);
+        }
+
+        @Produce
+        public NodeStatusEvent produceStatus() {
+            return new NodeStatusEvent(refreshing);
         }
     }
 }

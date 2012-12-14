@@ -1,6 +1,7 @@
 package com.atami.mgodroid.core;
 
 
+import com.atami.mgodroid.ui.NodeFragment;
 import com.atami.mgodroid.ui.NodeIndexListFragment;
 import com.google.gson.GsonBuilder;
 import dagger.Module;
@@ -16,7 +17,8 @@ import java.util.List;
 
 @Module(
         entryPoints = {
-                NodeIndexListFragment.WorkerFragment.class
+                NodeIndexListFragment.WorkerFragment.class,
+                NodeFragment.WorkerFragment.class
         }
 )
 public class MGoBlogAPIModule {

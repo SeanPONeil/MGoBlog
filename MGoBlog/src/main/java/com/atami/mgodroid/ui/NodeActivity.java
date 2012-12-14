@@ -2,6 +2,7 @@ package com.atami.mgodroid.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import com.actionbarsherlock.view.MenuItem;
 import com.atami.mgodroid.R;
 import com.atami.mgodroid.ui.base.BaseActivity;
@@ -23,9 +24,13 @@ public class NodeActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.node_pane);
 
-        nid = getIntent().getIntExtra("nid", 0);
-        NodeFragment nf = NodeFragment.newInstance(nid);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_pane, nf).commit();
+        if(savedInstanceState == null){
+            nid = getIntent().getIntExtra("nid", 0);
+            Fragment nf = NodeFragment.newInstance(nid);
+            Fragment worker = NodeFragment.WorkerFragment.newInstance(nid);
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_pane, nf).add(worker,
+                    NodeFragment.WorkerFragment.TAG).commit();
+        }
     }
 
     @Override
