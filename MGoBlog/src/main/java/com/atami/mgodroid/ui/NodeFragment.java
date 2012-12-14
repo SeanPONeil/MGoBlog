@@ -8,7 +8,6 @@ import android.webkit.WebSettings;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.activeandroid.util.Log;
 import com.atami.mgodroid.R;
 import com.atami.mgodroid.core.MGoBlogAPIModule;
 import com.atami.mgodroid.core.Node;
@@ -71,7 +70,8 @@ public class NodeFragment extends WebViewFragment {
             getWebView().loadDataWithBaseURL("file:///android_asset/", event.node.getBody(), "text/html", "UTF-8", null);
             getWebView().setVisibility(View.VISIBLE);
             getSherlockActivity().getSupportActionBar().setTitle(event.node.getTitle());
-            getSherlockActivity().getSupportActionBar().setSubtitle(event.node.getCommentCount() + " comments");
+            getSherlockActivity().getSupportActionBar().setSubtitle("By " + event.node.getName() + " - " + event.node
+                    .getCommentCount() + " " + "comments");
         }
     }
 

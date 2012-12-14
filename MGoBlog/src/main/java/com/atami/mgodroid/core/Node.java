@@ -8,7 +8,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import java.util.Arrays;
 import java.util.Map;
 
 @Table(name = "nodes")
@@ -162,6 +161,14 @@ public class Node extends Model {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getTitle() {
