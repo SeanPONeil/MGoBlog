@@ -52,24 +52,19 @@ public class NodeFragment extends WebViewFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        if (savedInstanceState == null) {
+            bus.post(new NodeRefreshEvent());
+        }
+
         getWebView().getSettings().setJavaScriptEnabled(true);
         getWebView().getSettings().setDefaultFontSize(16);
         getWebView().getSettings().setPluginState(WebSettings.PluginState.ON);
-
-        Node node = null;
-        if (node != null) {
-            getWebView().loadDataWithBaseURL("file:///android_asset/", node.getBody(), "text/html", "UTF-8", null);
-            getWebView().setVisibility(View.VISIBLE);
-            getSherlockActivity().getSupportActionBar().setTitle(node.getTitle());
-            getSherlockActivity().getSupportActionBar().setSubtitle(node.getCommentCount() + " comments");
-        } else {
-            getWebView().setVisibility(View.INVISIBLE);
-        }
+        getWebView().setVisibility(View.INVISIBLE);
     }
 
     @Subscribe
     public void onNodeUpdate(NodeUpdateEvent event) {
-        if(event.node != null){
+        if (event.node != null) {
             getWebView().loadDataWithBaseURL("file:///android_asset/", event.node.getBody(), "text/html", "UTF-8", null);
             getWebView().setVisibility(View.VISIBLE);
             getSherlockActivity().getSupportActionBar().setTitle(event.node.getTitle());
@@ -79,10 +74,10 @@ public class NodeFragment extends WebViewFragment {
     }
 
     @Subscribe
-    public void onNodeStatusUpdate(NodeStatusEvent event){
-        if(event.refreshing){
+    public void onNodeStatusUpdate(NodeStatusEvent event) {
+        if (event.refreshing) {
             setRefreshActionItemState(true);
-        }else{
+        } else {
             setRefreshActionItemState(false);
         }
     }
@@ -183,7 +178,7 @@ public class NodeFragment extends WebViewFragment {
                         refreshing = true;
                         bus.post(produceStatus());
                         Node newNode = api.getNode(nid);
-                        if(node != null){
+                        if (node != null) {
                             node.delete();
                         }
                         node = newNode;

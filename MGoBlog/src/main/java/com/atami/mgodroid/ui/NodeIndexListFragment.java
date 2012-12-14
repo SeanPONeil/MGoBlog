@@ -63,6 +63,10 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        if(savedInstanceState == null){
+            bus.post(new NodeIndexRefreshEvent(type));
+        }
+
         getSherlockActivity().getSupportActionBar().setTitle(title);
 
         //View footerView = getLayoutInflater(savedInstanceState).inflate(
