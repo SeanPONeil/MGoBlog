@@ -61,13 +61,6 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        if (savedInstanceState == null) {
-            Fragment nodeIndexWorker = NodeIndexWorkerFragment.newInstance(type);
-            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-            ft.add(nodeIndexWorker, NodeIndexWorkerFragment.TAG);
-            ft.commit();
-        }
-
         //View footerView = getLayoutInflater(savedInstanceState).inflate(
         //		R.layout.node_index_footer, null, false);
         //footerView.setClickable(false);
@@ -165,6 +158,15 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
             type = getArguments().getString("type");
             setRetainInstance(true);
             nodeIndexes = Collections.synchronizedList(new ArrayList<NodeIndex>());
+            getFromDisk();
+        }
+
+        public void changeType(String type){
+            this.type = type;
+            getFromDisk();
+        }
+
+        private void getFromDisk(){
             new Thread(new Runnable() {
                 @Override
                 public void run() {
