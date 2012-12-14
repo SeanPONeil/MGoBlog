@@ -7,10 +7,7 @@ import com.google.gson.GsonBuilder;
 import dagger.Module;
 import dagger.Provides;
 import org.apache.http.impl.client.DefaultHttpClient;
-import retrofit.http.GET;
-import retrofit.http.GsonConverter;
-import retrofit.http.RestAdapter;
-import retrofit.http.Server;
+import retrofit.http.*;
 
 import javax.inject.Named;
 import java.util.List;
@@ -28,11 +25,8 @@ public class MGoBlogAPIModule {
     public interface MGoBlogAPI {
 
         @GET("node.json")
-        List<NodeIndex> getNodeIndex(@Named("parameters[type]") String type,
-                                     @Named("page") String page, @Named("parameters[sticky]") String sticky);
-
-        @GET("node.json")
-        List<NodeIndex> getFrontPage(@Named("parameters[promoted]") String promoted, @Named("page") String page);
+        @QueryParam(name="parameters[sticky]", value="0")
+        List<NodeIndex> getNodeIndex(@Named("parameters[type]") String type, @Named("page") String page);
 
         @GET("node/{nid}.json")
         Node getNode(@Named("nid") int nid);

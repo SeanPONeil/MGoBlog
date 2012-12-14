@@ -63,7 +63,7 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        if(savedInstanceState == null){
+        if (savedInstanceState == null) {
             bus.post(new NodeIndexRefreshEvent(type));
         }
 
@@ -189,7 +189,7 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
                     try {
                         refreshing = true;
                         bus.post(produceStatus());
-                        List<NodeIndex> list = api.getNodeIndex(type, "0", "0");
+                        List<NodeIndex> list = api.getNodeIndex(type, "0");
                         NodeIndex.deleteAll(type);
                         nodeIndexes = list;
                         bus.post(produceNodeIndexes());
@@ -214,7 +214,7 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
                     try {
                         gettingNextPage = true;
                         bus.post(produceStatus());
-                        List<NodeIndex> list = api.getNodeIndex(type, String.valueOf(nodeIndexes.size() / 20), "0");
+                        List<NodeIndex> list = api.getNodeIndex(type, String.valueOf(nodeIndexes.size() / 20));
                         nodeIndexes.addAll(list);
                         bus.post(produceNodeIndexes());
                         for (NodeIndex nodeIndex : list) {
