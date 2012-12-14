@@ -27,7 +27,6 @@ public class MGoBlogActivity extends BaseActivity implements MGoBlogConstants{
     // Left pane
     //ViewPager mPager;
     //TabsAdapter mAdapter;
-    NodeIndexListFragment.NodeIndexWorkerFragment nodeIndexWorker;
 
     // Right pane
     //@InjectView(R.id.NodeFrame)
@@ -43,18 +42,13 @@ public class MGoBlogActivity extends BaseActivity implements MGoBlogConstants{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_layout);
-        final ActionBar bar = getSupportActionBar();
-
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            bar.setSubtitle(getResources().getString(R.string.app_subtitle));
-        }
 
         if(savedInstanceState == null){
-            Fragment nodeIndex = NodeIndexListFragment.newInstance(nodeIndexTypes[1]);
-            nodeIndexWorker = NodeIndexListFragment.NodeIndexWorkerFragment.newInstance(nodeIndexTypes[1]);
+            Fragment nodeIndex = NodeIndexListFragment.newInstance(nodeIndexTitles[1], nodeIndexTypes[1]);
+            Fragment nodeIndexWorker = NodeIndexListFragment.WorkerFragment.newInstance(nodeIndexTypes[1]);
 
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.add(nodeIndexWorker, NodeIndexListFragment.NodeIndexWorkerFragment.TAG);
+            ft.add(nodeIndexWorker, NodeIndexListFragment.WorkerFragment.TAG);
             ft.add(android.R.id.content, nodeIndex);
             ft.commit();
         }
@@ -68,15 +62,17 @@ public class MGoBlogActivity extends BaseActivity implements MGoBlogConstants{
         menu.getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Fragment newNodeIndex = NodeIndexListFragment.newInstance(nodeIndexTypes[i]);
-                nodeIndexWorker = (NodeIndexListFragment.NodeIndexWorkerFragment) getSupportFragmentManager().findFragmentByTag
-                        (NodeIndexListFragment
-                        .NodeIndexWorkerFragment.TAG);
+                Fragment newNodeIndex = NodeIndexListFragment.newInstance(nodeIndexTitles[i], nodeIndexTypes[i]);
+                Fragment oldWorker = getSupportFragmentManager()
+                        .findFragmentByTag
+                        (NodeIndexListFragment.WorkerFragment.TAG);
+                Fragment newWorker = NodeIndexListFragment.WorkerFragment.newInstance(nodeIndexTypes[i]);
 
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 ft.replace(android.R.id.content, newNodeIndex);
+                ft.remove(oldWorker);
+                ft.add(newWorker, NodeIndexListFragment.WorkerFragment.TAG);
                 ft.commit();
-                nodeIndexWorker.changeType(nodeIndexTypes[i]);
 
                 mMenuDrawer.closeMenu();
             }

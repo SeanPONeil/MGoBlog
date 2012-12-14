@@ -25,12 +25,12 @@ import dagger.Provides;
 
 import javax.inject.Singleton;
 
-import static com.atami.mgodroid.ui.NodeIndexListFragment.NodeIndexWorkerFragment;
+import static com.atami.mgodroid.ui.NodeIndexListFragment.WorkerFragment;
 
 @Module(
         entryPoints = {
                 MGoBlogActivity.class,
-                NodeIndexWorkerFragment.class,
+                WorkerFragment.class,
                 NodeIndexListFragment.class
         }
 )

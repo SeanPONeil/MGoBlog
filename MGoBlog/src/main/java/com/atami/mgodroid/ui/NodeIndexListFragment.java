@@ -1,8 +1,6 @@
 package com.atami.mgodroid.ui;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.ListView;
@@ -37,13 +35,16 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
     //Type parameter used in API call
     private String type;
 
+    private String title;
+
     // This is the Adapter being used to display the list's data.
     private NodeIndexAdapter mAdapter;
 
-    public static NodeIndexListFragment newInstance(String type) {
+    public static NodeIndexListFragment newInstance(String title, String type) {
         NodeIndexListFragment f = new NodeIndexListFragment();
 
         Bundle args = new Bundle();
+        args.putString("title", title);
         args.putString("type", type);
         f.setArguments(args);
 
@@ -54,12 +55,18 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         type = getArguments().getString("type");
+        title = getArguments().getString("title");
         setHasOptionsMenu(true);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        getSherlockActivity().getSupportActionBar().setTitle(title);
+        if(title.equals("MGoBlog")){
+            getSherlockActivity().getSupportActionBar().setSubtitle(R.string.app_subtitle);
+        }
 
         //View footerView = getLayoutInflater(savedInstanceState).inflate(
         //		R.layout.node_index_footer, null, false);
@@ -128,9 +135,9 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
         }
     }
 
-    public static class NodeIndexWorkerFragment extends BaseFragment {
+    public static class WorkerFragment extends BaseFragment {
 
-        public static final String TAG = "NodeIndexWorkerFragment";
+        public static final String TAG = "WorkerFragment";
 
         @Inject
         MGoBlogAPIModule.MGoBlogAPI api;
@@ -142,8 +149,8 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
         boolean refreshing = false;
         boolean gettingNextPage = false;
 
-        public static NodeIndexWorkerFragment newInstance(String type) {
-            NodeIndexWorkerFragment f = new NodeIndexWorkerFragment();
+        public static WorkerFragment newInstance(String type) {
+            WorkerFragment f = new WorkerFragment();
 
             Bundle args = new Bundle();
             args.putString("type", type);

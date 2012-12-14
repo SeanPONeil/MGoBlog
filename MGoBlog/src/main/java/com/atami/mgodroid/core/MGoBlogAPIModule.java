@@ -1,6 +1,7 @@
 package com.atami.mgodroid.core;
 
 
+import com.atami.mgodroid.ui.NodeIndexListFragment;
 import com.google.gson.GsonBuilder;
 import dagger.Module;
 import dagger.Provides;
@@ -13,11 +14,9 @@ import retrofit.http.Server;
 import javax.inject.Named;
 import java.util.List;
 
-import static com.atami.mgodroid.ui.NodeIndexListFragment.NodeIndexWorkerFragment;
-
 @Module(
         entryPoints = {
-                NodeIndexWorkerFragment.class
+                NodeIndexListFragment.WorkerFragment.class
         }
 )
 public class MGoBlogAPIModule {
