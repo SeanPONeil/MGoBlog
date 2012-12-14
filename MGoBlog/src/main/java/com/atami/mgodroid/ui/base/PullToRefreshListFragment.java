@@ -16,7 +16,6 @@
 package com.atami.mgodroid.ui.base;
 
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,7 +50,7 @@ public class PullToRefreshListFragment extends BaseListFragment {
         //Remove ListView and add PullToRefreshListView in its place
         int lvIndex = parent.indexOfChild(lv);
         parent.removeViewAt(lvIndex);
-        mPullToRefreshListView = onCreatePullToRefreshListView(inflater, savedInstanceState);
+        mPullToRefreshListView = onCreatePullToRefreshListView();
         parent.addView(mPullToRefreshListView, lvIndex, lv.getLayoutParams());
 
         return layout;
@@ -64,20 +63,7 @@ public class PullToRefreshListFragment extends BaseListFragment {
         return mPullToRefreshListView;
     }
 
-    /**
-     * Returns the {@link PullToRefreshListView} which will replace the ListView
-     * created from ListFragment. You should override this method if you wish to
-     * customise the {@link PullToRefreshListView} from the default.
-     *
-     * @param inflater           - LayoutInflater which can be used to inflate from XML.
-     * @param savedInstanceState - Bundle passed through from
-     *                           {@link ListFragment#onCreateView(LayoutInflater, ViewGroup, Bundle)
-     *                           onCreateView(...)}
-     * @return The {@link PullToRefreshListView} which will replace the
-     *         ListView.
-     */
-    protected PullToRefreshListView onCreatePullToRefreshListView(LayoutInflater inflater, Bundle savedInstanceState) {
-        PullToRefreshListView lv = new PullToRefreshListView(getActivity());
+    protected PullToRefreshListView onCreatePullToRefreshListView() {
         return new PullToRefreshListView(getActivity());
     }
 

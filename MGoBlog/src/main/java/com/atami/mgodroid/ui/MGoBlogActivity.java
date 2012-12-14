@@ -162,6 +162,5 @@ public class MGoBlogActivity extends BaseActivity implements MGoBlogConstants {
 
             setListAdapter(adapter);
         }
-
     }
 }
