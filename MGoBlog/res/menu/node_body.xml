@@ -6,4 +6,10 @@
             android:showAsAction="always"
             android:title="Refresh">
     </item>
+    <item
+            android:id="@+id/comments"
+            android:icon="@drawable/ic_action_comments"
+            android:showAsAction="always"
+            android:title="Comments">
+    </item>
 </menu>
