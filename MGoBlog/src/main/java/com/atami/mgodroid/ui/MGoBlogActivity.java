@@ -1,18 +1,15 @@
 package com.atami.mgodroid.ui;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.MenuItem;
 import com.atami.mgodroid.MGoBlogConstants;
@@ -23,7 +20,7 @@ import com.squareup.otto.Subscribe;
 import net.simonvt.widget.MenuDrawer;
 import net.simonvt.widget.MenuDrawerManager;
 
-public class MGoBlogActivity extends BaseActivity implements MGoBlogConstants{
+public class MGoBlogActivity extends BaseActivity implements MGoBlogConstants {
 
     private static final String STATE_MENUDRAWER = MGoBlogActivity.class.getName() + ".menuDrawer";
 
@@ -47,7 +44,7 @@ public class MGoBlogActivity extends BaseActivity implements MGoBlogConstants{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_layout);
 
-        if(savedInstanceState == null){
+        if (savedInstanceState == null) {
             Fragment nodeIndex = NodeIndexListFragment.newInstance(nodeIndexTitles[1], nodeIndexTypes[1]);
             Fragment nodeIndexWorker = NodeIndexListFragment.WorkerFragment.newInstance(nodeIndexTypes[1]);
 
@@ -62,14 +59,14 @@ public class MGoBlogActivity extends BaseActivity implements MGoBlogConstants{
         mMenuDrawer = new MenuDrawerManager(this, MenuDrawer.MENU_DRAG_WINDOW);
         mMenuDrawer.setMenuView(R.layout.menudrawer);
 
-        MenuFragment menu = (MenuFragment)getSupportFragmentManager().findFragmentById(R.id.menudrawer);
+        MenuFragment menu = (MenuFragment) getSupportFragmentManager().findFragmentById(R.id.menudrawer);
         menu.getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Fragment newNodeIndex = NodeIndexListFragment.newInstance(nodeIndexTitles[i], nodeIndexTypes[i]);
                 Fragment oldWorker = getSupportFragmentManager()
                         .findFragmentByTag
-                        (NodeIndexListFragment.WorkerFragment.TAG);
+                                (NodeIndexListFragment.WorkerFragment.TAG);
                 Fragment newWorker = NodeIndexListFragment.WorkerFragment.newInstance(nodeIndexTypes[i]);
 
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -88,7 +85,7 @@ public class MGoBlogActivity extends BaseActivity implements MGoBlogConstants{
     @Override
     public void onResume() {
         super.onResume();
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             getSupportActionBar().setSubtitle(R.string.app_subtitle);
         }
     }
@@ -150,7 +147,7 @@ public class MGoBlogActivity extends BaseActivity implements MGoBlogConstants{
 
             getListView().setBackgroundColor(getResources().getColor(R.color.dark_blue_mgoblog));
 
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1){
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1) {
                 @Override
                 public View getView(int position, View convertView, ViewGroup parent) {
                     convertView = super.getView(position, convertView, parent);
@@ -159,7 +156,7 @@ public class MGoBlogActivity extends BaseActivity implements MGoBlogConstants{
                     return convertView;
                 }
             };
-            for(int i=0; i < nodeIndexCount; i++) {
+            for (int i = 0; i < nodeIndexCount; i++) {
                 adapter.add(nodeIndexTitles[i]);
             }
 
