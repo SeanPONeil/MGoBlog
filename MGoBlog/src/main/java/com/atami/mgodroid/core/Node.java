@@ -4,19 +4,39 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Select;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 @Table(name = "nodes")
-public class Node extends Model{
+public class Node extends Model {
 
     public static Node get(int nid) {
         return new Select()
                 .from(Node.class)
                 .where("nid = ?", nid)
                 .executeSingle();
+    }
+
+    //Cleans up HTML of body and makes it
+    //more mobile friendly
+    public void clean() {
+        //Add MGoBlog css before storing
+        Document doc = Jsoup.parseBodyFragment(getBody());
+        Element headNode = doc.head();
+        headNode.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"node_body.css\"></style>");
+
+        //Wrap video embeds in divs for CSS purposes
+        for (Element embed : doc.select("embed, iframe, object")) {
+            embed.wrap("<div class=\"video-container\"></div>");
+        }
+        setBody(doc.toString());
+
+        //TODO: Find plain text links and wrap them in an anchor tag
+
     }
 
     public class Taxonomy {

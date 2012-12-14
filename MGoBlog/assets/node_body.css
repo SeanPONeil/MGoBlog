@@ -1,8 +1,3 @@
-img { 
-	max-width: 100%; 
-	height: auto;
-} 
-
 blockquote {
 	border: 1px solid black;
 	background-color: #F8FFA4;
@@ -61,4 +56,11 @@ video {
 	left: 0;
 	width: 100%;
 	height: 100%;
+}
+
+/* puts border on webview */
+html {
+margin:0px;
+border:solid 15px #FFFFFF;
+height:100%;
 }

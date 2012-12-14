@@ -106,7 +106,6 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
         List<NodeIndex> list = event.nodeIndexes;
         mAdapter.setNodeIndexes(list);
         mAdapter.notifyDataSetChanged();
-        getPullToRefreshListView().onRefreshComplete();
     }
 
     @Subscribe
@@ -175,9 +174,6 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
                 public void run() {
                     nodeIndexes = NodeIndex.getAll(type);
                     bus.post(produceNodeIndexes());
-                    if (nodeIndexes.isEmpty()) {
-                        refresh();
-                    }
                 }
             }).start();
         }

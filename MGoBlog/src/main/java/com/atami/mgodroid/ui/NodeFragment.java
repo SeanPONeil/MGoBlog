@@ -8,6 +8,7 @@ import android.webkit.WebSettings;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.activeandroid.util.Log;
 import com.atami.mgodroid.R;
 import com.atami.mgodroid.core.MGoBlogAPIModule;
 import com.atami.mgodroid.core.Node;
@@ -60,6 +61,8 @@ public class NodeFragment extends WebViewFragment {
         getWebView().getSettings().setDefaultFontSize(16);
         getWebView().getSettings().setPluginState(WebSettings.PluginState.ON);
         getWebView().setVisibility(View.INVISIBLE);
+
+        getWebView().getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
     }
 
     @Subscribe
@@ -69,7 +72,6 @@ public class NodeFragment extends WebViewFragment {
             getWebView().setVisibility(View.VISIBLE);
             getSherlockActivity().getSupportActionBar().setTitle(event.node.getTitle());
             getSherlockActivity().getSupportActionBar().setSubtitle(event.node.getCommentCount() + " comments");
-            setRefreshActionItemState(false);
         }
     }
 
@@ -163,9 +165,6 @@ public class NodeFragment extends WebViewFragment {
                 public void run() {
                     node = Node.get(nid);
                     bus.post(produceNode());
-                    if (node == null) {
-                        refresh();
-                    }
                 }
             }).start();
         }
@@ -182,6 +181,7 @@ public class NodeFragment extends WebViewFragment {
                             node.delete();
                         }
                         node = newNode;
+                        node.clean();
                         bus.post(produceNode());
                         node.save();
                     } catch (RestException.NetworkException e) {
