@@ -170,12 +170,14 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
                 public void run() {
                     nodeIndexes = NodeIndex.getAll(type);
                     bus.post(produceNodeIndexes());
+                    if(nodeIndexes.isEmpty()){
+                        refresh();
+                    }
                 }
             }).start();
         }
 
-        @Subscribe
-        public void onNodeIndexRefresh(NodeIndexRefreshEvent event) {
+        private void refresh(){
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -199,8 +201,7 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
             }).start();
         }
 
-        @Subscribe
-        public void onNodeIndexNextPageEvent(NodeIndexNextPageEvent event) {
+        private void getNextPage(){
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -222,6 +223,20 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
 
                 }
             }).start();
+        }
+
+        @Subscribe
+        public void onNodeIndexRefresh(NodeIndexRefreshEvent event) {
+            if(!refreshing){
+                refresh();
+            }
+        }
+
+        @Subscribe
+        public void onNodeIndexNextPageEvent(NodeIndexNextPageEvent event) {
+            if(!gettingNextPage){
+                getNextPage();
+            }
         }
 
         @Produce
