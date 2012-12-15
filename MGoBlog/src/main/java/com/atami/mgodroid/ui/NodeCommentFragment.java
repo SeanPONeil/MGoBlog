@@ -2,22 +2,20 @@ package com.atami.mgodroid.ui;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.webkit.WebSettings;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.atami.mgodroid.R;
 import com.atami.mgodroid.core.MGoBlogAPIModule;
-import com.atami.mgodroid.core.Node;
+import com.atami.mgodroid.core.NodeComment;
+import com.atami.mgodroid.core.events.NodeCommentRefreshEvent;
+import com.atami.mgodroid.core.events.NodeCommentStatusEvent;
+import com.atami.mgodroid.core.events.NodeCommentUpdateEvent;
 import com.atami.mgodroid.core.events.NodeRefreshEvent;
-import com.atami.mgodroid.core.events.NodeStatusEvent;
-import com.atami.mgodroid.core.events.NodeUpdateEvent;
 import com.atami.mgodroid.ui.base.BaseFragment;
-import com.atami.mgodroid.ui.base.WebViewFragment;
+import com.atami.mgodroid.ui.base.BaseListFragment;
 import com.squareup.otto.Produce;
 import com.squareup.otto.Subscribe;
 import de.neofonie.mobile.app.android.widget.crouton.Crouton;
@@ -25,16 +23,21 @@ import de.neofonie.mobile.app.android.widget.crouton.Style;
 import retrofit.http.RestException;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-public class NodeFragment extends WebViewFragment {
+public class NodeCommentFragment extends BaseListFragment {
 
     // ID of the current node
     int nid;
 
+    private NodeCommentAdapter mAdapter;
+
     private Menu nodeMenu;
 
-    public static NodeFragment newInstance(int nid) {
-        NodeFragment f = new NodeFragment();
+    public static NodeCommentFragment newInstance(int nid) {
+        NodeCommentFragment f = new NodeCommentFragment();
 
         Bundle args = new Bundle();
         args.putInt("nid", nid);
@@ -54,27 +57,20 @@ public class NodeFragment extends WebViewFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        getWebView().getSettings().setJavaScriptEnabled(true);
-        getWebView().getSettings().setDefaultFontSize(16);
-        getWebView().getSettings().setPluginState(WebSettings.PluginState.ON);
-        getWebView().setVisibility(View.INVISIBLE);
-
-        getWebView().getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+        mAdapter = new NodeCommentAdapter(getActivity(), android.R.layout.simple_list_item_2,
+                new ArrayList<NodeComment>());
+        getListView().setAdapter(mAdapter);
     }
 
     @Subscribe
-    public void onNodeUpdate(NodeUpdateEvent event) {
-        if (event.node != null) {
-            getWebView().loadDataWithBaseURL("file:///android_asset/", event.node.getBody(), "text/html", "UTF-8", null);
-            getWebView().setVisibility(View.VISIBLE);
-            getSherlockActivity().getSupportActionBar().setTitle(event.node.getTitle());
-            getSherlockActivity().getSupportActionBar().setSubtitle("By " + event.node.getName() + " - " + event.node
-                    .getCommentCount() + " " + "comments");
-        }
+    public void onNodeCommentUpdate(NodeCommentUpdateEvent event) {
+        mAdapter.setNodeComments(event.nodeComments);
+        mAdapter.notifyDataSetChanged();
+        setListShown(true);
     }
 
     @Subscribe
-    public void onNodeStatusUpdate(NodeStatusEvent event) {
+    public void onNodeCommentsStatusUpdate(NodeCommentStatusEvent event) {
         if (event.refreshing) {
             setRefreshActionItemState(true);
         } else {
@@ -117,24 +113,7 @@ public class NodeFragment extends WebViewFragment {
         switch (item.getItemId()) {
             case R.id.refresh:
                 setRefreshActionItemState(true);
-                bus.post(new NodeRefreshEvent());
-                return true;
-            case R.id.comments:
-                // Instantiate a new fragment.
-                Fragment newFragment = NodeCommentFragment.newInstance(nid);
-                Fragment workerFragment = NodeCommentFragment.WorkerFragment.newInstance(nid);
-
-                // Add the fragment to the activity, pushing this transaction
-                // on to the back stack.
-                FragmentTransaction ft = getSherlockActivity().getSupportFragmentManager().beginTransaction();
-                ft.setCustomAnimations(R.anim.fragment_slide_left_enter,
-                        R.anim.fragment_slide_left_exit,
-                        R.anim.fragment_slide_right_enter,
-                        R.anim.fragment_slide_right_exit);
-                ft.replace(R.id.fragment_pane, newFragment);
-                ft.add(workerFragment, NodeCommentFragment.WorkerFragment.TAG);
-                ft.addToBackStack(null);
-                ft.commit();
+                bus.post(new NodeCommentRefreshEvent());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -143,14 +122,14 @@ public class NodeFragment extends WebViewFragment {
 
     public static class WorkerFragment extends BaseFragment {
 
-        public static final String TAG = NodeFragment.class.getName() + "WorkerFragment";
+        public static final String TAG = NodeCommentFragment.class.getName() + "WorkerFragment";
 
         @Inject
         MGoBlogAPIModule.MGoBlogAPI api;
 
         int nid;
 
-        Node node;
+        List<NodeComment> nodeComments;
 
         boolean refreshing = false;
 
@@ -169,7 +148,7 @@ public class NodeFragment extends WebViewFragment {
             super.onCreate(savedInstanceState);
             nid = getArguments().getInt("nid");
             setRetainInstance(true);
-            node = null;
+            nodeComments = Collections.synchronizedList(new ArrayList<NodeComment>());
             getFromDisk();
             refresh();
         }
@@ -179,8 +158,8 @@ public class NodeFragment extends WebViewFragment {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    node = Node.get(nid);
-                    bus.post(produceNode());
+                    nodeComments = NodeComment.getAll(nid);
+                    bus.post(produceNodeComments());
                 }
             }).start();
         }
@@ -192,14 +171,12 @@ public class NodeFragment extends WebViewFragment {
                     try {
                         refreshing = true;
                         bus.post(produceStatus());
-                        Node newNode = api.getNode(nid);
-                        if (node != null) {
-                            node.delete();
+                        nodeComments = api.getNodeComments(nid);
+                        NodeComment.deleteAll(nid);
+                        bus.post(produceNodeComments());
+                        for (NodeComment comment : nodeComments) {
+                            comment.save();
                         }
-                        node = newNode;
-                        node.clean();
-                        bus.post(produceNode());
-                        node.save();
                     } catch (RestException.NetworkException e) {
                         e.printStackTrace();
                         bus.post(e);
@@ -219,13 +196,13 @@ public class NodeFragment extends WebViewFragment {
         }
 
         @Produce
-        public NodeUpdateEvent produceNode() {
-            return new NodeUpdateEvent(node);
+        public NodeCommentUpdateEvent produceNodeComments() {
+            return new NodeCommentUpdateEvent(nid, nodeComments);
         }
 
         @Produce
-        public NodeStatusEvent produceStatus() {
-            return new NodeStatusEvent(refreshing);
+        public NodeCommentStatusEvent produceStatus() {
+            return new NodeCommentStatusEvent(refreshing);
         }
     }
 }

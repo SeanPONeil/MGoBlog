@@ -1,6 +1,7 @@
 package com.atami.mgodroid.core;
 
 
+import com.atami.mgodroid.ui.NodeCommentFragment;
 import com.atami.mgodroid.ui.NodeFragment;
 import com.atami.mgodroid.ui.NodeIndexListFragment;
 import com.google.gson.GsonBuilder;
@@ -15,7 +16,8 @@ import java.util.List;
 @Module(
         entryPoints = {
                 NodeIndexListFragment.WorkerFragment.class,
-                NodeFragment.WorkerFragment.class
+                NodeFragment.WorkerFragment.class,
+                NodeCommentFragment.WorkerFragment.class
         }
 )
 public class MGoBlogAPIModule {
@@ -30,6 +32,9 @@ public class MGoBlogAPIModule {
 
         @GET("node/{nid}.json")
         Node getNode(@Named("nid") int nid);
+
+        @GET("node/{nid}/comments.json")
+        List<NodeComment> getNodeComments(@Named("nid") int nid);
     }
 
     @Provides
