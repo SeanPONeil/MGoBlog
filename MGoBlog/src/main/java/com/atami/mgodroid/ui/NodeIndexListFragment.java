@@ -35,16 +35,13 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
     //Type parameter used in API call
     private String type;
 
-    private String title;
-
     // This is the Adapter being used to display the list's data.
     private NodeIndexAdapter mAdapter;
 
-    public static NodeIndexListFragment newInstance(String title, String type) {
+    public static NodeIndexListFragment newInstance(String type) {
         NodeIndexListFragment f = new NodeIndexListFragment();
 
         Bundle args = new Bundle();
-        args.putString("title", title);
         args.putString("type", type);
         f.setArguments(args);
 
@@ -55,15 +52,12 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         type = getArguments().getString("type");
-        title = getArguments().getString("title");
         setHasOptionsMenu(true);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        getSherlockActivity().getSupportActionBar().setTitle(title);
 
         //View footerView = getLayoutInflater(savedInstanceState).inflate(
         //		R.layout.node_index_footer, null, false);
@@ -99,7 +93,7 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
 
     @Subscribe
     public void onNodeIndexUpdate(NodeIndexUpdateEvent event) {
-        if(type.equals(event.type)){
+        if (type.equals(event.type)) {
             List<NodeIndex> list = event.nodeIndexes;
             mAdapter.setNodeIndexes(list);
             mAdapter.notifyDataSetChanged();

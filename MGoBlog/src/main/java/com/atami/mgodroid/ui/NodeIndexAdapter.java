@@ -1,17 +1,13 @@
 package com.atami.mgodroid.ui;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import com.atami.mgodroid.core.NodeIndex;
-import com.github.kevinsawicki.wishlist.ViewFinder;
-import com.atami.mgodroid.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class NodeIndexAdapter extends ArrayAdapter<NodeIndex> {
@@ -21,7 +17,7 @@ public class NodeIndexAdapter extends ArrayAdapter<NodeIndex> {
     /**
      * Holds on to Views to avoid costly findViewById calls
      */
-    private class ViewHolder{
+    private class ViewHolder {
         public TextView created;
         public TextView title;
 
@@ -47,7 +43,7 @@ public class NodeIndexAdapter extends ArrayAdapter<NodeIndex> {
     }
 
     @Override
-    public View getView(int position, View view, ViewGroup parent){
+    public View getView(int position, View view, ViewGroup parent) {
         ViewHolder viewHolder;
 
         if (view == null) {
@@ -57,7 +53,7 @@ public class NodeIndexAdapter extends ArrayAdapter<NodeIndex> {
             TextView created = (TextView) view.findViewById(android.R.id.text1);
             viewHolder = new ViewHolder(title, created);
             view.setTag(viewHolder);
-        }else{
+        } else {
             viewHolder = (ViewHolder) view.getTag();
         }
 

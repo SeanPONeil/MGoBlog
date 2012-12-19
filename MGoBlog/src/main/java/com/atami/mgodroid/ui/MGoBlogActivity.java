@@ -1,87 +1,89 @@
 package com.atami.mgodroid.ui;
 
+import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.SparseArray;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.SpinnerAdapter;
+import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.MenuItem;
-import com.atami.mgodroid.MGoBlogConstants;
 import com.atami.mgodroid.R;
 import com.atami.mgodroid.core.NodeIndex;
 import com.atami.mgodroid.ui.base.BaseActivity;
 import com.squareup.otto.Subscribe;
 
+import java.util.Arrays;
+
 import static com.actionbarsherlock.app.ActionBar.OnNavigationListener;
 
-public class MGoBlogActivity extends BaseActivity implements MGoBlogConstants {
+public class MGoBlogActivity extends BaseActivity implements OnNavigationListener {
 
     // Left pane
     //ViewPager mPager;
-    //TabsAdapter mAdapter;
-
-    // Right pane
-    //@InjectView(R.id.NodeFrame)
-    //@Nullable
-    //FrameLayout nodeFrame;
 
     // Whether or not we are in dual-pane mode
     boolean mIsDualPane;
+
+    private SparseArray<Fragment> nodeIndexFragments = new SparseArray<Fragment>();
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_layout);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-
-        if (savedInstanceState == null) {
-            Fragment nodeIndex = NodeIndexListFragment.newInstance(nodeIndexTitles[1], nodeIndexTypes[1]);
-            Fragment nodeIndexWorker = NodeIndexListFragment.WorkerFragment.newInstance(nodeIndexTypes[1]);
-
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.add(nodeIndexWorker, NodeIndexListFragment.WorkerFragment.TAG);
-            ft.add(android.R.id.content, nodeIndex);
-            ft.commit();
-        }
 
         mIsDualPane = getResources().getBoolean(R.bool.has_two_panes);
 
-        SpinnerAdapter mSpinnerAdapter = ArrayAdapter.createFromResource(this, R.array.node_index_titles,
-                android.R.layout.simple_list_item_1);
-        OnNavigationListener mOnNavigationListener = new OnNavigationListener() {
-            // Get the same strings provided for the drop-down's ArrayAdapter
-            String[] titles = getResources().getStringArray(R.array.node_index_titles);
-            String[] types = getResources().getStringArray(R.array.node_index_types);
+        SpinnerAdapter mSpinnerAdapter = new TitlesAdapter(this);
+        getSupportActionBar().setListNavigationCallbacks(mSpinnerAdapter, this);
 
-            @Override
-            public boolean onNavigationItemSelected(int position, long itemId) {
-                Fragment newNodeIndex = NodeIndexListFragment.newInstance(titles[position], types[position]);
-                Fragment oldWorker = getSupportFragmentManager().findFragmentByTag(NodeIndexListFragment
-                        .WorkerFragment.TAG);
-                Fragment newWorker = NodeIndexListFragment.WorkerFragment.newInstance(types[position]);
-
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(android.R.id.content, newNodeIndex);
-                ft.remove(oldWorker);
-                ft.add(newWorker, NodeIndexListFragment.WorkerFragment.TAG);
-                // Apply changes
-                ft.commit();
-                return true;
-            }
-        };
-        getSupportActionBar().setListNavigationCallbacks(mSpinnerAdapter, mOnNavigationListener);
+        if (savedInstanceState == null) {
+            getSupportActionBar().setSelectedNavigationItem(1);
+        } else {
+            getSupportActionBar().setSelectedNavigationItem(savedInstanceState.getInt("navigationIndex"));
+        }
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            getSupportActionBar().setSubtitle(R.string.app_subtitle);
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt("navigationIndex", getSupportActionBar().getSelectedNavigationIndex());
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+        Fragment f = getSupportFragmentManager().findFragmentByTag(String.valueOf(itemPosition));
+        if(f == null){
+            String[] types = getResources().getStringArray(R.array.node_index_types);
+            Fragment newNodeIndex = NodeIndexListFragment.newInstance(types[itemPosition]);
+            Fragment oldWorker = getSupportFragmentManager().findFragmentByTag(NodeIndexListFragment
+                    .WorkerFragment.TAG);
+            Fragment newWorker = NodeIndexListFragment.WorkerFragment.newInstance(types[itemPosition]);
+
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(android.R.id.content, newNodeIndex, String.valueOf(itemPosition));
+            if(oldWorker != null){
+                ft.remove(oldWorker);
+            }
+            ft.add(newWorker, NodeIndexListFragment.WorkerFragment.TAG);
+            // Apply changes
+            ft.commit();
         }
+        return true;
     }
 
     @Subscribe
@@ -106,5 +108,29 @@ public class MGoBlogActivity extends BaseActivity implements MGoBlogConstants {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private class TitlesAdapter extends ArrayAdapter<String> implements SpinnerAdapter {
+
+        public TitlesAdapter(Context context) {
+            super(context, android.R.layout.simple_list_item_1, Arrays.asList(context.getResources().getStringArray(R.array
+                    .node_index_titles)));
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            convertView = super.getView(position, convertView, parent);
+            TextView title = (TextView) convertView.findViewById(android.R.id.text1);
+            title.setTextColor(getContext().getResources().getColor(R.color.titles_mgoblog));
+            return convertView;
+        }
+
+        @Override
+        public View getDropDownView(int position, View convertView, ViewGroup parent) {
+            convertView = super.getView(position, convertView, parent);
+            TextView title = (TextView) convertView.findViewById(android.R.id.text1);
+            title.setTextColor(getContext().getResources().getColor(R.color.titles_mgoblog));
+            return convertView;
+        }
     }
 }
