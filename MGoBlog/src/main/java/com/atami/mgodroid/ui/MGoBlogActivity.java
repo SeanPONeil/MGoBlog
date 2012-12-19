@@ -5,25 +5,19 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.TextView;
-import com.actionbarsherlock.app.SherlockListFragment;
+import android.widget.SpinnerAdapter;
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.MenuItem;
 import com.atami.mgodroid.MGoBlogConstants;
 import com.atami.mgodroid.R;
 import com.atami.mgodroid.core.NodeIndex;
 import com.atami.mgodroid.ui.base.BaseActivity;
 import com.squareup.otto.Subscribe;
-import net.simonvt.widget.MenuDrawer;
-import net.simonvt.widget.MenuDrawerManager;
+
+import static com.actionbarsherlock.app.ActionBar.OnNavigationListener;
 
 public class MGoBlogActivity extends BaseActivity implements MGoBlogConstants {
-
-    private static final String STATE_MENUDRAWER = MGoBlogActivity.class.getName() + ".menuDrawer";
-
 
     // Left pane
     //ViewPager mPager;
@@ -37,12 +31,12 @@ public class MGoBlogActivity extends BaseActivity implements MGoBlogConstants {
     // Whether or not we are in dual-pane mode
     boolean mIsDualPane;
 
-    private MenuDrawerManager mMenuDrawer;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_layout);
+        getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 
         if (savedInstanceState == null) {
             Fragment nodeIndex = NodeIndexListFragment.newInstance(nodeIndexTitles[1], nodeIndexTypes[1]);
@@ -56,30 +50,30 @@ public class MGoBlogActivity extends BaseActivity implements MGoBlogConstants {
 
         mIsDualPane = getResources().getBoolean(R.bool.has_two_panes);
 
-        mMenuDrawer = new MenuDrawerManager(this, MenuDrawer.MENU_DRAG_WINDOW);
-        mMenuDrawer.setMenuView(R.layout.menudrawer);
+        SpinnerAdapter mSpinnerAdapter = ArrayAdapter.createFromResource(this, R.array.node_index_titles,
+                android.R.layout.simple_list_item_1);
+        OnNavigationListener mOnNavigationListener = new OnNavigationListener() {
+            // Get the same strings provided for the drop-down's ArrayAdapter
+            String[] titles = getResources().getStringArray(R.array.node_index_titles);
+            String[] types = getResources().getStringArray(R.array.node_index_types);
 
-        MenuFragment menu = (MenuFragment) getSupportFragmentManager().findFragmentById(R.id.menudrawer);
-        menu.getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Fragment newNodeIndex = NodeIndexListFragment.newInstance(nodeIndexTitles[i], nodeIndexTypes[i]);
-                Fragment oldWorker = getSupportFragmentManager()
-                        .findFragmentByTag
-                                (NodeIndexListFragment.WorkerFragment.TAG);
-                Fragment newWorker = NodeIndexListFragment.WorkerFragment.newInstance(nodeIndexTypes[i]);
+            public boolean onNavigationItemSelected(int position, long itemId) {
+                Fragment newNodeIndex = NodeIndexListFragment.newInstance(titles[position], types[position]);
+                Fragment oldWorker = getSupportFragmentManager().findFragmentByTag(NodeIndexListFragment
+                        .WorkerFragment.TAG);
+                Fragment newWorker = NodeIndexListFragment.WorkerFragment.newInstance(types[position]);
 
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 ft.replace(android.R.id.content, newNodeIndex);
                 ft.remove(oldWorker);
                 ft.add(newWorker, NodeIndexListFragment.WorkerFragment.TAG);
+                // Apply changes
                 ft.commit();
-
-                mMenuDrawer.closeMenu();
+                return true;
             }
-        });
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        };
+        getSupportActionBar().setListNavigationCallbacks(mSpinnerAdapter, mOnNavigationListener);
     }
 
     @Override
@@ -105,62 +99,12 @@ public class MGoBlogActivity extends BaseActivity implements MGoBlogConstants {
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle inState) {
-        super.onRestoreInstanceState(inState);
-        mMenuDrawer.onRestoreDrawerState(inState.getParcelable(STATE_MENUDRAWER));
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelable(STATE_MENUDRAWER, mMenuDrawer.onSaveDrawerState());
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case android.R.id.home:
-                mMenuDrawer.toggleMenu();
-                break;
+
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-        final int drawerState = mMenuDrawer.getDrawerState();
-        if (drawerState == MenuDrawer.STATE_OPEN || drawerState == MenuDrawer.STATE_OPENING) {
-            mMenuDrawer.closeMenu();
-            return;
-        }
-
-        super.onBackPressed();
-    }
-
-    public static class MenuFragment extends SherlockListFragment {
-
-        @Override
-        public void onViewCreated(View view, Bundle savedInstanceState) {
-            super.onViewCreated(view, savedInstanceState);
-
-            getListView().setBackgroundColor(getResources().getColor(R.color.dark_blue_mgoblog));
-
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1) {
-                @Override
-                public View getView(int position, View convertView, ViewGroup parent) {
-                    convertView = super.getView(position, convertView, parent);
-                    TextView title = (TextView) convertView.findViewById(android.R.id.text1);
-                    title.setTextColor(getResources().getColor(R.color.titles_mgoblog));
-                    return convertView;
-                }
-            };
-            for (int i = 0; i < nodeIndexCount; i++) {
-                adapter.add(nodeIndexTitles[i]);
-            }
-
-            setListAdapter(adapter);
-        }
     }
 }

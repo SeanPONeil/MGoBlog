@@ -7,6 +7,12 @@
             android:title="Refresh">
     </item>
     <item
+        android:id="@+id/share"
+        android:icon="@drawable/ic_action_share"
+        android:showAsAction="always"
+        android:title="Share">
+        </item>
+    <item
             android:id="@+id/comments"
             android:icon="@drawable/ic_action_comments"
             android:showAsAction="always"

@@ -178,4 +178,8 @@ public class Node extends Model {
     public int getCommentCount() {
         return comment_count;
     }
+
+    public int getRevisionTimestamp() {
+        return revision_timestamp;
+    }
 }

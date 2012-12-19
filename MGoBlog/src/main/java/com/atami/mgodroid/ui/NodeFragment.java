@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.WebSettings;
@@ -57,8 +58,6 @@ public class NodeFragment extends WebViewFragment {
         getWebView().getSettings().setJavaScriptEnabled(true);
         getWebView().getSettings().setDefaultFontSize(16);
         getWebView().getSettings().setPluginState(WebSettings.PluginState.ON);
-        getWebView().setVisibility(View.INVISIBLE);
-
         getWebView().getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
     }
 
@@ -66,7 +65,6 @@ public class NodeFragment extends WebViewFragment {
     public void onNodeUpdate(NodeUpdateEvent event) {
         if (event.node != null) {
             getWebView().loadDataWithBaseURL("file:///android_asset/", event.node.getBody(), "text/html", "UTF-8", null);
-            getWebView().setVisibility(View.VISIBLE);
             getSherlockActivity().getSupportActionBar().setTitle(event.node.getTitle());
             getSherlockActivity().getSupportActionBar().setSubtitle("By " + event.node.getName() + " - " + event.node
                     .getCommentCount() + " " + "comments");
@@ -194,6 +192,9 @@ public class NodeFragment extends WebViewFragment {
                         bus.post(produceStatus());
                         Node newNode = api.getNode(nid);
                         if (node != null) {
+                            if(newNode.getRevisionTimestamp() == node.getRevisionTimestamp()){
+                                return;
+                            }
                             node.delete();
                         }
                         node = newNode;

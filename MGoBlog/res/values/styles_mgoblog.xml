@@ -25,6 +25,7 @@
         <item name="actionBarTabStyle">@style/mgoblog_ActionBarTabStyle</item>
         <item name="actionDropDownStyle">@style/mgoblog_DropDownNav</item>
         <item name="actionBarStyle">@style/mgoblog_solid_ActionBar</item>
+        <item name="titleTextStyle">@style/mgoblog_ActionBarTextColor</item>
 
         <item name="android:actionBarItemBackground">@drawable/selectable_background_mgoblog</item>
         <item name="android:popupMenuStyle">@style/mgoblog_PopupMenu</item>
@@ -33,6 +34,7 @@
         <item name="android:actionDropDownStyle">@style/mgoblog_DropDownNav</item>
         <item name="android:actionBarStyle">@style/mgoblog_solid_ActionBar</item>
         <item name="android:panelBackground">@drawable/menu_hardkey_panel_mgoblog</item>
+        <item name="android:titleTextStyle">@style/mgoblog_ActionBarTextColor</item>
         
                 <!-- Light.DarkActionBar specific -->
         <item name="actionBarWidgetTheme">@style/Theme.mgoblog.widget</item>
@@ -43,14 +45,14 @@
     </style>
 
     <style name="mgoblog_solid_ActionBar" parent="@style/Widget.Sherlock.Light.ActionBar.Solid.Inverse">
-        <item name="background">@drawable/ab_solid_mgoblog</item>
+        <item name="background">@color/dark_blue_mgoblog</item>
         <item name="backgroundStacked">@drawable/ab_stacked_solid_mgoblog</item>
-        <item name="backgroundSplit">@drawable/ab_bottom_solid_mgoblog</item>
+        <item name="backgroundSplit">@color/dark_blue_mgoblog</item>
         <item name="progressBarStyle">@style/mgoblog_ProgressBar</item>
 
-        <item name="android:background">@drawable/ab_solid_mgoblog</item>
+        <item name="android:background">@color/dark_blue_mgoblog</item>
         <item name="android:backgroundStacked">@drawable/ab_stacked_solid_mgoblog</item>
-        <item name="android:backgroundSplit">@drawable/ab_bottom_solid_mgoblog</item>
+        <item name="android:backgroundSplit">@color/dark_blue_mgoblog</item>
         <item name="android:progressBarStyle">@style/mgoblog_ProgressBar</item>
     </style>
 
@@ -86,6 +88,10 @@
     
     <style name="mgoblog_ProgressBar" parent="@style/Widget.Sherlock.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/progress_horizontal_mgoblog</item>
+    </style>
+
+    <style name="mgoblog_ActionBarTextColor" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/titles_mgoblog</item>
     </style>
     
     <!-- this style is only referenced in a Light.DarkActionBar based theme -->

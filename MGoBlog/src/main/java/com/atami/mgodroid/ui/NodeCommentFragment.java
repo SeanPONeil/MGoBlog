@@ -34,7 +34,7 @@ public class NodeCommentFragment extends BaseListFragment {
 
     private NodeCommentAdapter mAdapter;
 
-    private Menu nodeMenu;
+    private Menu nodeCommentMenu;
 
     public static NodeCommentFragment newInstance(int nid) {
         NodeCommentFragment f = new NodeCommentFragment();
@@ -85,10 +85,10 @@ public class NodeCommentFragment extends BaseListFragment {
     }
 
     public void setRefreshActionItemState(boolean refreshing) {
-        if (nodeMenu == null) {
+        if (nodeCommentMenu == null) {
             return;
         }
-        final MenuItem refreshItem = nodeMenu.findItem(R.id.refresh);
+        final MenuItem refreshItem = nodeCommentMenu.findItem(R.id.refresh);
         if (refreshItem != null) {
             if (refreshing) {
                 LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context
@@ -104,7 +104,7 @@ public class NodeCommentFragment extends BaseListFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.node_body, menu);
-        nodeMenu = menu;
+        nodeCommentMenu = menu;
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -189,7 +189,7 @@ public class NodeCommentFragment extends BaseListFragment {
         }
 
         @Subscribe
-        public void onNodeRefresh(NodeRefreshEvent event) {
+        public void onNodeRefresh(NodeCommentRefreshEvent event) {
             if (!refreshing) {
                 refresh();
             }
