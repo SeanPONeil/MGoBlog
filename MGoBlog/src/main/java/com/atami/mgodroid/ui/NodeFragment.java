@@ -4,10 +4,12 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -192,7 +194,7 @@ public class NodeFragment extends WebViewFragment {
                         bus.post(produceStatus());
                         Node newNode = api.getNode(nid);
                         if (node != null) {
-                            if(newNode.getRevisionTimestamp() == node.getRevisionTimestamp()){
+                            if (newNode.getRevisionTimestamp() == node.getRevisionTimestamp()) {
                                 return;
                             }
                             node.delete();

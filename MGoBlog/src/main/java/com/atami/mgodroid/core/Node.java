@@ -4,10 +4,14 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Select;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.parser.Tag;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Map;
 
 @Table(name = "nodes")
@@ -28,9 +32,17 @@ public class Node extends Model {
         Element headNode = doc.head();
         headNode.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"node_body.css\"></style>");
 
-        //Wrap video embeds in divs for CSS purposes
-        for (Element embed : doc.select("embed, iframe, object")) {
-            embed.wrap("<div class=\"video-container\"></div>");
+        //Iterate through iframes, replace Youtube embeds with
+        //a thumbnail that links to Youtube
+        for (Element iframe : doc.select("iframe")) {
+            if(iframe.attr("src").contains("youtube")){
+                Element thumbnail = new Element(Tag.valueOf("a"), "").attr("href", iframe.attr("src"));
+                String videoID = iframe.attr("src").replaceFirst(".*/([^/?]+).*", "$1");
+                String thumbnailURL = String.format("http://img.youtube.com/vi/%s/0.jpg", videoID);
+                Element img = new Element(Tag.valueOf("img"), "").attr("src", thumbnailURL);
+                thumbnail.appendChild(img);
+                iframe.replaceWith(thumbnail);
+            }
         }
         setBody(doc.toString());
 
