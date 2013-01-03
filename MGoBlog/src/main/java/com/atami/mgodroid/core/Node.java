@@ -9,6 +9,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Tag;
+import org.w3c.dom.html.HTMLIFrameElement;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -43,6 +44,19 @@ public class Node extends Model {
                 thumbnail.appendChild(img);
                 iframe.replaceWith(thumbnail);
             }
+        }
+
+        for(Element embed: doc.select("embed")){
+            if(embed.attr("src").contains("youtube")){
+                Element thumbnail = new Element(Tag.valueOf("a"), "").attr("href", embed.attr("src"));
+                String src = embed.attr("src").substring(0, embed.attr("src").lastIndexOf("?"));
+                String videoID = src.replaceFirst(".*/([^/?]+).*", "$1");
+                String thumbnailURL = String.format("http://img.youtube.com/vi/%s/0.jpg", videoID);
+                Element img = new Element(Tag.valueOf("img"), "").attr("src", thumbnailURL);
+                thumbnail.appendChild(img);
+                embed.replaceWith(thumbnail);
+            }
+
         }
         setBody(doc.toString());
 
