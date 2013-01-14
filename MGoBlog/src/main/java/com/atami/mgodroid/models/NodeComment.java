@@ -1,4 +1,4 @@
-package com.atami.mgodroid.core;
+package com.atami.mgodroid.models;
 
 
 import com.activeandroid.Model;

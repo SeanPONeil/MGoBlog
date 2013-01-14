@@ -1,18 +1,14 @@
-package com.atami.mgodroid.core;
+package com.atami.mgodroid.models;
 
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Select;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Tag;
-import org.w3c.dom.html.HTMLIFrameElement;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Map;
 
 @Table(name = "nodes")
@@ -37,24 +33,32 @@ public class Node extends Model {
         //a thumbnail that links to Youtube
         for (Element iframe : doc.select("iframe")) {
             if(iframe.attr("src").contains("youtube")){
+                Element div = new Element(Tag.valueOf("div"), "").attr("class", "video");
                 Element thumbnail = new Element(Tag.valueOf("a"), "").attr("href", iframe.attr("src"));
                 String videoID = iframe.attr("src").replaceFirst(".*/([^/?]+).*", "$1");
                 String thumbnailURL = String.format("http://img.youtube.com/vi/%s/0.jpg", videoID);
-                Element img = new Element(Tag.valueOf("img"), "").attr("src", thumbnailURL);
+                Element img = new Element(Tag.valueOf("img"), "")
+                        .attr("src", "play_button.png")
+                        .attr("style", "background:URL("+thumbnailURL+")");
                 thumbnail.appendChild(img);
-                iframe.replaceWith(thumbnail);
+                div.appendChild(thumbnail);
+                iframe.replaceWith(div);
             }
         }
 
         for(Element embed: doc.select("embed")){
             if(embed.attr("src").contains("youtube")){
+                Element div = new Element(Tag.valueOf("div"), "").attr("class", "video");
                 Element thumbnail = new Element(Tag.valueOf("a"), "").attr("href", embed.attr("src"));
                 String src = embed.attr("src").substring(0, embed.attr("src").lastIndexOf("?"));
                 String videoID = src.replaceFirst(".*/([^/?]+).*", "$1");
                 String thumbnailURL = String.format("http://img.youtube.com/vi/%s/0.jpg", videoID);
-                Element img = new Element(Tag.valueOf("img"), "").attr("src", thumbnailURL);
+                Element img = new Element(Tag.valueOf("img"), "")
+                        .attr("src", "play_button.png")
+                        .attr("style", "background:URL("+thumbnailURL+")");
                 thumbnail.appendChild(img);
-                embed.replaceWith(thumbnail);
+                div.appendChild(thumbnail);
+                embed.replaceWith(div);
             }
 
         }

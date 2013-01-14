@@ -1,8 +1,7 @@
-package com.atami.mgodroid.core.events;
+package com.atami.mgodroid.events;
 
 
-import com.atami.mgodroid.core.NodeComment;
-import com.atami.mgodroid.core.NodeIndex;
+import com.atami.mgodroid.models.NodeComment;
 
 import java.util.List;
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.atami.mgodroid.core;
+package com.atami.mgodroid.modules;
 
 import android.os.Handler;
 import android.os.Looper;

@@ -1,4 +1,4 @@
-package com.atami.mgodroid.core.events;
+package com.atami.mgodroid.events;
 
 public class NodeIndexRefreshEvent {
 

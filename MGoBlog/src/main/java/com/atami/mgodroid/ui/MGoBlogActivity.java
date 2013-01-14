@@ -2,7 +2,6 @@ package com.atami.mgodroid.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -15,7 +14,7 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.MenuItem;
 import com.atami.mgodroid.R;
-import com.atami.mgodroid.core.NodeIndex;
+import com.atami.mgodroid.models.NodeIndex;
 import com.atami.mgodroid.ui.base.BaseActivity;
 import com.squareup.otto.Subscribe;
 

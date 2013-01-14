@@ -1,6 +1,9 @@
-package com.atami.mgodroid.core;
+package com.atami.mgodroid.modules;
 
 
+import com.atami.mgodroid.models.Node;
+import com.atami.mgodroid.models.NodeComment;
+import com.atami.mgodroid.models.NodeIndex;
 import com.atami.mgodroid.ui.NodeCommentFragment;
 import com.atami.mgodroid.ui.NodeFragment;
 import com.atami.mgodroid.ui.NodeIndexListFragment;

@@ -3,8 +3,8 @@ package com.atami.mgodroid;
 
 import android.app.Application;
 import com.activeandroid.ActiveAndroid;
-import com.atami.mgodroid.core.MGoBlogAPIModule;
-import com.atami.mgodroid.core.OttoModule;
+import com.atami.mgodroid.modules.MGoBlogAPIModule;
+import com.atami.mgodroid.modules.OttoModule;
 import dagger.ObjectGraph;
 
 public class MGoBlogApplication extends Application {

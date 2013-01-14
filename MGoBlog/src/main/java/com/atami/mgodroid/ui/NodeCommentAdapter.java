@@ -7,8 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import com.atami.mgodroid.core.NodeComment;
-import com.atami.mgodroid.core.NodeIndex;
+import com.atami.mgodroid.models.NodeComment;
 
 import java.util.List;
 
