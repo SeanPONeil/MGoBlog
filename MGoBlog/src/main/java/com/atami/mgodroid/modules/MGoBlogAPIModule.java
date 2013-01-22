@@ -31,7 +31,7 @@ public class MGoBlogAPIModule {
 
         @GET("node.json")
         @QueryParam(name="parameters[sticky]", value="0")
-        List<NodeIndex> getNodeIndex(@Named("parameters[type]") String type, @Named("page") String page);
+        List<NodeIndex> getNodeIndex(@Named("parameters[type]") String type, @Named("page") int page);
 
         @GET("node/{nid}.json")
         Node getNode(@Named("nid") int nid);

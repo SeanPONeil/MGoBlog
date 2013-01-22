@@ -5,12 +5,13 @@ import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.ListView;
 import com.atami.mgodroid.R;
-import com.atami.mgodroid.modules.MGoBlogAPIModule;
-import com.atami.mgodroid.models.NodeIndex;
 import com.atami.mgodroid.events.NodeIndexNextPageEvent;
 import com.atami.mgodroid.events.NodeIndexRefreshEvent;
 import com.atami.mgodroid.events.NodeIndexStatusEvent;
 import com.atami.mgodroid.events.NodeIndexUpdateEvent;
+import com.atami.mgodroid.io.NodeIndexTaskQueue;
+import com.atami.mgodroid.models.NodeIndex;
+import com.atami.mgodroid.modules.MGoBlogAPIModule;
 import com.atami.mgodroid.ui.base.BaseFragment;
 import com.atami.mgodroid.ui.base.PullToRefreshListFragment;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -37,6 +38,9 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
 
     // This is the Adapter being used to display the list's data.
     private NodeIndexAdapter mAdapter;
+
+    @Inject
+    NodeIndexTaskQueue queue;
 
     public static NodeIndexListFragment newInstance(String type) {
         NodeIndexListFragment f = new NodeIndexListFragment();
@@ -89,160 +93,5 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
                         | DateUtils.FORMAT_SHOW_DATE
                         | DateUtils.FORMAT_ABBREV_ALL));
         bus.post(new NodeIndexRefreshEvent(type));
-    }
-
-    @Subscribe
-    public void onNodeIndexUpdate(NodeIndexUpdateEvent event) {
-        if (type.equals(event.type)) {
-            List<NodeIndex> list = event.nodeIndexes;
-            mAdapter.setNodeIndexes(list);
-            mAdapter.notifyDataSetChanged();
-        }
-    }
-
-    @Subscribe
-    public void onNetworkError(NetworkException e) {
-        Crouton.makeText(getActivity(), e.getMessage(), Style.INFO).show();
-        getPullToRefreshListView().onRefreshComplete();
-    }
-
-    @Subscribe
-    public void onRefreshEvent(NodeIndexRefreshEvent event) {
-        if (type.equals(event.type)) {
-            getPullToRefreshListView().setRefreshing();
-        }
-    }
-
-    @Subscribe
-    public void onNodeIndexStatusEvent(NodeIndexStatusEvent event) {
-        if (event.refreshing) {
-            getPullToRefreshListView().setRefreshing();
-        } else {
-            getPullToRefreshListView().onRefreshComplete();
-        }
-        if (event.gettingNextPage) {
-            //set refreshing footer
-        } else {
-            //unset refreshing footer
-        }
-    }
-
-    public static class WorkerFragment extends BaseFragment {
-
-        public static final String TAG = NodeIndexListFragment.class.getName() + "WorkerFragment";
-
-        @Inject
-        MGoBlogAPIModule.MGoBlogAPI api;
-
-        String type;
-
-        List<NodeIndex> nodeIndexes;
-
-        boolean refreshing = false;
-        boolean gettingNextPage = false;
-
-        public static WorkerFragment newInstance(String type) {
-            WorkerFragment f = new WorkerFragment();
-
-            Bundle args = new Bundle();
-            args.putString("type", type);
-            f.setArguments(args);
-
-            return f;
-        }
-
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            type = getArguments().getString("type");
-            setRetainInstance(true);
-            nodeIndexes = Collections.synchronizedList(new ArrayList<NodeIndex>());
-            getFromDisk();
-            refresh();
-        }
-
-        private void getFromDisk() {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    nodeIndexes = NodeIndex.getAll(type);
-                    bus.post(produceNodeIndexes());
-                }
-            }).start();
-        }
-
-        private void refresh() {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        refreshing = true;
-                        bus.post(produceStatus());
-                        List<NodeIndex> list = api.getNodeIndex(type, "0");
-                        NodeIndex.deleteAll(type);
-                        nodeIndexes = list;
-                        bus.post(produceNodeIndexes());
-                        for (NodeIndex nodeIndex : list) {
-                            nodeIndex.save();
-                        }
-                    } catch (RestException.NetworkException e) {
-                        e.printStackTrace();
-                        bus.post(e);
-                    } finally {
-                        refreshing = false;
-                        bus.post(produceStatus());
-                    }
-                }
-            }).start();
-        }
-
-        private void getNextPage() {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        gettingNextPage = true;
-                        bus.post(produceStatus());
-                        List<NodeIndex> list = api.getNodeIndex(type, String.valueOf(nodeIndexes.size() / 20));
-                        nodeIndexes.addAll(list);
-                        bus.post(produceNodeIndexes());
-                        for (NodeIndex nodeIndex : list) {
-                            nodeIndex.save();
-                        }
-                    } catch (RestException.NetworkException e) {
-                        e.printStackTrace();
-                        bus.post(e);
-                    } finally {
-                        gettingNextPage = false;
-                        bus.post(produceNodeIndexes());
-                    }
-
-                }
-            }).start();
-        }
-
-        @Subscribe
-        public void onNodeIndexRefresh(NodeIndexRefreshEvent event) {
-            if (!refreshing) {
-                refresh();
-            }
-        }
-
-        @Subscribe
-        public void onNodeIndexNextPageEvent(NodeIndexNextPageEvent event) {
-            if (!gettingNextPage) {
-                getNextPage();
-            }
-        }
-
-        @Produce
-        public NodeIndexUpdateEvent produceNodeIndexes() {
-            return new NodeIndexUpdateEvent(type, nodeIndexes);
-        }
-
-        @Produce
-        public NodeIndexStatusEvent produceStatus() {
-            return new NodeIndexStatusEvent(refreshing, gettingNextPage);
-        }
     }
 }

@@ -66,20 +66,12 @@ public class MGoBlogActivity extends BaseActivity implements OnNavigationListene
     @Override
     public boolean onNavigationItemSelected(int itemPosition, long itemId) {
         Fragment f = getSupportFragmentManager().findFragmentByTag(String.valueOf(itemPosition));
-        if(f == null){
+        if (f == null) {
             String[] types = getResources().getStringArray(R.array.node_index_types);
             Fragment newNodeIndex = NodeIndexListFragment.newInstance(types[itemPosition]);
-            Fragment oldWorker = getSupportFragmentManager().findFragmentByTag(NodeIndexListFragment
-                    .WorkerFragment.TAG);
-            Fragment newWorker = NodeIndexListFragment.WorkerFragment.newInstance(types[itemPosition]);
 
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(android.R.id.content, newNodeIndex, String.valueOf(itemPosition));
-            if(oldWorker != null){
-                ft.remove(oldWorker);
-            }
-            ft.add(newWorker, NodeIndexListFragment.WorkerFragment.TAG);
-            // Apply changes
             ft.commit();
         }
         return true;
