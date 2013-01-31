@@ -68,11 +68,6 @@
             <groupId>de.keyboardsurfer.android.widget</groupId>
         </dependency>
         <dependency>
-            <artifactId>activeandroid</artifactId>
-            <version>3.1-BETA</version>
-            <groupId>com.activeandroid</groupId>
-        </dependency>
-        <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
             <version>1.7.1</version>
@@ -83,7 +78,6 @@
             <version>2.0.0</version>
             <type>apklib</type>
         </dependency>
-
     </dependencies>
     <build>
         <plugins>
