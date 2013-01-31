@@ -38,6 +38,8 @@ public class MGoBlogActivity extends BaseActivity implements OnNavigationListene
     private Runnable mToggleUpRunnable;
     private boolean mDisplayUp = true;
 
+    private boolean mIsDualPane;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +48,14 @@ public class MGoBlogActivity extends BaseActivity implements OnNavigationListene
             mActivePosition = savedInstanceState.getInt(STATE_ACTIVE_POSITION);
         }
 
-        mMenuDrawer = MenuDrawer.attach(this, Position.LEFT);
+        mIsDualPane = getResources().getBoolean(R.bool.has_two_panes);
+
+        if(mIsDualPane){
+            mMenuDrawer = MenuDrawer.attach(this, MenuDrawer.MENU_DRAG_CONTENT, Position.LEFT, true);
+        }else{
+            mMenuDrawer = MenuDrawer.attach(this, MenuDrawer.MENU_DRAG_CONTENT, Position.LEFT, false);
+        }
+
         mMenuDrawer.setContentView(android.R.layout.simple_list_item_1);
 
         buildMenuDrawer();
