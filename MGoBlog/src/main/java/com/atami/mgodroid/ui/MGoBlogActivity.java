@@ -120,7 +120,6 @@ public class MGoBlogActivity extends BaseActivity implements OnNavigationListene
         public View getView(int position, View convertView, ViewGroup parent) {
             convertView = super.getView(position, convertView, parent);
             TextView title = (TextView) convertView.findViewById(android.R.id.text1);
-            title.setTextColor(getContext().getResources().getColor(R.color.titles_mgoblog));
             return convertView;
         }
 
@@ -128,7 +127,6 @@ public class MGoBlogActivity extends BaseActivity implements OnNavigationListene
         public View getDropDownView(int position, View convertView, ViewGroup parent) {
             convertView = super.getView(position, convertView, parent);
             TextView title = (TextView) convertView.findViewById(android.R.id.text1);
-            title.setTextColor(getContext().getResources().getColor(R.color.titles_mgoblog));
             return convertView;
         }
     }

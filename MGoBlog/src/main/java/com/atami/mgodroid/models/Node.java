@@ -10,6 +10,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.parser.Tag;
 
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Table(name = "nodes")
 public class Node extends Model {
@@ -32,22 +34,22 @@ public class Node extends Model {
         //Iterate through iframes, replace Youtube embeds with
         //a thumbnail that links to Youtube
         for (Element iframe : doc.select("iframe")) {
-            if(iframe.attr("src").contains("youtube")){
+            if (iframe.attr("src").contains("youtube")) {
                 Element div = new Element(Tag.valueOf("div"), "").attr("class", "video");
                 Element thumbnail = new Element(Tag.valueOf("a"), "").attr("href", iframe.attr("src"));
                 String videoID = iframe.attr("src").replaceFirst(".*/([^/?]+).*", "$1");
                 String thumbnailURL = String.format("http://img.youtube.com/vi/%s/0.jpg", videoID);
                 Element img = new Element(Tag.valueOf("img"), "")
                         .attr("src", "play_button.png")
-                        .attr("style", "background:URL("+thumbnailURL+")");
+                        .attr("style", "background:URL(" + thumbnailURL + ")");
                 thumbnail.appendChild(img);
                 div.appendChild(thumbnail);
                 iframe.replaceWith(div);
             }
         }
 
-        for(Element embed: doc.select("embed")){
-            if(embed.attr("src").contains("youtube")){
+        for (Element embed : doc.select("embed")) {
+            if (embed.attr("src").contains("youtube")) {
                 Element div = new Element(Tag.valueOf("div"), "").attr("class", "video");
                 Element thumbnail = new Element(Tag.valueOf("a"), "").attr("href", embed.attr("src"));
                 String src = embed.attr("src").substring(0, embed.attr("src").lastIndexOf("?"));
@@ -55,7 +57,7 @@ public class Node extends Model {
                 String thumbnailURL = String.format("http://img.youtube.com/vi/%s/0.jpg", videoID);
                 Element img = new Element(Tag.valueOf("img"), "")
                         .attr("src", "play_button.png")
-                        .attr("style", "background:URL("+thumbnailURL+")");
+                        .attr("style", "background:URL(" + thumbnailURL + ")");
                 thumbnail.appendChild(img);
                 div.appendChild(thumbnail);
                 embed.replaceWith(div);
