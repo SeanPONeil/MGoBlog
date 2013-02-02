@@ -1,13 +1,12 @@
 package com.atami.mgodroid.io;
 
 
-import android.os.Handler;
-import android.os.Looper;
-import android.util.Log;
 import com.atami.mgodroid.models.NodeIndex;
+import com.atami.mgodroid.modules.MGoBlogAPIModule;
 import com.squareup.tape.Task;
-import retrofit.http.RestException;
+import retrofit.http.Callback;
 
+import javax.inject.Inject;
 import java.util.List;
 
 import static com.atami.mgodroid.modules.MGoBlogAPIModule.MGoBlogAPI;
@@ -15,61 +14,48 @@ import static com.atami.mgodroid.modules.MGoBlogAPIModule.MGoBlogAPI;
 /**
  * Gets the specified page and type of NodeIndex from MGoBlog
  */
-public class NodeIndexTask implements Task<NodeIndexTask.Callback> {
+public class NodeIndexTask implements Task<Callback<List<NodeIndex>>> {
 
     private final static String TAG = "NodeIndexTask";
-    private static final Handler MAIN_THREAD = new Handler(Looper.getMainLooper());
 
-    public interface Callback {
-        public void onSuccess(String type);
+    private String parameter;
+    private String value;
+    private int page;
+    private int id;
 
-        public void onFailure(String type);
+    private MGoBlogAPI api;
+
+    /**
+     * Downloads a node index page from MGoBlog, and saves it locally through the callback
+     *
+     * @param parameter parameter to query MGoBlog node indexes on, e.g. "type" for different sections of the site,
+     *                  or "promote" for all front page content
+     * @param value     value for specified parameter, e.g. "story" when used with the "type" parameter for all blog
+     *                  posts, or "1" when used with "promote" parameter for all front page content.
+     * @param page      page to retrieve
+     * @param id        value for helping identify which NodeIndexListFragment added this task to the queue
+     */
+    public NodeIndexTask(String parameter, String value, int page, int id) {
+        this.parameter = parameter;
+        this.value = value;
+        this.page = page;
+        this.id = id;
     }
 
-    private int page;
-    private String type;
-    MGoBlogAPI api;
-
-    public NodeIndexTask(MGoBlogAPI api, int page, String type) {
+    public void setAPI(MGoBlogAPI api){
         this.api = api;
-        this.page = page;
-        this.type = type;
+    }
+
+    public int getId(){
+        return id;
     }
 
     @Override
-    public void execute(final Callback callback) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                List<NodeIndex> request;
-                try {
-                    request = api.getNodeIndex(type, page);
-                } catch (RestException e) {
-                    e.printStackTrace();
-                    Log.i(TAG, "Get failure! " + type + " " + String.valueOf(page));
-                    MAIN_THREAD.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.onFailure(type);
-                        }
-                    });
-                    return;
-                }
-
-                if (page == 0) {
-                    NodeIndex.deleteAll(type);
-                }
-                for (NodeIndex ni : request) {
-                    ni.save();
-                }
-                Log.i(TAG, "Get success! " + type + " " + String.valueOf(page));
-                MAIN_THREAD.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.onSuccess(type);
-                    }
-                });
-            }
-        }).start();
+    public void execute(Callback callback) {
+        if(parameter.equals("promote")){
+            api.getFrontPage(page, callback);
+        }else if(parameter.equals("type")){
+            api.getNodeIndexByType(value, page, callback);
+        }
     }
 }

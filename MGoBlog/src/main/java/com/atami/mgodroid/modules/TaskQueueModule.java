@@ -13,6 +13,8 @@ import dagger.Provides;
 
 import javax.inject.Singleton;
 
+import static com.atami.mgodroid.modules.MGoBlogAPIModule.MGoBlogAPI;
+
 @Module(
         entryPoints = {
                 NodeIndexListFragment.class,
@@ -30,8 +32,8 @@ public class TaskQueueModule {
 
     @Provides
     @Singleton
-    NodeIndexTaskQueue provideNodeIndexTaskQueue(Bus bus) {
+    NodeIndexTaskQueue provideNodeIndexTaskQueue(Bus bus, MGoBlogAPI api) {
         ObjectQueue<NodeIndexTask> delegate = new InMemoryObjectQueue<NodeIndexTask>();
-        return new NodeIndexTaskQueue(delegate, appContext, bus);
+        return new NodeIndexTaskQueue(delegate, appContext, bus, api);
     }
 }

@@ -3,8 +3,8 @@ package com.activeandroid;
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.os.Handler;
-import android.content.AsyncTaskLoader;
 
+import android.support.v4.content.AsyncTaskLoader;
 import com.activeandroid.query.From;
 
 import java.util.List;
@@ -39,7 +39,7 @@ public class ModelLoader<T extends Model> extends AsyncTaskLoader<List<T>> {
 		this.mQuery = from;
 	}
 
-	/**
+    /**
 	 * Called when there is new data to deliver to the client. The super class
 	 * will take care of delivering it; the implementation here just adds a
 	 * little more logic.

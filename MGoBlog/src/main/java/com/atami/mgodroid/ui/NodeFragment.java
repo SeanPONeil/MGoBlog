@@ -11,18 +11,16 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.atami.mgodroid.R;
-import com.atami.mgodroid.modules.MGoBlogAPIModule;
-import com.atami.mgodroid.models.Node;
 import com.atami.mgodroid.events.NodeRefreshEvent;
 import com.atami.mgodroid.events.NodeStatusEvent;
 import com.atami.mgodroid.events.NodeUpdateEvent;
+import com.atami.mgodroid.models.Node;
+import com.atami.mgodroid.modules.MGoBlogAPIModule;
 import com.atami.mgodroid.ui.base.BaseFragment;
 import com.atami.mgodroid.ui.base.WebViewFragment;
 import com.squareup.otto.Produce;
 import com.squareup.otto.Subscribe;
-import de.neofonie.mobile.app.android.widget.crouton.Crouton;
-import de.neofonie.mobile.app.android.widget.crouton.Style;
-import retrofit.http.RestException;
+import retrofit.http.RetrofitError;
 
 import javax.inject.Inject;
 
@@ -77,12 +75,6 @@ public class NodeFragment extends WebViewFragment {
         } else {
             setRefreshActionItemState(false);
         }
-    }
-
-    @Subscribe
-    public void onNetworkError(RestException.NetworkException e) {
-        Crouton.makeText(getActivity(), e.getMessage(), Style.INFO).show();
-        setRefreshActionItemState(false);
     }
 
     public void setRefreshActionItemState(boolean refreshing) {
@@ -200,7 +192,7 @@ public class NodeFragment extends WebViewFragment {
                         node.clean();
                         bus.post(produceNode());
                         node.save();
-                    } catch (RestException.NetworkException e) {
+                    } catch (RetrofitError e) {
                         e.printStackTrace();
                         bus.post(e);
                     } finally {

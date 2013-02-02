@@ -4,62 +4,13 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Delete;
+import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
-
-import java.util.List;
 
 @Table(name = "NodeIndexes")
 public class NodeIndex extends Model {
 
-    //ActiveAndroid queries
-    public static List<NodeIndex> getAll(String type) {
-        return new Select()
-                .from(NodeIndex.class)
-                .where("type = ?", type)
-                .orderBy("created DESC")
-                .execute();
-    }
-
-    public static List<NodeIndex> getBoard() {
-        return new Select()
-                .from(NodeIndex.class)
-                .where("type = forum")
-                .orderBy("created DESC")
-                .execute();
-    }
-
-    public static List<NodeIndex> getFrontPage() {
-        return new Select()
-                .from(NodeIndex.class)
-                .where("promoted = 1")
-                .orderBy("created DESC")
-                .execute();
-    }
-
-    public static List<NodeIndex> getDiaries() {
-        return new Select()
-                .from(NodeIndex.class)
-                .where("type = blog")
-                .orderBy("created DESC")
-                .execute();
-    }
-
-    public static List<NodeIndex> getLinks() {
-        return new Select()
-                .from(NodeIndex.class)
-                .where("type = link")
-                .orderBy("created DESC")
-                .execute();
-    }
-
-    public static void deleteAll(String type) {
-        new Delete()
-                .from(NodeIndex.class)
-                .where("type = ?", type)
-                .execute();
-    }
-
-    @Column(name = "nid")
+    @Column(name = "nid", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
     private int nid;
 
     @Column(name = "vid")
@@ -106,6 +57,15 @@ public class NodeIndex extends Model {
 
     @Column(name = "uri")
     private String uri;
+
+    //ActiveAndroid queries
+    public static From selectFromDBWhere(String where){
+         return new Select().from(NodeIndex.class).where(where).orderBy("created DESC");
+    }
+
+    public static From deleteFromDBWhere(String where){
+        return new Delete().from(NodeIndex.class).where(where).orderBy("created DESC");
+    }
 
     public int getNid() {
         return nid;

@@ -1,52 +1,59 @@
 package com.atami.mgodroid.ui;
 
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
+import com.activeandroid.ModelLoader;
+import com.activeandroid.query.From;
+import com.activeandroid.query.Select;
+import com.activeandroid.util.Log;
 import com.atami.mgodroid.R;
-import com.atami.mgodroid.events.NodeIndexNextPageEvent;
-import com.atami.mgodroid.events.NodeIndexRefreshEvent;
-import com.atami.mgodroid.events.NodeIndexStatusEvent;
-import com.atami.mgodroid.events.NodeIndexUpdateEvent;
+import com.atami.mgodroid.events.NodeIndexTaskStatus;
+import com.atami.mgodroid.io.NodeIndexTask;
 import com.atami.mgodroid.io.NodeIndexTaskQueue;
 import com.atami.mgodroid.models.NodeIndex;
-import com.atami.mgodroid.modules.MGoBlogAPIModule;
-import com.atami.mgodroid.ui.base.BaseFragment;
 import com.atami.mgodroid.ui.base.PullToRefreshListFragment;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleListener;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
-import com.squareup.otto.Produce;
 import com.squareup.otto.Subscribe;
-import de.neofonie.mobile.app.android.widget.crouton.Crouton;
-import de.neofonie.mobile.app.android.widget.crouton.Style;
-import retrofit.http.RestException;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import static retrofit.http.RestException.NetworkException;
-
 public class NodeIndexListFragment extends PullToRefreshListFragment
-        implements OnLastItemVisibleListener, OnRefreshListener<ListView> {
+        implements OnLastItemVisibleListener, OnRefreshListener<ListView>,
+        LoaderManager.LoaderCallbacks<List<NodeIndex>> {
 
-    //Type parameter used in API call
-    private String type;
+    private final static String TAG = "NodeIndexListFragment";
 
-    // This is the Adapter being used to display the list's data.
+    //DB/API parameters
+    private String column;
+    private String value;
+
     private NodeIndexAdapter mAdapter;
 
     @Inject
     NodeIndexTaskQueue queue;
 
-    public static NodeIndexListFragment newInstance(String type) {
+    /**
+     * Displays a list of node indexes from MGoBlog.
+     *
+     * @param column The column to query the local database on, as well as the web service
+     * @param value  Value for selected column
+     * @return NodeIndexListFragment
+     */
+    public static NodeIndexListFragment newInstance(String column, String value) {
         NodeIndexListFragment f = new NodeIndexListFragment();
 
         Bundle args = new Bundle();
-        args.putString("type", type);
+        args.putString("column", column);
+        args.putString("value", value);
         f.setArguments(args);
 
         return f;
@@ -55,8 +62,12 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        type = getArguments().getString("type");
+        column = getArguments().getString("column");
+        value = getArguments().getString("value");
+
         setHasOptionsMenu(true);
+
+        queue.add(new NodeIndexTask(column, value, 0, 0));
     }
 
     @Override
@@ -73,16 +84,24 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
 
         getPullToRefreshListView().setOnLastItemVisibleListener(this);
         getPullToRefreshListView().setOnRefreshListener(this);
+
+        //Bug in ActiveAndroid ModelLoader: Cached results in LoaderManager aren't updated
+        //when the ModelLoaders From changes
+        if(savedInstanceState == null){
+            getActivity().getSupportLoaderManager().restartLoader(0, null, this);
+        }else{
+            getActivity().getSupportLoaderManager().initLoader(0, null, this);
+        }
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        bus.post(mAdapter.getItem(position - 1));
+        //bus.post(mAdapter.getItem(position - 1));
     }
 
     @Override
     public void onLastItemVisible() {
-        bus.post(new NodeIndexNextPageEvent(type));
+        queue.add(new NodeIndexTask(column, value, mAdapter.getCount() / 20, 0));
     }
 
     @Override
@@ -92,6 +111,35 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
                         System.currentTimeMillis(), DateUtils.FORMAT_SHOW_TIME
                         | DateUtils.FORMAT_SHOW_DATE
                         | DateUtils.FORMAT_ABBREV_ALL));
-        bus.post(new NodeIndexRefreshEvent(type));
+        queue.add(new NodeIndexTask(column, value, 0, 0));
+    }
+
+    @Subscribe
+    public void onNewNodeIndexTaskStatus(NodeIndexTaskStatus status) {
+        if (status.id == 0) {
+            if (status.running) {
+                getPullToRefreshListView().setRefreshing();
+            } else {
+                getPullToRefreshListView().onRefreshComplete();
+            }
+        }
+    }
+
+    @Override
+    public Loader<List<NodeIndex>> onCreateLoader(int id, Bundle args) {
+        String whereArgs = new StringBuilder().append(column).append(" = \"").append(value).append("\"").toString();
+        From query = new Select().from(NodeIndex.class).where(whereArgs).orderBy("created DESC");
+        return new ModelLoader<NodeIndex>(getActivity(), query);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<NodeIndex>> nodeIndexLoader, List<NodeIndex> nodeIndexes) {
+        mAdapter.setNodeIndexes(nodeIndexes);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<NodeIndex>> nodeIndexLoader) {
+        mAdapter.setNodeIndexes(null);
     }
 }

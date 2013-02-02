@@ -45,12 +45,14 @@ public class PullToRefreshListFragment extends BaseListFragment {
         View layout = super.onCreateView(inflater, container, savedInstanceState);
 
         ListView lv = (ListView) layout.findViewById(android.R.id.list);
+        View ev = lv.getEmptyView();
         ViewGroup parent = (ViewGroup) lv.getParent();
 
         //Remove ListView and add PullToRefreshListView in its place
         int lvIndex = parent.indexOfChild(lv);
         parent.removeViewAt(lvIndex);
         mPullToRefreshListView = onCreatePullToRefreshListView();
+        mPullToRefreshListView.getRefreshableView().setEmptyView(ev);
         parent.addView(mPullToRefreshListView, lvIndex, lv.getLayoutParams());
 
         return layout;

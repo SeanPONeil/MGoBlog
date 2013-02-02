@@ -36,10 +36,7 @@ import javax.inject.Singleton;
                 NodeIndexListFragment.class,
                 NodeFragment.class,
                 NodeActivity.class,
-                NodeCommentFragment.class,
-                NodeIndexListFragment.WorkerFragment.class,
-                NodeFragment.WorkerFragment.class,
-                NodeCommentFragment.WorkerFragment.class
+                NodeCommentFragment.class
         }
 )
 public class OttoModule {

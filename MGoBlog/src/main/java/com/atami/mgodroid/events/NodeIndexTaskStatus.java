@@ -2,14 +2,11 @@ package com.atami.mgodroid.events;
 
 public class NodeIndexTaskStatus {
 
-    public String title;
+    public boolean running;
+    public int id;
 
-    public boolean refreshing;
-    public boolean gettingNextPage;
-
-    public NodeIndexTaskStatus(String title, boolean refreshing, boolean gettingNextPage){
-        this.title = title;
-        this.refreshing = refreshing;
-        this.gettingNextPage = gettingNextPage;
+    public NodeIndexTaskStatus(boolean running, int id) {
+        this.running = running;
+        this.id = id;
     }
 }

@@ -1,18 +1,13 @@
 package com.atami.mgodroid.ui;
 
-import android.content.ClipData;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.atami.mgodroid.R;
 import com.atami.mgodroid.models.NodeIndex;
@@ -22,18 +17,16 @@ import net.simonvt.menudrawer.MenuDrawer;
 import net.simonvt.menudrawer.Position;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import static com.actionbarsherlock.app.ActionBar.OnNavigationListener;
+public class MGoBlogActivity extends BaseActivity {
 
-public class MGoBlogActivity extends BaseActivity implements OnNavigationListener {
-
+    private static final String TAG = "MGoBlogActivity";
     private static final String STATE_ACTIVE_POSITION = "com.atami.mgodroid.activePosition";
 
     private MenuDrawer mMenuDrawer;
 
-    private int mActivePosition = -1;
+    private int mActivePosition = 0;
     private Handler mHandler;
     private Runnable mToggleUpRunnable;
     private boolean mDisplayUp = true;
@@ -44,41 +37,35 @@ public class MGoBlogActivity extends BaseActivity implements OnNavigationListene
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(savedInstanceState != null){
+        if (savedInstanceState != null) {
             mActivePosition = savedInstanceState.getInt(STATE_ACTIVE_POSITION);
         }
 
         mIsDualPane = getResources().getBoolean(R.bool.has_two_panes);
 
-        if(mIsDualPane){
+
+        //TODO: MenuDrawer will crash when switching from non static drawer to static. Issue is at
+        //https://github.com/SimonVT/android-menudrawer/issues/62
+        if (mIsDualPane) {
             mMenuDrawer = MenuDrawer.attach(this, MenuDrawer.MENU_DRAG_CONTENT, Position.LEFT, true);
-        }else{
+        } else {
             mMenuDrawer = MenuDrawer.attach(this, MenuDrawer.MENU_DRAG_CONTENT, Position.LEFT, false);
         }
 
-        mMenuDrawer.setContentView(android.R.layout.simple_list_item_1);
+        mMenuDrawer.setContentView(R.layout.node_index_container);
 
         buildMenuDrawer();
+
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.node_index_container,
+                    NodeIndexListFragment.newInstance("promote", "1")).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+        }
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(STATE_ACTIVE_POSITION, mActivePosition);
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-        Fragment f = getSupportFragmentManager().findFragmentByTag(String.valueOf(itemPosition));
-        if (f == null) {
-            String[] types = getResources().getStringArray(R.array.node_index_types);
-            Fragment newNodeIndex = NodeIndexListFragment.newInstance(types[itemPosition]);
-
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(android.R.id.content, newNodeIndex, String.valueOf(itemPosition));
-            ft.commit();
-        }
-        return true;
     }
 
     @Subscribe
@@ -109,24 +96,37 @@ public class MGoBlogActivity extends BaseActivity implements OnNavigationListene
         super.onBackPressed();
     }
 
-    private void buildMenuDrawer(){
+    private void buildMenuDrawer() {
         List<Object> items = new ArrayList<Object>();
-        items.add(new DrawerItem("Item 1", R.drawable.ic_action_refresh));
-        items.add(new DrawerItem("Item 2", R.drawable.ic_action_refresh));
-        items.add(new DrawerCategory("Cat 1"));
-        items.add(new DrawerItem("Item 3", R.drawable.ic_action_refresh));
-        items.add(new DrawerItem("Item 4", R.drawable.ic_action_refresh));
-        items.add(new DrawerCategory("Cat 2"));
-        items.add(new DrawerItem("Item 5", R.drawable.ic_action_refresh));
-        items.add(new DrawerItem("Item 6", R.drawable.ic_action_refresh));
+        items.add(new DrawerCategory("Navigation"));
+        items.add(new DrawerItem("MGoBlog", R.drawable.ic_action_refresh));
+        items.add(new DrawerItem("Diaries", R.drawable.ic_action_refresh));
+        items.add(new DrawerItem("MGoBoard", R.drawable.ic_action_refresh));
+        items.add(new DrawerItem("mgo.licio.us", R.drawable.ic_action_refresh));
 
-        ListView menuList = new ListView(this);
+        final ListView menuList = new ListView(this);
         MenuDrawerAdapter menuAdapter = new MenuDrawerAdapter(items);
         menuList.setAdapter(menuAdapter);
 
         menuList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+
+                DrawerItem di = (DrawerItem) menuList.getAdapter().getItem(position);
+                Fragment f = null;
+                if (di.mTitle.equals("MGoBlog")) {
+                    f = NodeIndexListFragment.newInstance("promote", "1");
+                } else if (di.mTitle.equals("Diaries")) {
+                    f = NodeIndexListFragment.newInstance("type", "blog");
+                } else if (di.mTitle.equals("MGoBoard")) {
+                    f = NodeIndexListFragment.newInstance("type", "forum");
+                } else if (di.mTitle.equals("mgo.licio.us")) {
+                    f = NodeIndexListFragment.newInstance("type", "link");
+                }
+
+                getSupportFragmentManager().beginTransaction().replace(R.id.node_index_container,
+                        f).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+
                 mActivePosition = position;
                 mMenuDrawer.setActiveView(view, position);
                 mMenuDrawer.closeMenu();
