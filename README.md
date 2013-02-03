@@ -17,4 +17,4 @@ place to put these is in a `.bash_profile` file in your home directory.
     export ANDROID_NDK_HOME=/path/to/android/ndk
 
 With these two environment variables loaded you can compile the modules and sample application by running
-`mvn clean install`. Each module's built artifact will be in its respective `target/` folder.
+`sh get_dependencies.sh`, which will clone and install some libraries that are not in Maven Central, followed by `mvn clean install`. Each module's built artifact will be in its respective `target/` folder.
