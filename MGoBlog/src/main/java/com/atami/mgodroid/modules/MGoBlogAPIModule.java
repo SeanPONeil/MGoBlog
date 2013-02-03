@@ -2,18 +2,13 @@ package com.atami.mgodroid.modules;
 
 
 import com.atami.mgodroid.io.NodeIndexTask;
-import com.atami.mgodroid.io.NodeIndexTaskQueue;
 import com.atami.mgodroid.models.Node;
 import com.atami.mgodroid.models.NodeComment;
 import com.atami.mgodroid.models.NodeIndex;
-import com.atami.mgodroid.ui.NodeCommentFragment;
-import com.atami.mgodroid.ui.NodeFragment;
-import com.atami.mgodroid.ui.NodeIndexListFragment;
 import com.google.gson.GsonBuilder;
 import dagger.Module;
 import dagger.Provides;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.protocol.HttpRequestExecutor;
 import retrofit.http.*;
 
 import javax.inject.Named;

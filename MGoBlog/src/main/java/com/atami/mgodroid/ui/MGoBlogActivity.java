@@ -58,7 +58,8 @@ public class MGoBlogActivity extends BaseActivity {
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.node_index_container,
-                    NodeIndexListFragment.newInstance("promote", "1")).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+                    NodeIndexListFragment.newInstance("promote", "1"), "MGoBlog").setTransition(FragmentTransaction
+                    .TRANSIT_FRAGMENT_OPEN).commit();
         }
     }
 
@@ -125,7 +126,7 @@ public class MGoBlogActivity extends BaseActivity {
                 }
 
                 getSupportFragmentManager().beginTransaction().replace(R.id.node_index_container,
-                        f).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+                        f, di.mTitle).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
 
                 mActivePosition = position;
                 mMenuDrawer.setActiveView(view, position);

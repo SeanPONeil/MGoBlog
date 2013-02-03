@@ -21,7 +21,7 @@ public class NodeIndexTask implements Task<Callback<List<NodeIndex>>> {
     private String parameter;
     private String value;
     private int page;
-    private int id;
+    private String tag;
 
     @Inject
     private MGoBlogAPI api;
@@ -34,17 +34,17 @@ public class NodeIndexTask implements Task<Callback<List<NodeIndex>>> {
      * @param value     value for specified parameter, e.g. "story" when used with the "type" parameter for all blog
      *                  posts, or "1" when used with "promote" parameter for all front page content.
      * @param page      page to retrieve
-     * @param id        value for helping identify which NodeIndexListFragment added this task to the queue
+     * @param tag       identifier for this task
      */
-    public NodeIndexTask(String parameter, String value, int page, int id) {
+    public NodeIndexTask(String parameter, String value, int page, String tag) {
         this.parameter = parameter;
         this.value = value;
         this.page = page;
-        this.id = id;
+        this.tag = tag;
     }
 
-    public int getId(){
-        return id;
+    public String getTag(){
+        return tag;
     }
 
     @Override

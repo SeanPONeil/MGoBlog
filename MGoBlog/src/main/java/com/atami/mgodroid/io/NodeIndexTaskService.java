@@ -10,6 +10,7 @@ import com.atami.mgodroid.events.NodeIndexTaskStatus;
 import com.atami.mgodroid.models.NodeIndex;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Produce;
+import com.squareup.tape.TaskQueue;
 import retrofit.http.Callback;
 import retrofit.http.RetrofitError;
 
@@ -17,7 +18,7 @@ import javax.inject.Inject;
 import java.util.List;
 
 /**
- * Service for running NodeIndexTasks in the background. NodeIndexTasks are retrieved from the NodeIndexTaskQueue and
+ * Service for running NodeIndexTasks in the background. NodeIndexTasks are retrieved from the TaskQueue and
  * executed in a separate thread one at a time. Callbacks are run on the main thread,
  * except for writes to the database which are done in a separate thread.
  */
@@ -26,12 +27,12 @@ public class NodeIndexTaskService extends Service implements Callback<List<NodeI
     private static final String TAG = "NodeIndexTaskService";
 
     @Inject
-    NodeIndexTaskQueue queue;
+    TaskQueue<NodeIndexTask> queue;
     @Inject
     Bus bus;
 
     private boolean running;
-    private int taskId;
+    private String taskTag;
 
     @Override
     public void onCreate() {
@@ -52,9 +53,8 @@ public class NodeIndexTaskService extends Service implements Callback<List<NodeI
         NodeIndexTask task = queue.peek();
         if (task != null) {
             running = true;
-            bus.post(produceStatus(running, taskId));
-
-            taskId = task.getId();
+            taskTag = task.getTag();
+            bus.post(produceStatus(running, taskTag));
             task.execute(this);
         } else {
             Log.i(TAG, "Service stopping!");
@@ -63,8 +63,8 @@ public class NodeIndexTaskService extends Service implements Callback<List<NodeI
     }
 
     @Produce
-    public NodeIndexTaskStatus produceStatus(boolean running, int taskId) {
-        return new NodeIndexTaskStatus(running, taskId);
+    public NodeIndexTaskStatus produceStatus(boolean running, String taskTag) {
+        return new NodeIndexTaskStatus(running, taskTag);
     }
 
 
@@ -76,7 +76,6 @@ public class NodeIndexTaskService extends Service implements Callback<List<NodeI
     @Override
     public void success(final List<NodeIndex> nodeIndexes) {
         Log.i(TAG, "Success!");
-        Log.d(TAG, nodeIndexes.toString());
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -87,7 +86,7 @@ public class NodeIndexTaskService extends Service implements Callback<List<NodeI
         }).start();
         running = false;
         queue.remove();
-        bus.post(produceStatus(running, taskId));
+        bus.post(produceStatus(running, taskTag));
         executeNext();
     }
 
@@ -100,7 +99,7 @@ public class NodeIndexTaskService extends Service implements Callback<List<NodeI
         }
         running = false;
         queue.remove();
-        bus.post(produceStatus(running, taskId));
+        bus.post(produceStatus(running, taskTag));
         executeNext();
     }
 }

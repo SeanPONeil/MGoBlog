@@ -6,7 +6,6 @@ import android.support.v4.content.Loader;
 import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.Toast;
 import com.activeandroid.ModelLoader;
 import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
@@ -14,13 +13,13 @@ import com.activeandroid.util.Log;
 import com.atami.mgodroid.R;
 import com.atami.mgodroid.events.NodeIndexTaskStatus;
 import com.atami.mgodroid.io.NodeIndexTask;
-import com.atami.mgodroid.io.NodeIndexTaskQueue;
 import com.atami.mgodroid.models.NodeIndex;
 import com.atami.mgodroid.ui.base.PullToRefreshListFragment;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleListener;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.squareup.otto.Subscribe;
+import com.squareup.tape.TaskQueue;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -32,14 +31,14 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
 
     private final static String TAG = "NodeIndexListFragment";
 
-    //DB/API parameters
+    //DB and API parameters
     private String column;
     private String value;
 
     private NodeIndexAdapter mAdapter;
 
     @Inject
-    NodeIndexTaskQueue queue;
+    TaskQueue<NodeIndexTask> queue;
 
     /**
      * Displays a list of node indexes from MGoBlog.
@@ -67,7 +66,7 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
 
         setHasOptionsMenu(true);
 
-        queue.add(new NodeIndexTask(column, value, 0, 0));
+        queue.add(new NodeIndexTask(column, value, 0, getTag()));
     }
 
     @Override
@@ -101,7 +100,7 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
 
     @Override
     public void onLastItemVisible() {
-        queue.add(new NodeIndexTask(column, value, mAdapter.getCount() / 20, 0));
+        queue.add(new NodeIndexTask(column, value, mAdapter.getCount() / 20, getTag()));
     }
 
     @Override
@@ -111,12 +110,12 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
                         System.currentTimeMillis(), DateUtils.FORMAT_SHOW_TIME
                         | DateUtils.FORMAT_SHOW_DATE
                         | DateUtils.FORMAT_ABBREV_ALL));
-        queue.add(new NodeIndexTask(column, value, 0, 0));
+        queue.add(new NodeIndexTask(column, value, 0, getTag()));
     }
 
     @Subscribe
     public void onNewNodeIndexTaskStatus(NodeIndexTaskStatus status) {
-        if (status.id == 0) {
+        if (status.tag.equals(getTag())) {
             if (status.running) {
                 getPullToRefreshListView().setRefreshing();
             } else {
