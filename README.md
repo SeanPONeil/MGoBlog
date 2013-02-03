@@ -30,4 +30,5 @@ This project uses many open source libraries, such as
 * [Otto](https://github.com/square/otto)
 * [Retrofit](https://github.com/square/retrofit)
 * [Tape](https://github.com/square/tape)
+* [Dagger](https://github.com/square/dagger)
 * [Jsoup](http://jsoup.org/)
