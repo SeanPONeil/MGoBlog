@@ -147,28 +147,30 @@ public class MGoBlogActivity extends BaseActivity {
         mMenuDrawer.setMenuView(menuList);
 
         //"Up" button will blink until it is clicked
-        mHandler = new Handler();
-        mToggleUpRunnable = new Runnable() {
-            @Override
-            public void run() {
-                mDisplayUp = !mDisplayUp;
-                getActionBar().setDisplayHomeAsUpEnabled(mDisplayUp);
-                mHandler.postDelayed(mToggleUpRunnable, 500);
-            }
-        };
-
-        mHandler.postDelayed(mToggleUpRunnable, 500);
-
-        mMenuDrawer.setOnDrawerStateChangeListener(new MenuDrawer.OnDrawerStateChangeListener() {
-            @Override
-            public void onDrawerStateChange(int oldState, int newState) {
-                if (newState == MenuDrawer.STATE_OPEN) {
-                    mHandler.removeCallbacks(mToggleUpRunnable);
-                    if (!mDisplayUp) getActionBar().setDisplayHomeAsUpEnabled(true);
-                    mMenuDrawer.setOnDrawerStateChangeListener(null);
+        if (!mIsDualPane) {
+            mHandler = new Handler();
+            mToggleUpRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    mDisplayUp = !mDisplayUp;
+                    getActionBar().setDisplayHomeAsUpEnabled(mDisplayUp);
+                    mHandler.postDelayed(mToggleUpRunnable, 500);
                 }
-            }
-        });
+            };
+
+            mHandler.postDelayed(mToggleUpRunnable, 500);
+
+            mMenuDrawer.setOnDrawerStateChangeListener(new MenuDrawer.OnDrawerStateChangeListener() {
+                @Override
+                public void onDrawerStateChange(int oldState, int newState) {
+                    if (newState == MenuDrawer.STATE_OPEN) {
+                        mHandler.removeCallbacks(mToggleUpRunnable);
+                        if (!mDisplayUp) getActionBar().setDisplayHomeAsUpEnabled(true);
+                        mMenuDrawer.setOnDrawerStateChangeListener(null);
+                    }
+                }
+            });
+        }
     }
 
     private static class DrawerItem {
