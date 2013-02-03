@@ -7,6 +7,7 @@ import com.atami.mgodroid.io.NodeIndexTask;
 import com.atami.mgodroid.io.NodeIndexTaskService;
 import com.atami.mgodroid.io.NodeTask;
 import com.atami.mgodroid.io.NodeTaskService;
+import com.atami.mgodroid.ui.NodeFragment;
 import com.atami.mgodroid.ui.NodeIndexListFragment;
 import com.squareup.tape.InMemoryObjectQueue;
 import com.squareup.tape.ObjectQueue;
@@ -20,6 +21,7 @@ import javax.inject.Singleton;
 @Module(
         entryPoints = {
                 NodeIndexListFragment.class,
+                NodeFragment.class,
                 NodeIndexTaskService.class,
                 NodeTaskService.class
         }

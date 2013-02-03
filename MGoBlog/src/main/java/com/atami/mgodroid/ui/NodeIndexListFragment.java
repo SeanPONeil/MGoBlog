@@ -42,9 +42,6 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
     @Inject
     TaskQueue<NodeIndexTask> queue;
 
-    @Inject
-    TaskQueue<NodeTask> nodeQueue;
-
     /**
      * Displays a list of node indexes from MGoBlog.
      *
@@ -71,7 +68,9 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
 
         setHasOptionsMenu(true);
 
-        queue.add(new NodeIndexTask(column, value, 0, getTag()));
+        if(savedInstanceState == null){
+            queue.add(new NodeIndexTask(column, value, 0, getTag()));
+        }
     }
 
     @Override
@@ -100,10 +99,9 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        //Intent intent = new Intent(this, NodeActivity.class);
-        //intent.putExtra("nid", mAdapter.getItem(position - 1).getNid());
-        //startActivity(intent);
-        nodeQueue.add(new NodeTask(mAdapter.getItem(position - 1).getNid(), getTag()));
+        Intent intent = new Intent(getActivity(), NodeActivity.class);
+        intent.putExtra("nid", mAdapter.getItem(position - 1).getNid());
+        startActivity(intent);
     }
 
     @Override

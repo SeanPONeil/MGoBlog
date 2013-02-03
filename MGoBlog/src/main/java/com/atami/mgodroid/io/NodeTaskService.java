@@ -75,6 +75,7 @@ public class NodeTaskService extends Service implements Callback<Node> {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                node.clean();
                 node.save();
             }
         }).start();

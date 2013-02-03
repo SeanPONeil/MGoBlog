@@ -2,20 +2,38 @@ package com.atami.mgodroid.ui;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.WebSettings;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.activeandroid.ModelLoader;
+import com.activeandroid.query.From;
+import com.activeandroid.query.Select;
 import com.atami.mgodroid.R;
+import com.atami.mgodroid.events.NodeIndexTaskStatus;
 import com.atami.mgodroid.events.NodeRefreshEvent;
+import com.atami.mgodroid.events.NodeTaskStatus;
+import com.atami.mgodroid.io.NodeTask;
+import com.atami.mgodroid.models.Node;
+import com.atami.mgodroid.models.NodeIndex;
 import com.atami.mgodroid.ui.base.WebViewFragment;
+import com.squareup.otto.Subscribe;
+import com.squareup.tape.TaskQueue;
 
-public class NodeFragment extends WebViewFragment {
+import javax.inject.Inject;
+import java.util.List;
+
+public class NodeFragment extends WebViewFragment implements LoaderManager.LoaderCallbacks<List<Node>> {
 
     // ID of the current node
     int nid;
+
+    @Inject
+    TaskQueue<NodeTask> queue;
 
     private Menu nodeMenu;
 
@@ -34,6 +52,10 @@ public class NodeFragment extends WebViewFragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         nid = getArguments().getInt("nid");
+
+        if(savedInstanceState == null){
+            queue.add(new NodeTask(nid, getTag()));
+        }
     }
 
     @Override
@@ -44,26 +66,47 @@ public class NodeFragment extends WebViewFragment {
         getWebView().getSettings().setDefaultFontSize(16);
         getWebView().getSettings().setPluginState(WebSettings.PluginState.ON);
         getWebView().getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+
+        //Bug in ActiveAndroid ModelLoader: Cached results in LoaderManager aren't updated
+        //when the ModelLoaders From changes
+        if(savedInstanceState == null){
+            getActivity().getSupportLoaderManager().restartLoader(0, null, this);
+        }else{
+            getActivity().getSupportLoaderManager().initLoader(0, null, this);
+        }
     }
 
-//    @Subscribe
-//    public void onNodeUpdate(NodeUpdateEvent event) {
-//        if (event.node != null) {
-//            getWebView().loadDataWithBaseURL("file:///android_asset/", event.node.getBody(), "text/html", "UTF-8", null);
-//            getSherlockActivity().getSupportActionBar().setTitle(event.node.getTitle());
-//            getSherlockActivity().getSupportActionBar().setSubtitle("By " + event.node.getName() + " - " + event.node
-//                    .getCommentCount() + " " + "comments");
-//        }
-//    }
+    @Subscribe
+    public void onNewNodeTaskStatus(NodeTaskStatus status) {
+        if (status.tag.equals(getTag())) {
+            if (status.running) {
+                setRefreshActionItemState(true);
+            } else {
+                setRefreshActionItemState(false);
+            }
+        }
+    }
 
-//    @Subscribe
-//    public void onNodeStatusUpdate(NodeStatusEvent event) {
-//        if (event.refreshing) {
-//            setRefreshActionItemState(true);
-//        } else {
-//            setRefreshActionItemState(false);
-//        }
-//    }
+    @Override
+    public Loader<List<Node>> onCreateLoader(int id, Bundle args) {
+        From query = new Select().from(Node.class).where("nid = ?", nid);
+        return new ModelLoader<Node>(getActivity(), query);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<Node>> nodeLoader, List<Node> node) {
+        if(!node.isEmpty()){
+            getWebView().loadDataWithBaseURL("file:///android_asset/", node.get(0).getBody(), "text/html", "UTF-8",
+                    null);
+            getSherlockActivity().getSupportActionBar().setTitle(node.get(0).getTitle());
+            getSherlockActivity().getSupportActionBar().setSubtitle("By " + node.get(0).getName() + " - " + node.get(0)
+                    .getCommentCount() + " " + "comments");
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<Node>> nodeLoader) {
+    }
 
     public void setRefreshActionItemState(boolean refreshing) {
         if (nodeMenu == null) {
@@ -94,7 +137,7 @@ public class NodeFragment extends WebViewFragment {
         switch (item.getItemId()) {
             case R.id.refresh:
                 setRefreshActionItemState(true);
-                bus.post(new NodeRefreshEvent());
+                queue.add(new NodeTask(nid, getTag()));
                 return true;
             case R.id.comments:
 //                // Instantiate a new fragment.

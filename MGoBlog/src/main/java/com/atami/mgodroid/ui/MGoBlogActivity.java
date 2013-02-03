@@ -121,6 +121,8 @@ public class MGoBlogActivity extends BaseActivity {
                 getSupportFragmentManager().beginTransaction().replace(R.id.node_index_container,
                         f, di.mTitle).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
 
+                getSupportActionBar().setTitle(di.mTitle);
+
                 mActivePosition = position;
                 mMenuDrawer.setActiveView(view, position);
                 mMenuDrawer.closeMenu();
