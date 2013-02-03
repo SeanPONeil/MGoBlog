@@ -3,6 +3,7 @@ package com.atami.mgodroid.io;
 
 import android.content.Context;
 import android.content.Intent;
+import com.atami.mgodroid.MGoBlogApplication;
 import com.atami.mgodroid.modules.MGoBlogAPIModule;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Produce;
@@ -38,7 +39,7 @@ public class NodeIndexTaskQueue extends TaskQueue<NodeIndexTask> {
     }
 
     @Override public void add(NodeIndexTask entry) {
-        entry.setAPI(api);
+        ((MGoBlogApplication) context.getApplicationContext()).objectGraph().inject(entry);
         super.add(entry);
         startService();
     }

@@ -22,7 +22,7 @@ import java.util.concurrent.Executor;
 
 @Module(
         entryPoints = {
-                NodeIndexTaskQueue.class
+                NodeIndexTask.class
         }
 )
 public class MGoBlogAPIModule {

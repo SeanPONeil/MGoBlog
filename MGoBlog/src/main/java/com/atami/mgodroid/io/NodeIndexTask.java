@@ -23,6 +23,7 @@ public class NodeIndexTask implements Task<Callback<List<NodeIndex>>> {
     private int page;
     private int id;
 
+    @Inject
     private MGoBlogAPI api;
 
     /**
@@ -40,10 +41,6 @@ public class NodeIndexTask implements Task<Callback<List<NodeIndex>>> {
         this.value = value;
         this.page = page;
         this.id = id;
-    }
-
-    public void setAPI(MGoBlogAPI api){
-        this.api = api;
     }
 
     public int getId(){
