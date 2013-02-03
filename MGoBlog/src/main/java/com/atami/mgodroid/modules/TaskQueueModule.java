@@ -5,8 +5,9 @@ import android.content.Intent;
 import com.atami.mgodroid.MGoBlogApplication;
 import com.atami.mgodroid.io.NodeIndexTask;
 import com.atami.mgodroid.io.NodeIndexTaskService;
+import com.atami.mgodroid.io.NodeTask;
+import com.atami.mgodroid.io.NodeTaskService;
 import com.atami.mgodroid.ui.NodeIndexListFragment;
-import com.squareup.otto.Bus;
 import com.squareup.tape.InMemoryObjectQueue;
 import com.squareup.tape.ObjectQueue;
 import com.squareup.tape.TaskInjector;
@@ -16,12 +17,11 @@ import dagger.Provides;
 
 import javax.inject.Singleton;
 
-import static com.atami.mgodroid.modules.MGoBlogAPIModule.MGoBlogAPI;
-
 @Module(
         entryPoints = {
                 NodeIndexListFragment.class,
-                NodeIndexTaskService.class
+                NodeIndexTaskService.class,
+                NodeTaskService.class
         }
 )
 public class TaskQueueModule {
@@ -39,11 +39,31 @@ public class TaskQueueModule {
             this.context = context;
         }
 
-        @Override public void onAdd(ObjectQueue<NodeIndexTask> queue, NodeIndexTask task) {
+        @Override
+        public void onAdd(ObjectQueue<NodeIndexTask> queue, NodeIndexTask task) {
             context.startService(new Intent(context, NodeIndexTaskService.class));
         }
 
-        @Override public void onRemove(ObjectQueue<NodeIndexTask> task) {}
+        @Override
+        public void onRemove(ObjectQueue<NodeIndexTask> task) {
+        }
+    }
+
+    public class NodeServiceStarter implements ObjectQueue.Listener<NodeTask> {
+        private final Context context;
+
+        public NodeServiceStarter(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        public void onAdd(ObjectQueue<NodeTask> queue, NodeTask task) {
+            context.startService(new Intent(context, NodeTaskService.class));
+        }
+
+        @Override
+        public void onRemove(ObjectQueue<NodeTask> task) {
+        }
     }
 
 
@@ -54,10 +74,24 @@ public class TaskQueueModule {
         TaskQueue<NodeIndexTask> queue = new TaskQueue<NodeIndexTask>(delegate, new TaskInjector<NodeIndexTask>() {
             @Override
             public void injectMembers(NodeIndexTask task) {
-                ( (MGoBlogApplication) appContext.getApplicationContext()).objectGraph().inject(task);
+                ((MGoBlogApplication) appContext.getApplicationContext()).objectGraph().inject(task);
             }
         });
         queue.setListener(new NodeIndexServiceStarter(appContext));
+        return queue;
+    }
+
+    @Provides
+    @Singleton
+    TaskQueue<NodeTask> provideNodeTaskQueue() {
+        ObjectQueue<NodeTask> delegate = new InMemoryObjectQueue<NodeTask>();
+        TaskQueue<NodeTask> queue = new TaskQueue<NodeTask>(delegate, new TaskInjector<NodeTask>() {
+            @Override
+            public void injectMembers(NodeTask task) {
+                ((MGoBlogApplication) appContext.getApplicationContext()).objectGraph().inject(task);
+            }
+        });
+        queue.setListener(new NodeServiceStarter(appContext));
         return queue;
     }
 }

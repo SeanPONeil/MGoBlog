@@ -1,5 +1,6 @@
 package com.atami.mgodroid.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -13,6 +14,7 @@ import com.activeandroid.util.Log;
 import com.atami.mgodroid.R;
 import com.atami.mgodroid.events.NodeIndexTaskStatus;
 import com.atami.mgodroid.io.NodeIndexTask;
+import com.atami.mgodroid.io.NodeTask;
 import com.atami.mgodroid.models.NodeIndex;
 import com.atami.mgodroid.ui.base.PullToRefreshListFragment;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -39,6 +41,9 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
 
     @Inject
     TaskQueue<NodeIndexTask> queue;
+
+    @Inject
+    TaskQueue<NodeTask> nodeQueue;
 
     /**
      * Displays a list of node indexes from MGoBlog.
@@ -95,7 +100,10 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        //bus.post(mAdapter.getItem(position - 1));
+        //Intent intent = new Intent(this, NodeActivity.class);
+        //intent.putExtra("nid", mAdapter.getItem(position - 1).getNid());
+        //startActivity(intent);
+        nodeQueue.add(new NodeTask(mAdapter.getItem(position - 1).getNid(), getTag()));
     }
 
     @Override

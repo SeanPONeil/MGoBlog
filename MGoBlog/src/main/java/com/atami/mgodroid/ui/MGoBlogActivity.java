@@ -69,13 +69,6 @@ public class MGoBlogActivity extends BaseActivity {
         outState.putInt(STATE_ACTIVE_POSITION, mActivePosition);
     }
 
-    @Subscribe
-    public void onNodeIndexItemClick(NodeIndex nodeIndex) {
-        Intent intent = new Intent(this, NodeActivity.class);
-        intent.putExtra("nid", nodeIndex.getNid());
-        startActivity(intent);
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

@@ -2,6 +2,7 @@ package com.atami.mgodroid.modules;
 
 
 import com.atami.mgodroid.io.NodeIndexTask;
+import com.atami.mgodroid.io.NodeTask;
 import com.atami.mgodroid.models.Node;
 import com.atami.mgodroid.models.NodeComment;
 import com.atami.mgodroid.models.NodeIndex;
@@ -17,7 +18,8 @@ import java.util.concurrent.Executor;
 
 @Module(
         entryPoints = {
-                NodeIndexTask.class
+                NodeIndexTask.class,
+                NodeTask.class
         }
 )
 public class MGoBlogAPIModule {
@@ -40,7 +42,7 @@ public class MGoBlogAPIModule {
                    Callback<List<NodeIndex>> callback);
 
         @GET("node/{nid}.json")
-        Node getNode(@Named("nid") int nid);
+        void getNode(@Named("nid") int nid, Callback<Node> callback);
 
         @GET("node/{nid}/comments.json")
         List<NodeComment> getNodeComments(@Named("nid") int nid);

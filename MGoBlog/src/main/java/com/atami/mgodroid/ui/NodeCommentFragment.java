@@ -9,17 +9,9 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.atami.mgodroid.R;
 import com.atami.mgodroid.models.NodeComment;
-import com.atami.mgodroid.modules.MGoBlogAPIModule;
-import com.atami.mgodroid.ui.base.BaseFragment;
 import com.atami.mgodroid.ui.base.BaseListFragment;
-import com.squareup.otto.Produce;
-import com.squareup.otto.Subscribe;
-import retrofit.http.RetrofitError;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class NodeCommentFragment extends BaseListFragment {
 
@@ -56,21 +48,21 @@ public class NodeCommentFragment extends BaseListFragment {
         getListView().setAdapter(mAdapter);
     }
 
-    @Subscribe
-    public void onNodeCommentUpdate(NodeCommentUpdateEvent event) {
-        mAdapter.setNodeComments(event.nodeComments);
-        mAdapter.notifyDataSetChanged();
-        setListShown(true);
-    }
-
-    @Subscribe
-    public void onNodeCommentsStatusUpdate(NodeCommentStatusEvent event) {
-        if (event.refreshing) {
-            setRefreshActionItemState(true);
-        } else {
-            setRefreshActionItemState(false);
-        }
-    }
+//    @Subscribe
+//    public void onNodeCommentUpdate(NodeCommentUpdateEvent event) {
+//        mAdapter.setNodeComments(event.nodeComments);
+//        mAdapter.notifyDataSetChanged();
+//        setListShown(true);
+//    }
+//
+//    @Subscribe
+//    public void onNodeCommentsStatusUpdate(NodeCommentStatusEvent event) {
+//        if (event.refreshing) {
+//            setRefreshActionItemState(true);
+//        } else {
+//            setRefreshActionItemState(false);
+//        }
+//    }
 
     public void setRefreshActionItemState(boolean refreshing) {
         if (nodeCommentMenu == null) {
@@ -101,96 +93,10 @@ public class NodeCommentFragment extends BaseListFragment {
         switch (item.getItemId()) {
             case R.id.refresh:
                 setRefreshActionItemState(true);
-                bus.post(new NodeCommentRefreshEvent());
+                //bus.post(new NodeCommentRefreshEvent());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
-
-    public static class WorkerFragment extends BaseFragment {
-
-        public static final String TAG = NodeCommentFragment.class.getName() + "WorkerFragment";
-
-        @Inject
-        MGoBlogAPIModule.MGoBlogAPI api;
-
-        int nid;
-
-        List<NodeComment> nodeComments;
-
-        boolean refreshing = false;
-
-        public static WorkerFragment newInstance(int nid) {
-            WorkerFragment f = new WorkerFragment();
-
-            Bundle args = new Bundle();
-            args.putInt("nid", nid);
-            f.setArguments(args);
-
-            return f;
-        }
-
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            nid = getArguments().getInt("nid");
-            setRetainInstance(true);
-            nodeComments = Collections.synchronizedList(new ArrayList<NodeComment>());
-            getFromDisk();
-            refresh();
-        }
-
-
-        private void getFromDisk() {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    nodeComments = NodeComment.getAll(nid);
-                    bus.post(produceNodeComments());
-                }
-            }).start();
-        }
-
-        private void refresh() {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        refreshing = true;
-                        bus.post(produceStatus());
-                        nodeComments = api.getNodeComments(nid);
-                        NodeComment.deleteAll(nid);
-                        bus.post(produceNodeComments());
-                        for (NodeComment comment : nodeComments) {
-                            comment.save();
-                        }
-                    } catch (RetrofitError e) {
-                        e.printStackTrace();
-                        bus.post(e);
-                    } finally {
-                        refreshing = false;
-                        bus.post(produceStatus());
-                    }
-                }
-            }).start();
-        }
-
-        @Subscribe
-        public void onNodeRefresh(NodeCommentRefreshEvent event) {
-            if (!refreshing) {
-                refresh();
-            }
-        }
-
-        @Produce
-        public NodeCommentUpdateEvent produceNodeComments() {
-            return new NodeCommentUpdateEvent(nid, nodeComments);
-        }
-
-        @Produce
-        public NodeCommentStatusEvent produceStatus() {
-            return new NodeCommentStatusEvent(refreshing);
         }
     }
 }

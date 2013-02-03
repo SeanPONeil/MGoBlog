@@ -1,12 +1,14 @@
 package com.atami.mgodroid.io;
 
+
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
-import com.activeandroid.query.Update;
 import com.atami.mgodroid.MGoBlogApplication;
 import com.atami.mgodroid.events.NodeIndexTaskStatus;
+import com.atami.mgodroid.events.NodeTaskStatus;
+import com.atami.mgodroid.models.Node;
 import com.atami.mgodroid.models.NodeIndex;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Produce;
@@ -15,19 +17,18 @@ import retrofit.http.Callback;
 import retrofit.http.RetrofitError;
 
 import javax.inject.Inject;
-import java.util.List;
 
 /**
- * Service for running NodeIndexTasks in the background. NodeIndexTasks are retrieved from the TaskQueue and
+ * Service for running NodeTasks in the background. NodeTasks are retrieved from the TaskQueue and
  * executed in a separate thread one at a time. Callbacks are run on the main thread,
  * except for writes to the database which are done in a separate thread.
  */
-public class NodeIndexTaskService extends Service implements Callback<List<NodeIndex>> {
+public class NodeTaskService extends Service implements Callback<Node> {
 
-    private static final String TAG = "NodeIndexTaskService";
+    private static final String TAG = "NodeTaskService";
 
     @Inject
-    TaskQueue<NodeIndexTask> queue;
+    TaskQueue<NodeTask> queue;
     @Inject
     Bus bus;
 
@@ -50,7 +51,7 @@ public class NodeIndexTaskService extends Service implements Callback<List<NodeI
     private void executeNext() {
         if (running) return; // Only one task at a time.
 
-        NodeIndexTask task = queue.peek();
+        NodeTask task = queue.peek();
         if (task != null) {
             running = true;
             taskTag = task.getTag();
@@ -63,19 +64,18 @@ public class NodeIndexTaskService extends Service implements Callback<List<NodeI
     }
 
     @Produce
-    public NodeIndexTaskStatus produceStatus(boolean running, String taskTag) {
-        return new NodeIndexTaskStatus(running, taskTag);
+    public NodeTaskStatus produceStatus(boolean running, String taskTag) {
+        return new NodeTaskStatus(running, taskTag);
     }
 
     @Override
-    public void success(final List<NodeIndex> nodeIndexes) {
+    public void success(final Node node) {
         Log.i(TAG, "Success!");
+        Log.i(TAG, node.toString());
         new Thread(new Runnable() {
             @Override
             public void run() {
-                for(NodeIndex ni: nodeIndexes){
-                    ni.save();
-                }
+                node.save();
             }
         }).start();
         running = false;
