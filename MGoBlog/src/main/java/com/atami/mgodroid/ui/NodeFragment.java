@@ -14,12 +14,9 @@ import com.activeandroid.ModelLoader;
 import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
 import com.atami.mgodroid.R;
-import com.atami.mgodroid.events.NodeIndexTaskStatus;
-import com.atami.mgodroid.events.NodeRefreshEvent;
 import com.atami.mgodroid.events.NodeTaskStatus;
 import com.atami.mgodroid.io.NodeTask;
 import com.atami.mgodroid.models.Node;
-import com.atami.mgodroid.models.NodeIndex;
 import com.atami.mgodroid.ui.base.WebViewFragment;
 import com.squareup.otto.Subscribe;
 import com.squareup.tape.TaskQueue;
@@ -136,7 +133,6 @@ public class NodeFragment extends WebViewFragment implements LoaderManager.Loade
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.refresh:
-                setRefreshActionItemState(true);
                 queue.add(new NodeTask(nid, getTag()));
                 return true;
             case R.id.comments:
