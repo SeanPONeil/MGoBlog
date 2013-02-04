@@ -1,5 +1,3 @@
-[![Build Status](https://secure.travis-ci.org/SeanPONeil/MGoBlog.png)](http://travis-ci.org/SeanPONeil/MGoBlog)
-
 MGoBlog
 =======
 
@@ -32,3 +30,4 @@ This project uses many open source libraries, such as
 * [Tape](https://github.com/square/tape)
 * [Dagger](https://github.com/square/dagger)
 * [Jsoup](http://jsoup.org/)
+* [PrettyTime](http://ocpsoft.org/prettytime/)
