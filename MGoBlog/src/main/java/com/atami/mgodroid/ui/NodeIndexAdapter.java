@@ -68,7 +68,7 @@ public class NodeIndexAdapter extends ArrayAdapter<NodeIndex> {
         NodeIndex nodeIndex = getItem(position);
 
         viewHolder.title.setText(nodeIndex.getTitle());
-        viewHolder.created.setText(String.valueOf(nodeIndex.getCreated()));
+        viewHolder.created.setText(nodeIndex.getCreated());
 
         return view;
     }

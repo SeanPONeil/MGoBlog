@@ -1,6 +1,5 @@
 package com.atami.mgodroid.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -10,9 +9,7 @@ import android.view.ViewGroup;
 import android.widget.*;
 import com.actionbarsherlock.view.MenuItem;
 import com.atami.mgodroid.R;
-import com.atami.mgodroid.models.NodeIndex;
 import com.atami.mgodroid.ui.base.BaseActivity;
-import com.squareup.otto.Subscribe;
 import net.simonvt.menudrawer.MenuDrawer;
 import net.simonvt.menudrawer.Position;
 
@@ -26,7 +23,7 @@ public class MGoBlogActivity extends BaseActivity {
 
     private MenuDrawer mMenuDrawer;
 
-    private int mActivePosition = 0;
+    private int mActivePosition = 1;
     private Handler mHandler;
     private Runnable mToggleUpRunnable;
     private boolean mDisplayUp = true;

@@ -4,7 +4,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
-import com.activeandroid.query.Update;
 import com.atami.mgodroid.MGoBlogApplication;
 import com.atami.mgodroid.events.NodeIndexTaskStatus;
 import com.atami.mgodroid.models.NodeIndex;
@@ -73,7 +72,7 @@ public class NodeIndexTaskService extends Service implements Callback<List<NodeI
         new Thread(new Runnable() {
             @Override
             public void run() {
-                for(NodeIndex ni: nodeIndexes){
+                for (NodeIndex ni : nodeIndexes) {
                     ni.save();
                 }
             }
@@ -90,6 +89,7 @@ public class NodeIndexTaskService extends Service implements Callback<List<NodeI
             Log.i(TAG, "Network error!");
         } else {
             Log.i(TAG, "Non network error! Something is wrong!");
+            error.printStackTrace();
         }
         running = false;
         queue.remove();
