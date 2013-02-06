@@ -3,7 +3,7 @@ language: java
 # http://stackoverflow.com/a/3008489/82156
 before_install:
   - wget http://dl.google.com/android/android-sdk_r21.0.1-linux.tgz
-  - tar -zxf android-sdk_r18-linux.tgz
+  - tar -zxf android-sdk_r21.0.1-linux.tgz
   - pwd
   - ls
   - ( cd ~ && pwd )
