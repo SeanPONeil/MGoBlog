@@ -63,7 +63,7 @@ public class NodeFragment extends WebViewFragment implements LoaderManager.Loade
         getWebView().getSettings().setJavaScriptEnabled(true);
         getWebView().getSettings().setDefaultFontSize(16);
         getWebView().getSettings().setPluginState(WebSettings.PluginState.ON);
-        getWebView().getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+        getWebView().getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
 
         //Bug in ActiveAndroid ModelLoader: Cached results in LoaderManager aren't updated
         //when the ModelLoaders From changes
@@ -142,12 +142,12 @@ public class NodeFragment extends WebViewFragment implements LoaderManager.Loade
 
                 // Add the fragment to the activity, pushing this transaction
                 // on to the back stack.
-                FragmentTransaction ft = getSherlockActivity().getSupportFragmentManager().beginTransaction();
+                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                 ft.setCustomAnimations(R.anim.fragment_slide_left_enter,
                         R.anim.fragment_slide_left_exit,
                         R.anim.fragment_slide_right_enter,
                         R.anim.fragment_slide_right_exit);
-                ft.replace(R.id.node_pane, newFragment);
+                ft.replace(R.id.node_pane, newFragment, getTag());
                 ft.addToBackStack(null);
                 ft.commit();
                 return true;
