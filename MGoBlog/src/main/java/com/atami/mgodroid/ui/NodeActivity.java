@@ -3,10 +3,13 @@ package com.atami.mgodroid.ui;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import com.actionbarsherlock.view.MenuItem;
+import com.activeandroid.util.Log;
 import com.atami.mgodroid.R;
 import com.atami.mgodroid.ui.base.BaseActivity;
 
 public class NodeActivity extends BaseActivity {
+
+    public final static String TAG = "NodeActivity";
 
     private int nid;
 
@@ -22,14 +25,13 @@ public class NodeActivity extends BaseActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if(savedInstanceState == null){
-            getSupportFragmentManager().beginTransaction().replace(R.id.node_pane, NodeFragment.newInstance(nid),
-                    String.valueOf(nid)).commit();
-        }
+        getSupportFragmentManager().beginTransaction().replace(R.id.node_pane, NodeFragment.newInstance(nid),
+                String.valueOf(nid)).commit();
 
         if (mIsDualPane) {
+            System.out.println("Reached node comment replace");
             getSupportFragmentManager().beginTransaction().replace(R.id.node_comment_pane,
-                    NodeFragment.newInstance(nid), String.valueOf(nid)).commit();
+                    NodeCommentFragment.newInstance(nid), String.valueOf(nid)).commit();
         }
 
     }

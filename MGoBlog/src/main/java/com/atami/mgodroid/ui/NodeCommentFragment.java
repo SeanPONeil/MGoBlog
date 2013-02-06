@@ -2,21 +2,38 @@ package com.atami.mgodroid.ui;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.activeandroid.ModelLoader;
+import com.activeandroid.query.From;
+import com.activeandroid.query.Select;
+import com.activeandroid.util.Log;
 import com.atami.mgodroid.R;
+import com.atami.mgodroid.events.NodeCommentTaskStatus;
+import com.atami.mgodroid.io.NodeCommentTask;
 import com.atami.mgodroid.models.NodeComment;
 import com.atami.mgodroid.ui.base.BaseListFragment;
+import com.squareup.otto.Subscribe;
+import com.squareup.tape.TaskQueue;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.List;
 
-public class NodeCommentFragment extends BaseListFragment {
+public class NodeCommentFragment extends BaseListFragment implements LoaderManager.LoaderCallbacks<List<NodeComment>> {
+
+    private final static String TAG = "NodeCommentFragment";
 
     // ID of the current node
     int nid;
+
+    @Inject
+    TaskQueue<NodeCommentTask> queue;
 
     private NodeCommentAdapter mAdapter;
 
@@ -37,6 +54,7 @@ public class NodeCommentFragment extends BaseListFragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         nid = getArguments().getInt("nid");
+        queue.add(new NodeCommentTask(nid, getTag()));
     }
 
     @Override
@@ -46,23 +64,26 @@ public class NodeCommentFragment extends BaseListFragment {
         mAdapter = new NodeCommentAdapter(getActivity(), android.R.layout.simple_list_item_2,
                 new ArrayList<NodeComment>());
         getListView().setAdapter(mAdapter);
+
+        //Bug in ActiveAndroid ModelLoader: Cached results in LoaderManager aren't updated
+        //when the ModelLoaders From changes
+        if(savedInstanceState == null){
+            getActivity().getSupportLoaderManager().restartLoader(0, null, this);
+        }else{
+            getActivity().getSupportLoaderManager().initLoader(0, null, this);
+        }
     }
 
-//    @Subscribe
-//    public void onNodeCommentUpdate(NodeCommentUpdateEvent event) {
-//        mAdapter.setNodeComments(event.nodeComments);
-//        mAdapter.notifyDataSetChanged();
-//        setListShown(true);
-//    }
-//
-//    @Subscribe
-//    public void onNodeCommentsStatusUpdate(NodeCommentStatusEvent event) {
-//        if (event.refreshing) {
-//            setRefreshActionItemState(true);
-//        } else {
-//            setRefreshActionItemState(false);
-//        }
-//    }
+    @Subscribe
+    public void onNewNodeCommentTaskStatus(NodeCommentTaskStatus status) {
+        if (status.tag.equals(getTag())) {
+            if (status.running) {
+                setRefreshActionItemState(true);
+            } else {
+                setRefreshActionItemState(false);
+            }
+        }
+    }
 
     public void setRefreshActionItemState(boolean refreshing) {
         if (nodeCommentMenu == null) {
@@ -93,10 +114,29 @@ public class NodeCommentFragment extends BaseListFragment {
         switch (item.getItemId()) {
             case R.id.refresh:
                 setRefreshActionItemState(true);
-                //bus.post(new NodeCommentRefreshEvent());
+                queue.add(new NodeCommentTask(nid, getTag()));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    @Override
+    public Loader<List<NodeComment>> onCreateLoader(int i, Bundle bundle) {
+        Log.i(TAG, String.valueOf(nid));
+        From query = new Select().from(NodeComment.class).where("nid = ?", nid).orderBy("thread DESC");
+        return new ModelLoader<NodeComment>(getActivity(), query);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<NodeComment>> listLoader, List<NodeComment> nodeComments) {
+        mAdapter.setNodeComments(nodeComments);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<NodeComment>> listLoader) {
+        mAdapter.setNodeComments(null);
+    }
+
 }

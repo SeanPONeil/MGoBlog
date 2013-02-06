@@ -1,28 +1,27 @@
 package com.atami.mgodroid.modules;
 
 
+import com.atami.mgodroid.io.NodeCommentTask;
 import com.atami.mgodroid.io.NodeIndexTask;
 import com.atami.mgodroid.io.NodeTask;
 import com.atami.mgodroid.models.Node;
 import com.atami.mgodroid.models.NodeComment;
 import com.atami.mgodroid.models.NodeIndex;
-import com.google.gson.*;
+import com.google.gson.GsonBuilder;
 import dagger.Module;
 import dagger.Provides;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.joda.time.DateTime;
 import retrofit.http.*;
 
 import javax.inject.Named;
-import java.lang.reflect.Type;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executor;
 
 @Module(
         entryPoints = {
                 NodeIndexTask.class,
-                NodeTask.class
+                NodeTask.class,
+                NodeCommentTask.class
         }
 )
 public class MGoBlogAPIModule {
@@ -48,7 +47,7 @@ public class MGoBlogAPIModule {
         void getNode(@Named("nid") int nid, Callback<Node> callback);
 
         @GET("node/{nid}/comments.json")
-        List<NodeComment> getNodeComments(@Named("nid") int nid);
+        void getNodeComments(@Named("nid") int nid, Callback<List<NodeComment>> callback);
     }
 
     private class APIExecutor implements Executor {

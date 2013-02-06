@@ -4,10 +4,8 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import com.atami.mgodroid.MGoBlogApplication;
-import com.atami.mgodroid.io.NodeIndexTask;
-import com.atami.mgodroid.io.NodeIndexTaskService;
-import com.atami.mgodroid.io.NodeTask;
-import com.atami.mgodroid.io.NodeTaskService;
+import com.atami.mgodroid.io.*;
+import com.atami.mgodroid.ui.NodeCommentFragment;
 import com.atami.mgodroid.ui.NodeFragment;
 import com.atami.mgodroid.ui.NodeIndexListFragment;
 import com.squareup.tape.*;
@@ -20,8 +18,10 @@ import javax.inject.Singleton;
         entryPoints = {
                 NodeIndexListFragment.class,
                 NodeFragment.class,
+                NodeCommentFragment.class,
                 NodeIndexTaskService.class,
-                NodeTaskService.class
+                NodeTaskService.class,
+                NodeCommentTaskService.class
         }
 )
 public class TaskQueueModule {
@@ -39,7 +39,7 @@ public class TaskQueueModule {
         /**
          * Injects Dagger dependencies into Tasks added to TaskQueues
          *
-         * @param context
+         * @param context the application Context
          */
         public IOTaskInjector(Context context) {
             this.context = context;
@@ -95,6 +95,16 @@ public class TaskQueueModule {
         ObjectQueue<NodeTask> delegate = new InMemoryObjectQueue<NodeTask>();
         TaskQueue<NodeTask> queue = new TaskQueue<NodeTask>(delegate, new IOTaskInjector<NodeTask>(appContext));
         queue.setListener(new ServiceStarter<NodeTask>(appContext, NodeTaskService.class));
+        return queue;
+    }
+
+    @Provides
+    @Singleton
+    TaskQueue<NodeCommentTask> provideNodeCommentTaskQueue() {
+        ObjectQueue<NodeCommentTask> delegate = new InMemoryObjectQueue<NodeCommentTask>();
+        TaskQueue<NodeCommentTask> queue = new TaskQueue<NodeCommentTask>(delegate,
+                new IOTaskInjector<NodeCommentTask>(appContext));
+        queue.setListener(new ServiceStarter<NodeCommentTask>(appContext, NodeCommentTaskService.class));
         return queue;
     }
 }
