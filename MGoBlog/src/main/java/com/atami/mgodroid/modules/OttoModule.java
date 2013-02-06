@@ -17,6 +17,8 @@ package com.atami.mgodroid.modules;
 
 import android.os.Handler;
 import android.os.Looper;
+import com.atami.mgodroid.io.NodeIndexTaskService;
+import com.atami.mgodroid.io.NodeTaskService;
 import com.atami.mgodroid.ui.*;
 import com.atami.mgodroid.ui.base.BaseActivity;
 import com.atami.mgodroid.ui.base.BaseFragment;
@@ -29,28 +31,27 @@ import javax.inject.Singleton;
 
 @Module(
         entryPoints = {
-                BaseFragment.class,
-                BaseListFragment.class,
-                BaseActivity.class,
                 MGoBlogActivity.class,
                 NodeIndexListFragment.class,
                 NodeFragment.class,
                 NodeActivity.class,
-                NodeCommentFragment.class
+                NodeCommentFragment.class,
+                NodeIndexTaskService.class,
+                NodeTaskService.class
         }
 )
 public class OttoModule {
 
     @Provides
     @Singleton
-    Bus bus() {
+    Bus provideBus() {
         return new AsyncBus();
     }
 
     /**
      * Otto EventBus that posts all events on the Android main thread
      */
-    private static class AsyncBus extends Bus {
+    private class AsyncBus extends Bus {
         private final Handler mainThread = new Handler(Looper.getMainLooper());
 
         @Override

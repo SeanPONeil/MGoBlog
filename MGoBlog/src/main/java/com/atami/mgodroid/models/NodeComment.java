@@ -27,7 +27,7 @@ public class NodeComment extends Model {
                 .execute();
     }
 
-    @Column(name = "cid")
+    @Column(name = "cid", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
     private int cid;
 
     @Column(name = "pid")

@@ -27,6 +27,7 @@ public class NodeIndexTaskService extends Service implements Callback<List<NodeI
 
     @Inject
     TaskQueue<NodeIndexTask> queue;
+
     @Inject
     Bus bus;
 

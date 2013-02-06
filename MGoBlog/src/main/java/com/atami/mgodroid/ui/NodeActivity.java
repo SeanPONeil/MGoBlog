@@ -1,8 +1,6 @@
 package com.atami.mgodroid.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
 import com.actionbarsherlock.view.MenuItem;
 import com.atami.mgodroid.R;
@@ -17,18 +15,23 @@ public class NodeActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.node_container);
 
         mIsDualPane = getResources().getBoolean(R.bool.has_two_panes);
+        nid = getIntent().getIntExtra("nid", 0);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setContentView(R.layout.node_pane);
 
-        if (savedInstanceState == null) {
-            nid = getIntent().getIntExtra("nid", 0);
-            NodeFragment nf = NodeFragment.newInstance(nid);
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_pane, nf,
+        if(savedInstanceState == null){
+            getSupportFragmentManager().beginTransaction().replace(R.id.node_pane, NodeFragment.newInstance(nid),
                     String.valueOf(nid)).commit();
         }
+
+        if (mIsDualPane) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.node_comment_pane,
+                    NodeFragment.newInstance(nid), String.valueOf(nid)).commit();
+        }
+
     }
 
     @Override
