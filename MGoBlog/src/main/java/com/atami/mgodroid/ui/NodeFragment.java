@@ -2,6 +2,7 @@ package com.atami.mgodroid.ui;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
@@ -136,21 +137,19 @@ public class NodeFragment extends WebViewFragment implements LoaderManager.Loade
                 queue.add(new NodeTask(nid, getTag()));
                 return true;
             case R.id.comments:
-//                // Instantiate a new fragment.
-//                Fragment newFragment = NodeCommentFragment.newInstance(nid);
-//                Fragment workerFragment = NodeCommentFragment.WorkerFragment.newInstance(nid);
-//
-//                // Add the fragment to the activity, pushing this transaction
-//                // on to the back stack.
-//                FragmentTransaction ft = getSherlockActivity().getSupportFragmentManager().beginTransaction();
-//                ft.setCustomAnimations(R.anim.fragment_slide_left_enter,
-//                        R.anim.fragment_slide_left_exit,
-//                        R.anim.fragment_slide_right_enter,
-//                        R.anim.fragment_slide_right_exit);
-//                ft.replace(R.id.fragment_pane, newFragment);
-//                ft.add(workerFragment, NodeCommentFragment.WorkerFragment.TAG);
-//                ft.addToBackStack(null);
-//                ft.commit();
+                // Instantiate a new fragment.
+                NodeCommentFragment newFragment = NodeCommentFragment.newInstance(nid);
+
+                // Add the fragment to the activity, pushing this transaction
+                // on to the back stack.
+                FragmentTransaction ft = getSherlockActivity().getSupportFragmentManager().beginTransaction();
+                ft.setCustomAnimations(R.anim.fragment_slide_left_enter,
+                        R.anim.fragment_slide_left_exit,
+                        R.anim.fragment_slide_right_enter,
+                        R.anim.fragment_slide_right_exit);
+                ft.replace(R.id.node_pane, newFragment);
+                ft.addToBackStack(null);
+                ft.commit();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
