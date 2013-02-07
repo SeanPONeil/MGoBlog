@@ -19,7 +19,7 @@ import java.util.List;
 
 public class NodeCommentTaskService extends Service implements Callback<List<NodeComment>> {
 
-    private static final String TAG = "NodeIndexTaskService";
+    private static final String TAG = "NodeCommentTaskService";
 
     @Inject
     TaskQueue<NodeCommentTask> queue;
@@ -70,6 +70,7 @@ public class NodeCommentTaskService extends Service implements Callback<List<Nod
             @Override
             public void run() {
                 for (NodeComment nc : nodeComments) {
+                    Log.i(TAG, nc.toString());
                     nc.save();
                 }
             }

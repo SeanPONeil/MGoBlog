@@ -18,6 +18,7 @@ import com.atami.mgodroid.events.NodeCommentTaskStatus;
 import com.atami.mgodroid.io.NodeCommentTask;
 import com.atami.mgodroid.models.NodeComment;
 import com.atami.mgodroid.ui.base.BaseListFragment;
+import com.atami.mgodroid.ui.base.PullToRefreshListFragment;
 import com.squareup.otto.Subscribe;
 import com.squareup.tape.TaskQueue;
 
@@ -25,7 +26,8 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NodeCommentFragment extends BaseListFragment implements LoaderManager.LoaderCallbacks<List<NodeComment>> {
+public class NodeCommentFragment extends PullToRefreshListFragment implements LoaderManager
+        .LoaderCallbacks<List<NodeComment>> {
 
     private final static String TAG = "NodeCommentFragment";
 
@@ -65,13 +67,7 @@ public class NodeCommentFragment extends BaseListFragment implements LoaderManag
                 new ArrayList<NodeComment>());
         getListView().setAdapter(mAdapter);
 
-        //Bug in ActiveAndroid ModelLoader: Cached results in LoaderManager aren't updated
-        //when the ModelLoaders From changes
-        if(savedInstanceState == null){
-            getActivity().getSupportLoaderManager().restartLoader(0, null, this);
-        }else{
-            getActivity().getSupportLoaderManager().initLoader(0, null, this);
-        }
+        getActivity().getSupportLoaderManager().restartLoader(0, null, this);
     }
 
     @Subscribe
@@ -115,6 +111,7 @@ public class NodeCommentFragment extends BaseListFragment implements LoaderManag
             case R.id.refresh:
                 setRefreshActionItemState(true);
                 queue.add(new NodeCommentTask(nid, getTag()));
+                System.out.println(mAdapter.getCount());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -123,20 +120,20 @@ public class NodeCommentFragment extends BaseListFragment implements LoaderManag
 
     @Override
     public Loader<List<NodeComment>> onCreateLoader(int i, Bundle bundle) {
-        Log.i(TAG, String.valueOf(nid));
+        System.out.println(String.valueOf(nid));
         From query = new Select().from(NodeComment.class).where("nid = ?", nid).orderBy("thread DESC");
         return new ModelLoader<NodeComment>(getActivity(), query);
     }
 
     @Override
     public void onLoadFinished(Loader<List<NodeComment>> listLoader, List<NodeComment> nodeComments) {
+        System.out.println("Load finished!");
         mAdapter.setNodeComments(nodeComments);
         mAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onLoaderReset(Loader<List<NodeComment>> listLoader) {
-        mAdapter.setNodeComments(null);
     }
 
 }
