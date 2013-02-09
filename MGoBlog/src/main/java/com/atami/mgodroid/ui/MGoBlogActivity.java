@@ -19,6 +19,7 @@ import java.util.List;
 
 public class MGoBlogActivity extends BaseActivity {
 
+<<<<<<< HEAD
 	private static final String TAG = "MGoBlogActivity";
 	private static final String STATE_ACTIVE_POSITION = "com.atami.mgodroid.activePosition";
 
@@ -98,6 +99,7 @@ public class MGoBlogActivity extends BaseActivity {
 	}
 
 	private void buildMenuDrawer() {
+
         List<Object> items = new ArrayList<Object>();
         items.add(new DrawerCategory("Navigation"));
         items.add(new DrawerItem("MGoBlog", R.drawable.ic_action_blog, R.drawable.ic_action_blog_selected));
@@ -164,7 +166,7 @@ public class MGoBlogActivity extends BaseActivity {
 
             mHandler.postDelayed(mToggleUpRunnable, 500);
 
-            
+
             mMenuDrawer.setOnDrawerStateChangeListener(new MenuDrawer.OnDrawerStateChangeListener() {
                 @Override
                 public void onDrawerStateChange(int oldState, int newState) {

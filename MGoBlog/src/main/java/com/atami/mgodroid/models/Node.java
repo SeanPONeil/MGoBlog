@@ -9,9 +9,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Tag;
 
+import java.util.Arrays;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Table(name = "nodes")
 public class Node extends Model {
@@ -85,7 +84,7 @@ public class Node extends Model {
         public int v_weight_unused;
     }
 
-    @Column(name = "nid")
+    @Column(name = "nid", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
     private int nid;
 
     @Column(name = "type")
@@ -181,8 +180,8 @@ public class Node extends Model {
     @Column(name = "forum_tid")
     private String forum_tid;
 
-    @Column(name = "nodewords")
-    private String[] nodewords;
+    //@Column(name = "nodewords")
+    //private String[] nodewords;
 
     @Column(name = "uri")
     private String uri;
@@ -213,5 +212,44 @@ public class Node extends Model {
 
     public int getRevisionTimestamp() {
         return revision_timestamp;
+    }
+
+    @Override
+    public String toString() {
+        return "Node{" +
+                "nid=" + nid +
+                ", type='" + type + '\'' +
+                ", language='" + language + '\'' +
+                ", uid=" + uid +
+                ", status=" + status +
+                ", created=" + created +
+                ", changed=" + changed +
+                ", comment=" + comment +
+                ", promote=" + promote +
+                ", moderate=" + moderate +
+                ", sticky=" + sticky +
+                ", tnid=" + tnid +
+                ", translate=" + translate +
+                ", vid=" + vid +
+                ", revision_uid=" + revision_uid +
+                ", title='" + title + '\'' +
+                ", body='" + body + '\'' +
+                ", teaser='" + teaser + '\'' +
+                ", log='" + log + '\'' +
+                ", revision_timestamp=" + revision_timestamp +
+                ", format=" + format +
+                ", name='" + name + '\'' +
+                ", picture='" + picture + '\'' +
+                ", data='" + data + '\'' +
+                ", path='" + path + '\'' +
+                ", last_comment_timestamp=" + last_comment_timestamp +
+                ", last_comment_name='" + last_comment_name + '\'' +
+                ", comment_count=" + comment_count +
+                ", taxonomy=" + taxonomy +
+                ", files=" + (files == null ? null : Arrays.asList(files)) +
+                ", page_title='" + page_title + '\'' +
+                ", forum_tid='" + forum_tid + '\'' +
+                ", uri='" + uri + '\'' +
+                '}';
     }
 }

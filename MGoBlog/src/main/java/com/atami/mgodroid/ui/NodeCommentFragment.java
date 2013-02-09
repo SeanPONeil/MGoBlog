@@ -2,32 +2,40 @@ package com.atami.mgodroid.ui;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.activeandroid.ModelLoader;
+import com.activeandroid.query.From;
+import com.activeandroid.query.Select;
+import com.activeandroid.util.Log;
 import com.atami.mgodroid.R;
-import com.atami.mgodroid.events.NodeCommentRefreshEvent;
-import com.atami.mgodroid.events.NodeCommentStatusEvent;
-import com.atami.mgodroid.events.NodeCommentUpdateEvent;
+import com.atami.mgodroid.events.NodeCommentTaskStatus;
+import com.atami.mgodroid.io.NodeCommentTask;
 import com.atami.mgodroid.models.NodeComment;
-import com.atami.mgodroid.modules.MGoBlogAPIModule;
-import com.atami.mgodroid.ui.base.BaseFragment;
 import com.atami.mgodroid.ui.base.BaseListFragment;
-import com.squareup.otto.Produce;
+import com.atami.mgodroid.ui.base.PullToRefreshListFragment;
 import com.squareup.otto.Subscribe;
-import retrofit.http.RetrofitError;
+import com.squareup.tape.TaskQueue;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public class NodeCommentFragment extends BaseListFragment {
+public class NodeCommentFragment extends PullToRefreshListFragment implements LoaderManager
+        .LoaderCallbacks<List<NodeComment>> {
+
+    private final static String TAG = "NodeCommentFragment";
 
     // ID of the current node
     int nid;
+
+    @Inject
+    TaskQueue<NodeCommentTask> queue;
 
     private NodeCommentAdapter mAdapter;
 
@@ -48,6 +56,7 @@ public class NodeCommentFragment extends BaseListFragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         nid = getArguments().getInt("nid");
+        queue.add(new NodeCommentTask(nid, getTag()));
     }
 
     @Override
@@ -57,21 +66,18 @@ public class NodeCommentFragment extends BaseListFragment {
         mAdapter = new NodeCommentAdapter(getActivity(), android.R.layout.simple_list_item_2,
                 new ArrayList<NodeComment>());
         getListView().setAdapter(mAdapter);
+
+        getActivity().getSupportLoaderManager().restartLoader(0, null, this);
     }
 
     @Subscribe
-    public void onNodeCommentUpdate(NodeCommentUpdateEvent event) {
-        mAdapter.setNodeComments(event.nodeComments);
-        mAdapter.notifyDataSetChanged();
-        setListShown(true);
-    }
-
-    @Subscribe
-    public void onNodeCommentsStatusUpdate(NodeCommentStatusEvent event) {
-        if (event.refreshing) {
-            setRefreshActionItemState(true);
-        } else {
-            setRefreshActionItemState(false);
+    public void onNewNodeCommentTaskStatus(NodeCommentTaskStatus status) {
+        if (status.tag.equals(getTag())) {
+            if (status.running) {
+                setRefreshActionItemState(true);
+            } else {
+                setRefreshActionItemState(false);
+            }
         }
     }
 
@@ -104,96 +110,30 @@ public class NodeCommentFragment extends BaseListFragment {
         switch (item.getItemId()) {
             case R.id.refresh:
                 setRefreshActionItemState(true);
-                bus.post(new NodeCommentRefreshEvent());
+                queue.add(new NodeCommentTask(nid, getTag()));
+                System.out.println(mAdapter.getCount());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    public static class WorkerFragment extends BaseFragment {
-
-        public static final String TAG = NodeCommentFragment.class.getName() + "WorkerFragment";
-
-        @Inject
-        MGoBlogAPIModule.MGoBlogAPI api;
-
-        int nid;
-
-        List<NodeComment> nodeComments;
-
-        boolean refreshing = false;
-
-        public static WorkerFragment newInstance(int nid) {
-            WorkerFragment f = new WorkerFragment();
-
-            Bundle args = new Bundle();
-            args.putInt("nid", nid);
-            f.setArguments(args);
-
-            return f;
-        }
-
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            nid = getArguments().getInt("nid");
-            setRetainInstance(true);
-            nodeComments = Collections.synchronizedList(new ArrayList<NodeComment>());
-            getFromDisk();
-            refresh();
-        }
-
-
-        private void getFromDisk() {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    nodeComments = NodeComment.getAll(nid);
-                    bus.post(produceNodeComments());
-                }
-            }).start();
-        }
-
-        private void refresh() {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        refreshing = true;
-                        bus.post(produceStatus());
-                        nodeComments = api.getNodeComments(nid);
-                        NodeComment.deleteAll(nid);
-                        bus.post(produceNodeComments());
-                        for (NodeComment comment : nodeComments) {
-                            comment.save();
-                        }
-                    } catch (RetrofitError e) {
-                        e.printStackTrace();
-                        bus.post(e);
-                    } finally {
-                        refreshing = false;
-                        bus.post(produceStatus());
-                    }
-                }
-            }).start();
-        }
-
-        @Subscribe
-        public void onNodeRefresh(NodeCommentRefreshEvent event) {
-            if (!refreshing) {
-                refresh();
-            }
-        }
-
-        @Produce
-        public NodeCommentUpdateEvent produceNodeComments() {
-            return new NodeCommentUpdateEvent(nid, nodeComments);
-        }
-
-        @Produce
-        public NodeCommentStatusEvent produceStatus() {
-            return new NodeCommentStatusEvent(refreshing);
-        }
+    @Override
+    public Loader<List<NodeComment>> onCreateLoader(int i, Bundle bundle) {
+        System.out.println(String.valueOf(nid));
+        From query = new Select().from(NodeComment.class).where("nid = ?", nid).orderBy("thread DESC");
+        return new ModelLoader<NodeComment>(getActivity(), query);
     }
+
+    @Override
+    public void onLoadFinished(Loader<List<NodeComment>> listLoader, List<NodeComment> nodeComments) {
+        System.out.println("Load finished!");
+        mAdapter.setNodeComments(nodeComments);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<NodeComment>> listLoader) {
+    }
+
 }

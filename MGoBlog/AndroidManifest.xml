@@ -19,7 +19,7 @@
                  android:icon="@drawable/icon"
                  android:label="@string/app_name"
                  android:name=".MGoBlogApplication"
-                 android:theme="@style/SampleTheme">
+                 android:theme="@style/Theme.mgoblog">
         <activity android:name=".ui.MGoBlogActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -28,10 +28,16 @@
         </activity>
         <activity android:name=".ui.NodeActivity"
                   android:uiOptions="splitActionBarWhenNarrow">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".ui.MGoBlogActivity" >
+            </meta-data>
 
         </activity>
 
         <service android:name=".io.NodeIndexTaskService"/>
+        <service android:name=".io.NodeTaskService"/>
+        <service android:name=".io.NodeCommentTaskService"/>
 
         <meta-data android:name="AA_DB_NAME" android:value="MGoBlog.db"/>
         <meta-data android:name="AA_DB_VERSION" android:value="1"/>

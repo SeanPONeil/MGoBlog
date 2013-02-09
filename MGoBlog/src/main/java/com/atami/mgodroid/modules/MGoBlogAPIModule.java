@@ -1,19 +1,16 @@
 package com.atami.mgodroid.modules;
 
 
+import com.atami.mgodroid.io.NodeCommentTask;
 import com.atami.mgodroid.io.NodeIndexTask;
-import com.atami.mgodroid.io.NodeIndexTaskQueue;
+import com.atami.mgodroid.io.NodeTask;
 import com.atami.mgodroid.models.Node;
 import com.atami.mgodroid.models.NodeComment;
 import com.atami.mgodroid.models.NodeIndex;
-import com.atami.mgodroid.ui.NodeCommentFragment;
-import com.atami.mgodroid.ui.NodeFragment;
-import com.atami.mgodroid.ui.NodeIndexListFragment;
 import com.google.gson.GsonBuilder;
 import dagger.Module;
 import dagger.Provides;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.protocol.HttpRequestExecutor;
 import retrofit.http.*;
 
 import javax.inject.Named;
@@ -22,7 +19,9 @@ import java.util.concurrent.Executor;
 
 @Module(
         entryPoints = {
-                NodeIndexTaskQueue.class
+                NodeIndexTask.class,
+                NodeTask.class,
+                NodeCommentTask.class
         }
 )
 public class MGoBlogAPIModule {
@@ -32,26 +31,26 @@ public class MGoBlogAPIModule {
     public interface MGoBlogAPI {
 
         @GET("node.json")
-        @QueryParam(name="parameters[sticky]", value="0")
+        @QueryParam(name = "parameters[sticky]", value = "0")
         void getNodeIndexByType(@Named("parameters[type]") String type, @Named("page") int page,
-                               Callback<List<NodeIndex>> callback);
+                                Callback<List<NodeIndex>> callback);
 
         @GET("node.json")
         @QueryParams({
-                @QueryParam(name="parameters[sticky]", value="0"),
-                @QueryParam(name="parameters[promote]", value="1")
+                @QueryParam(name = "parameters[sticky]", value = "0"),
+                @QueryParam(name = "parameters[promote]", value = "1")
         })
         void getFrontPage(@Named("page") int page,
-                   Callback<List<NodeIndex>> callback);
+                          Callback<List<NodeIndex>> callback);
 
         @GET("node/{nid}.json")
-        Node getNode(@Named("nid") int nid);
+        void getNode(@Named("nid") int nid, Callback<Node> callback);
 
         @GET("node/{nid}/comments.json")
-        List<NodeComment> getNodeComments(@Named("nid") int nid);
+        void getNodeComments(@Named("nid") int nid, Callback<List<NodeComment>> callback);
     }
 
-    private class APIExecutor implements Executor{
+    private class APIExecutor implements Executor {
 
         @Override
         public void execute(Runnable r) {
@@ -59,7 +58,7 @@ public class MGoBlogAPIModule {
         }
     }
 
-    private class CallbackExecutor implements Executor{
+    private class CallbackExecutor implements Executor {
 
         @Override
         public void execute(Runnable r) {

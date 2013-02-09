@@ -65,6 +65,10 @@ public class PullToRefreshListFragment extends BaseListFragment {
         return mPullToRefreshListView;
     }
 
+    public final void setPullToRefreshListView(PullToRefreshListView lv){
+        mPullToRefreshListView = lv;
+    }
+
     protected PullToRefreshListView onCreatePullToRefreshListView() {
         return new PullToRefreshListView(getActivity());
     }

@@ -6,6 +6,8 @@ import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Delete;
 import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
+import org.joda.time.DateTime;
+import org.ocpsoft.prettytime.PrettyTime;
 
 @Table(name = "NodeIndexes")
 public class NodeIndex extends Model {
@@ -59,11 +61,11 @@ public class NodeIndex extends Model {
     private String uri;
 
     //ActiveAndroid queries
-    public static From selectFromDBWhere(String where){
-         return new Select().from(NodeIndex.class).where(where).orderBy("created DESC");
+    public static From selectFromDBWhere(String where) {
+        return new Select().from(NodeIndex.class).where(where).orderBy("created DESC");
     }
 
-    public static From deleteFromDBWhere(String where){
+    public static From deleteFromDBWhere(String where) {
         return new Delete().from(NodeIndex.class).where(where).orderBy("created DESC");
     }
 
@@ -75,7 +77,8 @@ public class NodeIndex extends Model {
         return title;
     }
 
-    public long getCreated() {
-        return created;
+    public String getCreated() {
+        PrettyTime p = new PrettyTime();
+        return p.format(new DateTime(created * 1000).toDate());
     }
 }

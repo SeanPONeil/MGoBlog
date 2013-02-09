@@ -17,5 +17,6 @@
 <!-- BEGIN_INCLUDE(all) -->
 <resources>
     <bool name="has_two_panes">true</bool>
+    <item name="node_container" type="layout">@layout/node_container_two_pane</item>
 </resources>
 <!-- END_INCLUDE(all) -->

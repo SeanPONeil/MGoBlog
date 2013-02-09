@@ -2,7 +2,6 @@ package com.atami.mgodroid.io;
 
 
 import com.atami.mgodroid.models.NodeIndex;
-import com.atami.mgodroid.modules.MGoBlogAPIModule;
 import com.squareup.tape.Task;
 import retrofit.http.Callback;
 
@@ -11,18 +10,16 @@ import java.util.List;
 
 import static com.atami.mgodroid.modules.MGoBlogAPIModule.MGoBlogAPI;
 
-/**
- * Gets the specified page and type of NodeIndex from MGoBlog
- */
 public class NodeIndexTask implements Task<Callback<List<NodeIndex>>> {
 
-    private final static String TAG = "NodeIndexTask";
+    public final static String TAG = "NodeIndexTask";
 
     private String parameter;
     private String value;
     private int page;
-    private int id;
+    private String tag;
 
+    @Inject
     private MGoBlogAPI api;
 
     /**
@@ -33,28 +30,24 @@ public class NodeIndexTask implements Task<Callback<List<NodeIndex>>> {
      * @param value     value for specified parameter, e.g. "story" when used with the "type" parameter for all blog
      *                  posts, or "1" when used with "promote" parameter for all front page content.
      * @param page      page to retrieve
-     * @param id        value for helping identify which NodeIndexListFragment added this task to the queue
+     * @param tag       identifier for this task
      */
-    public NodeIndexTask(String parameter, String value, int page, int id) {
+    public NodeIndexTask(String parameter, String value, int page, String tag) {
         this.parameter = parameter;
         this.value = value;
         this.page = page;
-        this.id = id;
+        this.tag = tag;
     }
 
-    public void setAPI(MGoBlogAPI api){
-        this.api = api;
-    }
-
-    public int getId(){
-        return id;
+    public String getTag() {
+        return tag;
     }
 
     @Override
     public void execute(Callback callback) {
-        if(parameter.equals("promote")){
+        if (parameter.equals("promote")) {
             api.getFrontPage(page, callback);
-        }else if(parameter.equals("type")){
+        } else if (parameter.equals("type")) {
             api.getNodeIndexByType(value, page, callback);
         }
     }
