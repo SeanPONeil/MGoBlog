@@ -38,6 +38,10 @@
         <item name="actionBarWidgetTheme">@style/Theme.mgoblog.widget</item>
         <item name="android:actionBarWidgetTheme">@style/Theme.mgoblog.widget</item>
 
+
+                <!-- MenuDrawer specific -->
+        <item name="menuDrawerStyle">@style/MenuDrawerStyle</item>
+
     </style>
 
     <style name="mgoblog_solid_ActionBar" parent="@style/Widget.Sherlock.Light.ActionBar.Solid.Inverse">
@@ -93,11 +97,6 @@
         
         <item name="android:popupMenuStyle">@style/mgoblog_PopupMenu</item>
         <item name="android:dropDownListViewStyle">@style/mgoblog_DropDownListView</item>
-    </style>
-
-    <style name="MenuDrawer" parent="Theme.mgoblog">
-
-        <item name="menuDrawerStyle">@style/MenuDrawerStyle</item>
     </style>
 
 </resources>
