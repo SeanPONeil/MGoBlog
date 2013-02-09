@@ -41,7 +41,7 @@
     </style>
 
     <style name="mgoblog_solid_ActionBar" parent="@style/Widget.Sherlock.Light.ActionBar.Solid.Inverse">
-<<<<<<< HEAD
+
         <item name="background">@color/blue</item>
         <item name="backgroundStacked">@drawable/ab_stacked_solid_mgoblog</item>
         <item name="backgroundSplit">@color/blue</item>
@@ -50,16 +50,7 @@
         <item name="android:background">@color/blue</item>
         <item name="android:backgroundStacked">@drawable/ab_stacked_solid_mgoblog</item>
         <item name="android:backgroundSplit">@color/blue</item>
-=======
-        <item name="background">@drawable/ab_solid_mgoblog</item>
-        <item name="backgroundStacked">@drawable/ab_stacked_solid_mgoblog</item>
-        <item name="backgroundSplit">@drawable/ab_bottom_solid_mgoblog</item>
-        <item name="progressBarStyle">@style/mgoblog_ProgressBar</item>
 
-        <item name="android:background">@drawable/ab_solid_mgoblog</item>
-        <item name="android:backgroundStacked">@drawable/ab_stacked_solid_mgoblog</item>
-        <item name="android:backgroundSplit">@drawable/ab_bottom_solid_mgoblog</item>
->>>>>>> a2e1c87aa3f2edd91426ac616386a1a6dba7c6ed
         <item name="android:progressBarStyle">@style/mgoblog_ProgressBar</item>
     </style>
 

@@ -19,7 +19,6 @@ import java.util.List;
 
 public class MGoBlogActivity extends BaseActivity {
 
-<<<<<<< HEAD
 	private static final String TAG = "MGoBlogActivity";
 	private static final String STATE_ACTIVE_POSITION = "com.atami.mgodroid.activePosition";
 
