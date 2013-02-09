@@ -27,4 +27,4 @@ before_script:
     # Make sure the emulator has started before running tests
     - ./wait_for_emulator
 
-script: mvn install -Pintegration-tests -Dandroid.device=test
+script: mvn clean install -Dandroid.device=test
