@@ -90,6 +90,7 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
 
         getPullToRefreshListView().setOnLastItemVisibleListener(this);
         getPullToRefreshListView().setOnRefreshListener(this);
+        getPullToRefreshListView().setDisableScrollingWhileRefreshing(false);
 
         //Bug in ActiveAndroid ModelLoader: Cached results in LoaderManager aren't updated
         //when the ModelLoaders From changes
@@ -126,7 +127,7 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
     public void onNewNodeIndexTaskStatus(NodeIndexTaskStatus status) {
         if (status.tag.equals(getTag())) {
             if (status.running) {
-                getPullToRefreshListView().setRefreshing();
+                getPullToRefreshListView().setRefreshing(false);
             } else {
                 getPullToRefreshListView().onRefreshComplete();
             }
