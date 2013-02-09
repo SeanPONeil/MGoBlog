@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="MenuDrawer" />
 
@@ -31,9 +31,9 @@
         <item name="android:gravity">center_vertical</item>
     </style>
 
-    <style name="MenuDrawerStyle" parent="Widget.MenuDrawer">
+     <style name="MenuDrawerStyle" parent="Widget.MenuDrawer">
         <item name="mdActiveIndicator">@drawable/menu_arrow</item>
         <item name="mdMenuSize">250dp</item>
     </style>
-
+  
 </resources>
