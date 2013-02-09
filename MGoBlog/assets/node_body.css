@@ -1,6 +1,6 @@
 blockquote {
-	border: 1px solid black;
-	background-color: #F8FFA4;
+	border: 1px solid #141D30;
+    background-color: #EEEEEE;
 }
 
 blockquote p {
@@ -8,7 +8,7 @@ blockquote p {
 }
 
 table {
-	background-color: #EEE;
+	background-color: #EEEEEE;
 }
 
 tbody {
@@ -18,8 +18,8 @@ tbody {
 th {
 	font-weight: bold;
 	border-bottom: 1px solid #CCC;
-	background-color: #004;
-	color: yellow;
+	background-color: #141D30;
+	color: #F0D34E;
 	font-variant: small-caps;
 	font-family: helvetica,sans serif;
 	padding: 2px;
@@ -34,6 +34,10 @@ td {
 	border: 1px solid #CCC;
 	padding: 2px;
 	border-image: initial;
+}
+
+img {
+    max-width: 100%;
 }
 
 .video {
