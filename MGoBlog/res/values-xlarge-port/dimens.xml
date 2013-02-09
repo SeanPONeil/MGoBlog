@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="node_index_title">19dp</dimen>
+    <dimen name="node_index_time">16dp</dimen>
+</resources>
