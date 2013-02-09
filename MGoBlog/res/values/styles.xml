@@ -36,13 +36,5 @@
         <item name="mdActiveIndicator">@drawable/menu_arrow</item>
         <item name="mdMenuSize">250dp</item>
     </style>
-    
-    <style name="NodeIndexTitle">
-        <item name="android:textSize">15sp</item>
-    </style>
-    
-    <style name="NodeIndexTime">
-        <item name="android:textSize">12sp</item>
-    </style>
 
 </resources>
