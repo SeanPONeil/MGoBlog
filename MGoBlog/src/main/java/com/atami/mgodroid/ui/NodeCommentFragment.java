@@ -26,7 +26,7 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NodeCommentFragment extends PullToRefreshListFragment implements LoaderManager
+public class NodeCommentFragment extends BaseListFragment implements LoaderManager
         .LoaderCallbacks<List<NodeComment>> {
 
     private final static String TAG = "NodeCommentFragment";
@@ -120,16 +120,15 @@ public class NodeCommentFragment extends PullToRefreshListFragment implements Lo
 
     @Override
     public Loader<List<NodeComment>> onCreateLoader(int i, Bundle bundle) {
-        System.out.println(String.valueOf(nid));
         From query = new Select().from(NodeComment.class).where("nid = ?", nid).orderBy("thread DESC");
         return new ModelLoader<NodeComment>(getActivity(), query);
     }
 
     @Override
     public void onLoadFinished(Loader<List<NodeComment>> listLoader, List<NodeComment> nodeComments) {
-        System.out.println("Load finished!");
         mAdapter.setNodeComments(nodeComments);
         mAdapter.notifyDataSetChanged();
+        setListShown(true);
     }
 
     @Override
