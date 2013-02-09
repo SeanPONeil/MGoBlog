@@ -180,8 +180,8 @@ public class Node extends Model {
     @Column(name = "forum_tid")
     private String forum_tid;
 
-    @Column(name = "nodewords")
-    private String[] nodewords;
+    //@Column(name = "nodewords")
+    //private String[] nodewords;
 
     @Column(name = "uri")
     private String uri;
@@ -249,7 +249,6 @@ public class Node extends Model {
                 ", files=" + (files == null ? null : Arrays.asList(files)) +
                 ", page_title='" + page_title + '\'' +
                 ", forum_tid='" + forum_tid + '\'' +
-                ", nodewords=" + (nodewords == null ? null : Arrays.asList(nodewords)) +
                 ", uri='" + uri + '\'' +
                 '}';
     }
