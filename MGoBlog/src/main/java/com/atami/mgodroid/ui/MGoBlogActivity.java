@@ -103,7 +103,7 @@ public class MGoBlogActivity extends BaseActivity {
         items.add(new DrawerItem("MGoBlog", R.drawable.ic_action_blog, R.drawable.ic_action_blog_selected));
         items.add(new DrawerItem("Diaries", R.drawable.ic_action_diary, R.drawable.ic_action_diary_selected));
         items.add(new DrawerItem("MGoBoard", R.drawable.ic_action_board, R.drawable.ic_action_board_selected));
-        items.add(new DrawerItem("mgo.licio.us", R.drawable.ic_action_licious, R.drawable.ic_action_diary_selected));
+        items.add(new DrawerItem("mgo.licio.us", R.drawable.ic_action_licious, R.drawable.ic_action_licious_selected));
 
         final ListView menuList = new ListView(this);
         final MenuDrawerAdapter menuAdapter = new MenuDrawerAdapter(items);

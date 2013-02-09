@@ -45,14 +45,14 @@
     </style>
 
     <style name="mgoblog_solid_ActionBar" parent="@style/Widget.Sherlock.Light.ActionBar.Solid.Inverse">
-        <item name="background">@drawable/ab_solid_mgoblog</item>
+        <item name="background">@color/blue</item>
         <item name="backgroundStacked">@drawable/ab_stacked_solid_mgoblog</item>
-        <item name="backgroundSplit">@drawable/ab_bottom_solid_mgoblog</item>
+        <item name="backgroundSplit">@color/blue</item>
         <item name="progressBarStyle">@style/mgoblog_ProgressBar</item>
 
-        <item name="android:background">@drawable/ab_solid_mgoblog</item>
+        <item name="android:background">@color/blue</item>
         <item name="android:backgroundStacked">@drawable/ab_stacked_solid_mgoblog</item>
-        <item name="android:backgroundSplit">@drawable/ab_bottom_solid_mgoblog</item>
+        <item name="android:backgroundSplit">@color/blue</item>
         <item name="android:progressBarStyle">@style/mgoblog_ProgressBar</item>
     </style>
 
@@ -97,6 +97,12 @@
         
         <item name="android:popupMenuStyle">@style/mgoblog_PopupMenu</item>
         <item name="android:dropDownListViewStyle">@style/mgoblog_DropDownListView</item>
+    </style>
+
+    
+     <style name="MenuDrawerStyle" parent="Widget.MenuDrawer">
+        <item name="mdActiveIndicator">@drawable/menu_arrow</item>
+        <item name="mdMenuSize">250dp</item>
     </style>
 
 </resources>

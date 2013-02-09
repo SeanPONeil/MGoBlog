@@ -26,8 +26,8 @@
             android:paddingRight="10dp"
             android:paddingTop="5dp"
             android:textColor="@color/blue"
-            android:textSize="15sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            style="@style/NodeIndexTitle"  />
 
         <TextView
             android:id="@android:id/text2"
@@ -40,7 +40,7 @@
             android:paddingRight="10dp"
             android:paddingTop="2dp"
             android:textColor="@color/text_grey"
-            android:textSize="12sp" />
+            style="@style/NodeIndexTime" />
     </LinearLayout>
 
 </TwoLineListItem>
