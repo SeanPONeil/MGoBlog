@@ -17,6 +17,7 @@ before_install:
 
     # Install required Android components.
     - android update sdk --filter platform-tools,android-16,extra-android-support,$ANDROID_SDKS --no-ui --force
+    - sh get_dependencies.sh
 
     # Create and start emulator
     - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
