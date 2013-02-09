@@ -157,7 +157,7 @@ public class MGoBlogActivity extends BaseActivity {
                 @Override
                 public void run() {
                     mDisplayUp = !mDisplayUp;
-                    getActionBar().setDisplayHomeAsUpEnabled(mDisplayUp);
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(mDisplayUp);
                     mHandler.postDelayed(mToggleUpRunnable, 500);
                 }
             };
