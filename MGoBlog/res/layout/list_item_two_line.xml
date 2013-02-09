@@ -29,6 +29,7 @@
             android:textStyle="bold"
             style="@dimen/node_index_title"  />
 
+
         <TextView
             android:id="@android:id/text2"
             android:layout_width="match_parent"
@@ -41,6 +42,7 @@
             android:paddingTop="2dp"
             android:textColor="@color/text_grey"
             style="@dimen/node_index_time" />
+
     </LinearLayout>
 
 </TwoLineListItem>

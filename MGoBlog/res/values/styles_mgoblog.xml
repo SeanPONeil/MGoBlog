@@ -105,4 +105,15 @@
         <item name="mdMenuSize">250dp</item>
     </style>
 
+<<<<<<< HEAD
+=======
+    <style name="NodeIndexTitle" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="NodeIndexTime" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+>>>>>>> f3d765038a31748bfdc73a5f6f36c4fd89073ba3
 </resources>
