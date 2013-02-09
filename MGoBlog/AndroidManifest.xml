@@ -19,7 +19,7 @@
                  android:icon="@drawable/icon"
                  android:label="@string/app_name"
                  android:name=".MGoBlogApplication"
-                 android:theme="@style/SampleTheme">
+                 android:theme="@style/Theme.mgoblog">
         <activity android:name=".ui.MGoBlogActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
