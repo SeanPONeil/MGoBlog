@@ -10,7 +10,7 @@
     <TwoLineListItem
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/comment_card"
+        android:background="@drawable/node_index_background"
         android:minHeight="?android:attr/listPreferredItemHeight"
         android:mode="twoLine"
         android:orientation="vertical"
