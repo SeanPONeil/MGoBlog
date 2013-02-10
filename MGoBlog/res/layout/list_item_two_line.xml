@@ -1,39 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/bg_grey"
-              android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/bg_grey"
+    android:paddingBottom="5dp"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp" >
 
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/white"/>
+    <TwoLineListItem
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/node_index_background"
+        android:minHeight="?android:attr/listPreferredItemHeight"
+        android:mode="twoLine"
+        android:orientation="vertical"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp" >
 
-    <TextView
+        <TextView
             android:id="@android:id/text1"
+            style="@style/NodeIndexTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="2"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
             android:paddingTop="5dp"
-            android:textStyle="bold"
-            style="@style/NodeIndexTitle"/>
+            android:textStyle="bold" />
 
-
-    <TextView
+        <TextView
             android:id="@android:id/text2"
+            style="@style/NodeIndexTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@android:id/text1"
             android:layout_below="@android:id/text1"
             android:paddingBottom="5dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="2dp"
-            style="@style/NodeIndexTime"/>
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="2dp" />
+    </TwoLineListItem>
 
 </LinearLayout>

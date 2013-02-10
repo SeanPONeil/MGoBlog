@@ -65,6 +65,7 @@ public class NodeCommentFragment extends BaseListFragment implements LoaderManag
 
         mAdapter = new NodeCommentAdapter(getActivity(), android.R.layout.simple_list_item_2,
                 new ArrayList<NodeComment>());
+        getListView().setDividerHeight(0);
         getListView().setAdapter(mAdapter);
 
         getActivity().getSupportLoaderManager().restartLoader(0, null, this);
