@@ -1,11 +1,15 @@
 package com.atami.mgodroid.models;
 
 
+import android.util.Log;
+
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
+import org.joda.time.DateTime;
+import org.ocpsoft.prettytime.PrettyTime;
 
 import java.util.List;
 
@@ -73,12 +77,18 @@ public class NodeComment extends Model {
         return subject;
     }
 
-    public long getTimestamp() {
-        return timestamp;
+    public String getTimestamp() {
+        PrettyTime p = new PrettyTime();
+        return p.format(new DateTime(timestamp * 1000).toDate());
     }
 
     public String getComment(){
         return comment;
+    }
+    
+    public int getRank(){
+    	Log.d("THREAD", thread.length() - thread.replace(".", "").length() + ":" + thread);
+    	return thread.length() - thread.replace(".", "").length();
     }
 
     public void setComment(String comment){
