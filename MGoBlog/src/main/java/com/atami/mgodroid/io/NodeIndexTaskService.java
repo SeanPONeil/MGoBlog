@@ -38,6 +38,7 @@ public class NodeIndexTaskService extends Service implements Callback<List<NodeI
     public void onCreate() {
         super.onCreate();
         ((MGoBlogApplication) getApplication()).objectGraph().inject(this);
+        taskTag = null;
         Log.i(TAG, "Service starting!");
     }
 
