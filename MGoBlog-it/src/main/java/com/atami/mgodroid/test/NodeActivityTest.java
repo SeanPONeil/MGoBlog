@@ -1,19 +1,24 @@
 package com.atami.mgodroid.test;
 
+
 import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
 import com.atami.mgodroid.ui.MGoBlogActivity;
+import com.atami.mgodroid.ui.NodeActivity;
 import com.jayway.android.robotium.solo.Solo;
 
-public class MGoBlogActivityTest extends ActivityInstrumentationTestCase2<MGoBlogActivity> {
+public class NodeActivityTest extends ActivityInstrumentationTestCase2<NodeActivity> {
 
     private Solo solo;
 
-    public MGoBlogActivityTest() {
-        super(MGoBlogActivity.class);
+    public NodeActivityTest() {
+        super(NodeActivity.class);
     }
 
     public void setUp() throws Exception {
+        Intent i = new Intent();
+        i.putExtra("nid", 76056);
+        setActivityIntent(i);
         solo = new Solo(getInstrumentation(), getActivity());
         solo.sleep(500);
     }
@@ -27,4 +32,3 @@ public class MGoBlogActivityTest extends ActivityInstrumentationTestCase2<MGoBlo
         solo.finishOpenedActivities();
     }
 }
-
