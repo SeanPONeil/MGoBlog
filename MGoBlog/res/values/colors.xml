@@ -4,5 +4,6 @@
     <color name="maize">#F0D34E</color>
     <color name="bg_grey">#E9E9E9</color>
     <color name="text_grey">#999999</color>
+    <color name="black">#000000</color>
     
 </resources>
