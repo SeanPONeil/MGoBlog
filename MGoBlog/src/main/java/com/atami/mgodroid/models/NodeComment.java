@@ -87,7 +87,6 @@ public class NodeComment extends Model {
     }
     
     public int getRank(){
-    	Log.d("THREAD", thread.length() - thread.replace(".", "").length() + ":" + thread);
     	return thread.length() - thread.replace(".", "").length();
     }
 

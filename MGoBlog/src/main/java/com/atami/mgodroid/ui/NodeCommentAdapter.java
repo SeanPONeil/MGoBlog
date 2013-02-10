@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.text.Html;
 import android.text.Html.ImageGetter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,11 +29,11 @@ public class NodeCommentAdapter extends ArrayAdapter<NodeComment> {
 	private class ViewHolder {
 		public TextView timestamp;
 		public TextView subject;
-		public TextView comment;
+		public WebView comment;
 		public LinearLayout container;
 
 		private ViewHolder(TextView timestamp, TextView subject,
-				TextView comment, LinearLayout container) {
+				WebView comment, LinearLayout container) {
 			this.timestamp = timestamp;
 			this.subject = subject;
 			this.comment = comment;
@@ -66,7 +67,7 @@ public class NodeCommentAdapter extends ArrayAdapter<NodeComment> {
 			view = inflater.inflate(R.layout.comment_list_item, null);
 			TextView subject = (TextView) view.findViewById(R.id.cmt_title);
 			TextView timestamp = (TextView) view.findViewById(R.id.cmt_time);
-			TextView comment = (TextView) view.findViewById(R.id.cmt_comment);
+			WebView comment = (WebView) view.findViewById(R.id.cmt_comment);
 			LinearLayout container = (LinearLayout) view
 					.findViewById(R.id.cmt_container);
 			viewHolder = new ViewHolder(timestamp, subject, comment, container);
@@ -77,24 +78,15 @@ public class NodeCommentAdapter extends ArrayAdapter<NodeComment> {
 
 		NodeComment nodeComment = getItem(position);
 		int rank = nodeComment.getRank() * 20;
-		
+
 		viewHolder.container.setPadding(10 + rank, 0, 10, 10);
 		viewHolder.subject.setText(nodeComment.getSubject());
 		viewHolder.timestamp.setText(nodeComment.getTimestamp());
-		
-		ImageGetter imageGetter = new Html.ImageGetter() {
-			
-			@Override
-			public Drawable getDrawable(String source) {
-				Drawable drawable = null;
-                drawable = Drawable.createFromPath(source);  
-                drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable
-                              .getIntrinsicHeight());
-                return drawable;
-			}
-		};
-		
-		viewHolder.comment.setText(Html.fromHtml(nodeComment.getComment(), imageGetter, null)); 
+		viewHolder.comment.loadData(nodeComment.getComment(), "text/html", null);
+		viewHolder.comment.getSettings().setJavaScriptEnabled(true);
+        viewHolder.comment.getSettings().setDefaultFontSize(16);
+        viewHolder.comment.getSettings().setPluginState(WebSettings.PluginState.ON);
+        viewHolder.comment.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
 
 		return view;
 	}

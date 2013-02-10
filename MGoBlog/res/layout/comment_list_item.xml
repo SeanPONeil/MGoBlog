@@ -41,7 +41,7 @@
             android:background="@color/bg_grey" >
         </LinearLayout>
 
-        <TextView
+        <WebView
             android:id="@+id/cmt_comment"
             style="@style/NodeComment"
             android:layout_width="wrap_content"
