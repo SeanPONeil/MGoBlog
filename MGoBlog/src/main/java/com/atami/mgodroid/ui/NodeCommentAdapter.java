@@ -5,17 +5,12 @@ import java.util.List;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.text.Html;
-import android.text.Html.ImageGetter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.TwoLineListItem;
 import com.atami.mgodroid.models.NodeComment;
 import com.atami.mgodroid.R;
 
@@ -77,7 +72,7 @@ public class NodeCommentAdapter extends ArrayAdapter<NodeComment> {
 		}
 
 		NodeComment nodeComment = getItem(position);
-		int rank = nodeComment.getRank() * 20;
+		int rank = nodeComment.getCommentDepth() * 20;
 
 		viewHolder.container.setPadding(10 + rank, 0, 10, 10);
 		viewHolder.subject.setText(nodeComment.getSubject());
