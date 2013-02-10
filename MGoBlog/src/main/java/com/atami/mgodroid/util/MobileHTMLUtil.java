@@ -57,6 +57,20 @@ public class MobileHTMLUtil {
 
         //TODO: Find plain text links and wrap them in an anchor tag
 
-        return doc.toString();
+        return doc.toString().replace("<p>&nbsp;</p>", "").trim();
     }
+    
+    public static CharSequence trimTrailingWhitespace(CharSequence source) {
+
+	    if(source == null)
+	        return "";
+
+	    int i = source.length();
+
+	    // loop back to the first non-whitespace character
+	    while(--i >= 0 && Character.isWhitespace(source.charAt(i))) {
+	    }
+
+	    return source.subSequence(0, i+1);
+	}
 }
