@@ -12,13 +12,11 @@ import com.actionbarsherlock.view.MenuItem;
 import com.activeandroid.ModelLoader;
 import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
-import com.activeandroid.util.Log;
 import com.atami.mgodroid.R;
 import com.atami.mgodroid.events.NodeCommentTaskStatus;
 import com.atami.mgodroid.io.NodeCommentTask;
 import com.atami.mgodroid.models.NodeComment;
 import com.atami.mgodroid.ui.base.BaseListFragment;
-import com.atami.mgodroid.ui.base.PullToRefreshListFragment;
 import com.squareup.otto.Subscribe;
 import com.squareup.tape.TaskQueue;
 
@@ -56,7 +54,9 @@ public class NodeCommentFragment extends BaseListFragment implements LoaderManag
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         nid = getArguments().getInt("nid");
-        queue.add(new NodeCommentTask(nid, getTag()));
+        if(savedInstanceState == null){
+            queue.add(new NodeCommentTask(nid, getTag()));
+        }
     }
 
     @Override
@@ -121,7 +121,9 @@ public class NodeCommentFragment extends BaseListFragment implements LoaderManag
 
     @Override
     public Loader<List<NodeComment>> onCreateLoader(int i, Bundle bundle) {
-        From query = new Select().from(NodeComment.class).where("nid = ?", nid).orderBy("thread DESC");
+        //http://api.drupal.org/api/drupal/modules%21comment%21comment.module/function/comment_get_thread/7
+        From query = new Select().from(NodeComment.class).where("nid = ?", nid).orderBy("substr(thread, 1, " +
+                "length(thread)-1) ASC");
         return new ModelLoader<NodeComment>(getActivity(), query);
     }
 
@@ -129,7 +131,7 @@ public class NodeCommentFragment extends BaseListFragment implements LoaderManag
     public void onLoadFinished(Loader<List<NodeComment>> listLoader, List<NodeComment> nodeComments) {
         mAdapter.setNodeComments(nodeComments);
         mAdapter.notifyDataSetChanged();
-        if(!nodeComments.isEmpty()){
+        if (!nodeComments.isEmpty()) {
             setListShown(true);
         }
     }
