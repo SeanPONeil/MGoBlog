@@ -85,7 +85,7 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
         //footerView.setClickable(false);
         //getListView().addFooterView(footerView);
 
-        //getListView().setDividerHeight(0);
+        getListView().setDividerHeight(0);
         mAdapter = new NodeIndexAdapter(getActivity(), R.layout.list_item_two_line, new ArrayList<NodeIndex>());
         setListAdapter(mAdapter);
 
