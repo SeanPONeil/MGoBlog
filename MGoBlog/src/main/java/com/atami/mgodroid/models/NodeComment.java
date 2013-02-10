@@ -1,8 +1,6 @@
 package com.atami.mgodroid.models;
 
 
-import android.util.Log;
-
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
@@ -82,15 +80,15 @@ public class NodeComment extends Model {
         return p.format(new DateTime(timestamp * 1000).toDate());
     }
 
-    public String getComment(){
+    public String getComment() {
         return comment;
     }
-    
-    public int getRank(){
-    	return thread.length() - thread.replace(".", "").length();
+
+    public int getCommentDepth() {
+        return thread.length() - thread.replace(".", "").length();
     }
 
-    public void setComment(String comment){
+    public void setComment(String comment) {
         this.comment = comment;
     }
 }
