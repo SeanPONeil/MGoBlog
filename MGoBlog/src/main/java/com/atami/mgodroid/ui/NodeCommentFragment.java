@@ -128,7 +128,9 @@ public class NodeCommentFragment extends BaseListFragment implements LoaderManag
     public void onLoadFinished(Loader<List<NodeComment>> listLoader, List<NodeComment> nodeComments) {
         mAdapter.setNodeComments(nodeComments);
         mAdapter.notifyDataSetChanged();
-        setListShown(true);
+        if(!nodeComments.isEmpty()){
+            setListShown(true);
+        }
     }
 
     @Override
