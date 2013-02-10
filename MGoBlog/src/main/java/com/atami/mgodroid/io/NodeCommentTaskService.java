@@ -8,6 +8,7 @@ import android.util.Log;
 import com.atami.mgodroid.MGoBlogApplication;
 import com.atami.mgodroid.events.NodeCommentTaskStatus;
 import com.atami.mgodroid.models.NodeComment;
+import com.atami.mgodroid.util.MobileHTMLUtil;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Produce;
 import com.squareup.tape.TaskQueue;
@@ -70,7 +71,7 @@ public class NodeCommentTaskService extends Service implements Callback<List<Nod
             @Override
             public void run() {
                 for (NodeComment nc : nodeComments) {
-                    Log.i(TAG, nc.toString());
+                    nc.setComment(MobileHTMLUtil.clean(nc.getComment()));
                     nc.save();
                 }
             }

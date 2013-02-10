@@ -157,7 +157,7 @@ public class MGoBlogActivity extends BaseActivity {
                 @Override
                 public void run() {
                     mDisplayUp = !mDisplayUp;
-                    getActionBar().setDisplayHomeAsUpEnabled(mDisplayUp);
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(mDisplayUp);
                     mHandler.postDelayed(mToggleUpRunnable, 500);
                 }
             };
@@ -168,7 +168,7 @@ public class MGoBlogActivity extends BaseActivity {
                 public void onDrawerStateChange(int oldState, int newState) {
                     if (newState == MenuDrawer.STATE_OPEN) {
                         mHandler.removeCallbacks(mToggleUpRunnable);
-                        if (!mDisplayUp) getActionBar().setDisplayHomeAsUpEnabled(true);
+                        if (!mDisplayUp) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                         mMenuDrawer.setOnDrawerStateChangeListener(null);
                     }
                 }

@@ -10,6 +10,7 @@ import com.atami.mgodroid.events.NodeIndexTaskStatus;
 import com.atami.mgodroid.events.NodeTaskStatus;
 import com.atami.mgodroid.models.Node;
 import com.atami.mgodroid.models.NodeIndex;
+import com.atami.mgodroid.util.MobileHTMLUtil;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Produce;
 import com.squareup.tape.TaskQueue;
@@ -76,7 +77,7 @@ public class NodeTaskService extends Service implements Callback<Node> {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                node.clean();
+                node.setBody(MobileHTMLUtil.clean(node.getBody()));
                 node.save();
             }
         }).start();

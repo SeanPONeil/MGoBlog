@@ -76,4 +76,12 @@ public class NodeComment extends Model {
     public long getTimestamp() {
         return timestamp;
     }
+
+    public String getComment(){
+        return comment;
+    }
+
+    public void setComment(String comment){
+        this.comment = comment;
+    }
 }
