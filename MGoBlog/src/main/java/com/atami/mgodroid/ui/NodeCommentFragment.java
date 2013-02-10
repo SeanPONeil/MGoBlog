@@ -29,7 +29,7 @@ import java.util.List;
 public class NodeCommentFragment extends BaseListFragment implements LoaderManager
         .LoaderCallbacks<List<NodeComment>> {
 
-    private final static String TAG = "NodeCommentFragment";
+    public final static String TAG = "NodeCommentFragment";
 
     // ID of the current node
     int nid;

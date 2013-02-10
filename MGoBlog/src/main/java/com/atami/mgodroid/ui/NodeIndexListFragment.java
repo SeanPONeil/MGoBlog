@@ -125,6 +125,8 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
 
     @Subscribe
     public void onNewNodeIndexTaskStatus(NodeIndexTaskStatus status) {
+        System.out.println(status.tag);
+        System.out.println(getTag());
         if (status.tag.equals(getTag())) {
             if (status.running) {
                 getPullToRefreshListView().setRefreshing(false);

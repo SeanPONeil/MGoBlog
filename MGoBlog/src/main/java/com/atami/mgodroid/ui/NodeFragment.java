@@ -14,6 +14,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.activeandroid.ModelLoader;
 import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
+import com.activeandroid.util.Log;
 import com.atami.mgodroid.R;
 import com.atami.mgodroid.events.NodeTaskStatus;
 import com.atami.mgodroid.io.NodeTask;
@@ -26,6 +27,8 @@ import javax.inject.Inject;
 import java.util.List;
 
 public class NodeFragment extends WebViewFragment implements LoaderManager.LoaderCallbacks<List<Node>> {
+
+    public final static String TAG = "NodeFragment";
 
     // ID of the current node
     int nid;
@@ -51,7 +54,7 @@ public class NodeFragment extends WebViewFragment implements LoaderManager.Loade
         setHasOptionsMenu(true);
         nid = getArguments().getInt("nid");
 
-        if(savedInstanceState == null){
+        if (savedInstanceState == null) {
             queue.add(new NodeTask(nid, getTag()));
         }
     }
@@ -67,20 +70,20 @@ public class NodeFragment extends WebViewFragment implements LoaderManager.Loade
 
         //Bug in ActiveAndroid ModelLoader: Cached results in LoaderManager aren't updated
         //when the ModelLoaders From changes
-        if(savedInstanceState == null){
-            getActivity().getSupportLoaderManager().restartLoader(0, null, this);
-        }else{
-            getActivity().getSupportLoaderManager().initLoader(0, null, this);
-        }
+        getActivity().getSupportLoaderManager().initLoader(0, null, this);
     }
 
     @Subscribe
     public void onNewNodeTaskStatus(NodeTaskStatus status) {
-        if (status.tag.equals(getTag())) {
-            if (status.running) {
-                setRefreshActionItemState(true);
-            } else {
-                setRefreshActionItemState(false);
+        //System.out.println(status.tag);
+        //System.out.println(getTag());
+        if(getTag() != null){
+            if (status.tag.equals(getTag())) {
+                if (status.running) {
+                    setRefreshActionItemState(true);
+                } else {
+                    setRefreshActionItemState(false);
+                }
             }
         }
     }
@@ -93,7 +96,8 @@ public class NodeFragment extends WebViewFragment implements LoaderManager.Loade
 
     @Override
     public void onLoadFinished(Loader<List<Node>> nodeLoader, List<Node> node) {
-        if(!node.isEmpty()){
+        if (!node.isEmpty()) {
+            System.out.println(node.get(0).toString());
             getWebView().loadDataWithBaseURL("file:///android_asset/", node.get(0).getBody(), "text/html", "UTF-8",
                     null);
             getSherlockActivity().getSupportActionBar().setTitle(node.get(0).getTitle());
