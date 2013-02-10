@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TwoLineListItem;
 import com.atami.mgodroid.models.NodeComment;
+import com.atami.mgodroid.util.MobileHTMLUtil;
 import com.atami.mgodroid.R;
 
 public class NodeCommentAdapter extends ArrayAdapter<NodeComment> {
@@ -99,7 +100,7 @@ public class NodeCommentAdapter extends ArrayAdapter<NodeComment> {
 			}
 		}, null);
 		
-		viewHolder.comment.setText(trimTrailingWhitespace(html));
+		viewHolder.comment.setText(MobileHTMLUtil.trimTrailingWhitespace(html));
 
 		return view;
 	}
@@ -112,17 +113,4 @@ public class NodeCommentAdapter extends ArrayAdapter<NodeComment> {
 		this.nodeComments = nodeComments;
 	}
 	
-	public static CharSequence trimTrailingWhitespace(CharSequence source) {
-
-	    if(source == null)
-	        return "";
-
-	    int i = source.length();
-
-	    // loop back to the first non-whitespace character
-	    while(--i >= 0 && Character.isWhitespace(source.charAt(i))) {
-	    }
-
-	    return source.subSequence(0, i+1);
-	}
 }
