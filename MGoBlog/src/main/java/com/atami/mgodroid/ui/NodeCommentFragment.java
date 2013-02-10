@@ -54,7 +54,9 @@ public class NodeCommentFragment extends BaseListFragment implements LoaderManag
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         nid = getArguments().getInt("nid");
-        queue.add(new NodeCommentTask(nid, getTag()));
+        if(savedInstanceState == null){
+            queue.add(new NodeCommentTask(nid, getTag()));
+        }
     }
 
     @Override
