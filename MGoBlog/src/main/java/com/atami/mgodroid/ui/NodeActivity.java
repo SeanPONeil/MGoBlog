@@ -17,21 +17,19 @@ public class NodeActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.node_container);
+        /* TODO: change to R.layout.node_container when the ModelLoader bug is fixed */
+        setContentView(R.layout.node_container_one_pane);
 
         mIsDualPane = getResources().getBoolean(R.bool.has_two_panes);
         nid = getIntent().getIntExtra("nid", 0);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.node_pane, NodeFragment.newInstance(nid),
-                NodeFragment.TAG).commit();
-
-        if (mIsDualPane) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.node_comment_pane,
-                    NodeCommentFragment.newInstance(nid),
-                    NodeCommentFragment.TAG).commit();
+        if(savedInstanceState == null){
+            getSupportFragmentManager().beginTransaction().replace(R.id.node_pane, NodeFragment.newInstance(nid),
+                    NodeFragment.TAG).commit();
         }
+
     }
 
     @Override

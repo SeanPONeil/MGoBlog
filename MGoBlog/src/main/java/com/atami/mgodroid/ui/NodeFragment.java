@@ -70,7 +70,7 @@ public class NodeFragment extends WebViewFragment implements LoaderManager.Loade
 
         //Bug in ActiveAndroid ModelLoader: Cached results in LoaderManager aren't updated
         //when the ModelLoaders From changes
-        getActivity().getSupportLoaderManager().initLoader(0, null, this);
+        getActivity().getSupportLoaderManager().restartLoader(0, null, this);
     }
 
     @Subscribe
