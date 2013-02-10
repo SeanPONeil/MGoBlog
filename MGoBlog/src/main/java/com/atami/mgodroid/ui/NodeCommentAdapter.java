@@ -6,6 +6,8 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.text.Html;
 import android.text.Html.ImageGetter;
+import android.text.Spannable;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -83,19 +85,21 @@ public class NodeCommentAdapter extends ArrayAdapter<NodeComment> {
 		viewHolder.subject.setText(nodeComment.getSubject());
 		viewHolder.timestamp.setText(nodeComment.getTimestamp());
 
-		viewHolder.comment.setText(Html.fromHtml(nodeComment.getComment(),
+		Spanned html = Html.fromHtml(nodeComment.getComment(),
 				new Html.ImageGetter() {
 
-					@Override
-					public Drawable getDrawable(String source) {
-						Drawable drawable = null;
-//						drawable = Drawable.createFromPath(source);
-//						drawable.setBounds(0, 0, drawable.getIntrinsicWidth(),
-//								drawable.getIntrinsicHeight());
+			@Override
+			public Drawable getDrawable(String source) {
+				Drawable drawable = null;
+//				drawable = Drawable.createFromPath(source);
+//				drawable.setBounds(0, 0, drawable.getIntrinsicWidth(),
+//						drawable.getIntrinsicHeight());
 
-						return drawable;
-					}
-				}, null));
+				return drawable;
+			}
+		}, null);
+		
+		viewHolder.comment.setText(trimTrailingWhitespace(html));
 
 		return view;
 	}
@@ -106,5 +110,19 @@ public class NodeCommentAdapter extends ArrayAdapter<NodeComment> {
 
 	public void setNodeComments(List<NodeComment> nodeComments) {
 		this.nodeComments = nodeComments;
+	}
+	
+	public static CharSequence trimTrailingWhitespace(CharSequence source) {
+
+	    if(source == null)
+	        return "";
+
+	    int i = source.length();
+
+	    // loop back to the first non-whitespace character
+	    while(--i >= 0 && Character.isWhitespace(source.charAt(i))) {
+	    }
+
+	    return source.subSequence(0, i+1);
 	}
 }

@@ -54,9 +54,16 @@ public class MobileHTMLUtil {
             }
 
         }
+        
+        for (Element element : doc.select("*")) {
+
+            if (!element.hasText() && element.isBlock()) {
+                element.remove();
+            }
+        }
 
         //TODO: Find plain text links and wrap them in an anchor tag
 
-        return doc.toString();
+        return doc.toString().replace("<p>&nbsp;</p>", "").trim();
     }
 }
