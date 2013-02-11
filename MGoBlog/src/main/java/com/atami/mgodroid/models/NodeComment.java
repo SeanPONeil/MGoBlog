@@ -84,6 +84,10 @@ public class NodeComment extends Model {
         return comment;
     }
 
+    public String getName(){
+        return name;
+    }
+
     public int getCommentDepth() {
         return thread.length() - thread.replace(".", "").length();
     }

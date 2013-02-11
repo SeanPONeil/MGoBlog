@@ -24,15 +24,15 @@ public class NodeCommentAdapter extends ArrayAdapter<NodeComment> {
      * Holds on to Views to avoid costly findViewById calls
      */
     private class ViewHolder {
-        public TextView timestamp;
-        public TextView subject;
+        public TextView subtitle;
+        public TextView title;
         public TextView comment;
         public LinearLayout container;
 
-        private ViewHolder(TextView timestamp, TextView subject,
+        private ViewHolder(TextView subtitle, TextView title,
                            TextView comment, LinearLayout container) {
-            this.timestamp = timestamp;
-            this.subject = subject;
+            this.subtitle = subtitle;
+            this.title = title;
             this.comment = comment;
             this.container = container;
         }
@@ -77,8 +77,8 @@ public class NodeCommentAdapter extends ArrayAdapter<NodeComment> {
         int rank = nodeComment.getCommentDepth() * 20;
 
         viewHolder.container.setPadding(10 + rank, 0, 10, 10);
-        viewHolder.subject.setText(nodeComment.getSubject());
-        viewHolder.timestamp.setText(nodeComment.getTimestamp());
+        viewHolder.title.setText(nodeComment.getSubject());
+        viewHolder.subtitle.setText("By " + nodeComment.getName() + " - " + nodeComment.getTimestamp());
 
         Spanned html = Html.fromHtml(nodeComment.getComment(),
                 new Html.ImageGetter() {
