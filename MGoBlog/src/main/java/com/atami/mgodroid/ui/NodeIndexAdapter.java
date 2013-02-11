@@ -52,20 +52,12 @@ public class NodeIndexAdapter extends ArrayAdapter<NodeIndex> {
             TextView title = (TextView) view.findViewById(android.R.id.text2);
             TextView created = (TextView) view.findViewById(android.R.id.text1);
 
-            
+           
             viewHolder = new ViewHolder(title, created);
             view.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) view.getTag();
         }
-
-        //view.setBackground(resources.getDrawable(R.drawable.list_item_gradient));
-
-//        if(position % 2 == 0){
-//            view.setBackground(R.drawable.list_item_gradient);
-//        }else{
-//            view.setBackgroundColor(resources.getColor(R.color.list_item_background_alternate));
-//        }
 
         NodeIndex nodeIndex = getItem(position);
 
