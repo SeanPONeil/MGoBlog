@@ -104,6 +104,8 @@ public class MGoBlogActivity extends BaseActivity {
         items.add(new DrawerItem("Diaries", R.drawable.ic_action_diary, R.drawable.ic_action_diary_selected));
         items.add(new DrawerItem("MGoBoard", R.drawable.ic_action_board, R.drawable.ic_action_board_selected));
         items.add(new DrawerItem("mgo.licio.us", R.drawable.ic_action_licious, R.drawable.ic_action_licious_selected));
+        items.add(new DrawerCategory("Settings"));
+        items.add(new DrawerItem("Account", R.drawable.ic_action_login, R.drawable.ic_action_login_selected));
 
         final ListView menuList = new ListView(this);
         final MenuDrawerAdapter menuAdapter = new MenuDrawerAdapter(items);
@@ -123,8 +125,10 @@ public class MGoBlogActivity extends BaseActivity {
                     f = NodeIndexListFragment.newInstance("type", "forum");
                 } else if (di.mTitle.equals("mgo.licio.us")) {
                     f = NodeIndexListFragment.newInstance("type", "link");
+                } else if (di.mTitle.equals("Account")){
+                	f = LoginFragment.newInstance();
                 }
-                
+               
                 getSupportFragmentManager().beginTransaction().replace(R.id.node_index_container,
                         f, di.mTitle).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
 
