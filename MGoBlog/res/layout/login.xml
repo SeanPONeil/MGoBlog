@@ -1,58 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linearLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/blue"
+    android:layout_centerHorizontal="true"
+    android:layout_centerVertical="true"
     android:gravity="center"
-    android:orientation="vertical"
-    android:padding="10dp" >
+    android:background="@color/blue"
+    android:orientation="vertical" >
 
-    <ImageButton
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/icon_nobg" />
+
+    <EditText
+        android:id="@+id/login_username"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Username"
+        android:inputType="textNoSuggestions"
+        android:padding="5dp"
+        android:textColor="@color/maize"
+        android:textColorHint="@color/maize"
+        android:gravity="center" />
+
+    <EditText
+        android:id="@+id/login_password"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:ems="10"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:padding="5dp"
+        android:textColor="@color/maize"
+        android:textColorHint="@color/maize"
+        android:gravity="center" />
+
+    <Button
         android:id="@+id/login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="200dp"
+        android:layout_height="44dp"
         android:layout_below="@+id/linearLayout1"
+        android:layout_marginTop="10dp"
         android:layout_toRightOf="@+id/linearLayout1"
-        android:background="@android:color/transparent"
-        android:src="@drawable/submit_login" />
+        android:background="@drawable/submit_login"
+        android:text="Login"
+        android:textColor="@drawable/button_text_color" />
 
-    <LinearLayout
-        android:id="@+id/linearLayout1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:gravity="center"
-        android:orientation="vertical" >
-
-        <ImageView
-            android:id="@+id/imageView1"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@drawable/icon_nobg" />
-
-        <EditText
-            android:id="@+id/login_username"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Username"
-            android:inputType="textNoSuggestions"
-            android:padding="5dp"
-            android:textColor="@color/maize"
-            android:textColorHint="@color/maize" />
-
-        <EditText
-            android:id="@+id/login_password"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:ems="10"
-            android:hint="Password"
-            android:inputType="textPassword"
-            android:padding="5dp"
-            android:textColor="@color/maize"
-            android:textColorHint="@color/maize" />
-    </LinearLayout>
-
-</RelativeLayout>
+</LinearLayout>
