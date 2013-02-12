@@ -73,11 +73,9 @@ public class NodeFragment extends WebViewFragment implements
 		getWebView().getSettings().setLayoutAlgorithm(
 				WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
 		
-		getWebView().setBackgroundDrawable(getResources().getDrawable(R.drawable.comment_card));
-		getWebView().setBackgroundColor(0x00000000);
-		getWebView().setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
-		
-		
+		//getWebView().setBackgroundDrawable(getResources().getDrawable(R.drawable.comment_card));
+		//getWebView().setBackgroundColor(0x00000000);
+		//getWebView().setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
 		
 		// Bug in ActiveAndroid ModelLoader: Cached results in LoaderManager
 		// aren't updated
