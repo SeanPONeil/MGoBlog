@@ -31,10 +31,9 @@
 
         <ImageButton
             android:id="@+id/cmt_sumbit"
-            android:layout_gravity="center_vertical"
             android:layout_width="35dp"
             android:layout_height="35dp"
-            android:layout_gravity="right"
+            android:layout_gravity="right|center_vertical"
             android:layout_marginRight="8dp"
             android:background="@android:color/transparent"
             android:src="@drawable/submit_comments" />
