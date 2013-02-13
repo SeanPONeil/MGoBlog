@@ -30,12 +30,12 @@ public class MGoBlogAPIModule {
 
     public interface MGoBlogAPI {
 
-        @GET("node.json")
+        @GET("/node.json")
         @QueryParam(name = "parameters[sticky]", value = "0")
         void getNodeIndexByType(@Named("parameters[type]") String type, @Named("page") int page,
                                 Callback<List<NodeIndex>> callback);
 
-        @GET("node.json")
+        @GET("/node.json")
         @QueryParams({
                 @QueryParam(name = "parameters[sticky]", value = "0"),
                 @QueryParam(name = "parameters[promote]", value = "1")
@@ -43,10 +43,10 @@ public class MGoBlogAPIModule {
         void getFrontPage(@Named("page") int page,
                           Callback<List<NodeIndex>> callback);
 
-        @GET("node/{nid}.json")
+        @GET("/node/{nid}.json")
         void getNode(@Named("nid") int nid, Callback<Node> callback);
 
-        @GET("node/{nid}/comments.json")
+        @GET("/node/{nid}/comments.json")
         void getNodeComments(@Named("nid") int nid, Callback<List<NodeComment>> callback);
     }
 
@@ -70,7 +70,6 @@ public class MGoBlogAPIModule {
     MGoBlogAPI provideMGoBlogAPI() {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setServer(new Server(API_URL))
-                .setClient(new DefaultHttpClient())
                 .setExecutors(new APIExecutor(), new CallbackExecutor())
                 .setConverter(new GsonConverter(new GsonBuilder()
                         .serializeNulls()

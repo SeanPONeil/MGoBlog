@@ -2,6 +2,7 @@
 <resources>
     <color name="blue">#151D30</color>
     <color name="maize">#F0D34E</color>
+    <color name="maize_dark">#A68B27</color>
     <color name="bg_grey">#E9E9E9</color>
     <color name="text_grey">#999999</color>
     <color name="black">#000000</color>
