@@ -5,6 +5,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Tag;
+import org.jsoup.safety.Whitelist;
 
 public class MobileHTMLUtil {
 
@@ -16,8 +17,10 @@ public class MobileHTMLUtil {
      */
     public static String clean(String html){
 
-        //Add MGoBlog css before storing
+        html = Jsoup.clean(html, Whitelist.basicWithImages());
         Document doc = Jsoup.parseBodyFragment(html);
+
+        //Add MGoBlog css before storing
         Element headNode = doc.head();
         headNode.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"node_body.css\"></style>");
 
