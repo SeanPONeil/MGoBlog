@@ -1,18 +1,20 @@
 package com.atami.mgodroid.ui;
 
 import android.app.Activity;
+//import android.app.DialogFragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.support.v4.app.DialogFragment;
 import com.atami.mgodroid.R;
 
 public class CommentDialog extends DialogFragment {
+	
 	int cid;
-	Activity a;
 
-	static CommentDialog newInstance(int cid) {
+	public static CommentDialog newInstance(int cid) {
 		CommentDialog f = new CommentDialog();
 
 		Bundle args = new Bundle();
@@ -30,12 +32,14 @@ public class CommentDialog extends DialogFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		cid = getArguments().getInt("cid");
-		a = getActivity();
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		
+		getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE); 
+		
 		View v = inflater.inflate(R.layout.comment, container, false);
 		
 		if(cid == -1){

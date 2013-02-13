@@ -8,7 +8,6 @@ import android.support.v4.app.NavUtils;
 import com.actionbarsherlock.view.MenuItem;
 import com.atami.mgodroid.R;
 import com.atami.mgodroid.ui.base.BaseActivity;
-import android.support.v4.app.FragmentManager;
 
 public class NodeActivity extends BaseActivity {
 
@@ -46,9 +45,4 @@ public class NodeActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
     
-    public void showAddComment(int cid) {
-        FragmentManager fm = getSupportFragmentManager();
-        CommentDialog cf = CommentDialog.newInstance(cid);
-        cf.show(fm, "comment");
-    }
 }

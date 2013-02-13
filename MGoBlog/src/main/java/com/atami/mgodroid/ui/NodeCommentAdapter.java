@@ -14,12 +14,14 @@ import android.widget.TextView;
 import com.atami.mgodroid.R;
 import com.atami.mgodroid.models.NodeComment;
 import com.atami.mgodroid.util.MobileHTMLUtil;
+import android.support.v4.app.FragmentManager;
 
 import java.util.List;
 
 public class NodeCommentAdapter extends ArrayAdapter<NodeComment> {
 
     private List<NodeComment> nodeComments;
+    private FragmentManager fragmentManager;
 
     /**
      * Holds on to Views to avoid costly findViewById calls
@@ -40,9 +42,11 @@ public class NodeCommentAdapter extends ArrayAdapter<NodeComment> {
     }
 
     public NodeCommentAdapter(Context context, int textViewResourceId,
-                              List<NodeComment> nodeComments) {
+                              List<NodeComment> nodeComments, 
+                              FragmentManager fragmentManager) {
         super(context, textViewResourceId, nodeComments);
         this.nodeComments = nodeComments;
+        this.fragmentManager = fragmentManager; 
     }
 
     @Override
@@ -85,7 +89,8 @@ public class NodeCommentAdapter extends ArrayAdapter<NodeComment> {
         ImageButton reply = (ImageButton)view.findViewById(R.id.cmt_reply);
         reply.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-               //TODO activity.showAddComment(nodeComment.getCid());
+                CommentDialog cd = CommentDialog.newInstance(0);
+                cd.show(fragmentManager, "dialog");
             }
         });
         

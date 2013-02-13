@@ -19,6 +19,7 @@ import com.atami.mgodroid.models.NodeComment;
 import com.atami.mgodroid.ui.base.BaseListFragment;
 import com.squareup.otto.Subscribe;
 import com.squareup.tape.TaskQueue;
+import android.support.v4.app.FragmentManager;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -64,7 +65,7 @@ public class NodeCommentFragment extends BaseListFragment implements LoaderManag
         super.onActivityCreated(savedInstanceState);
 
         mAdapter = new NodeCommentAdapter(getActivity(), android.R.layout.simple_list_item_2,
-                new ArrayList<NodeComment>());
+                new ArrayList<NodeComment>(), getActivity().getSupportFragmentManager());
         getListView().setDividerHeight(0);
         getListView().setAdapter(mAdapter);
 
@@ -115,7 +116,9 @@ public class NodeCommentFragment extends BaseListFragment implements LoaderManag
                 System.out.println(mAdapter.getCount());
                 return true;
             case R.id.addComment:
-                //TODO activity.showAddComment(nodeComment.getCid());
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                CommentDialog cd = CommentDialog.newInstance(0);
+                cd.show(fm, "dialog");
             	return true;
             default:
                 return super.onOptionsItemSelected(item);
