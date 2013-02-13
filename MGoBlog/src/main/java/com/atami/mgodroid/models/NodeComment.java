@@ -91,8 +91,13 @@ public class NodeComment extends Model {
     public int getCommentDepth() {
         return thread.length() - thread.replace(".", "").length();
     }
+    
+    public int getCid(){
+    	return cid;
+    }
 
     public void setComment(String comment) {
         this.comment = comment;
     }
+    
 }
