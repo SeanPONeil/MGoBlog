@@ -19,85 +19,89 @@ import java.util.List;
 
 public class MGoBlogActivity extends BaseActivity {
 
-	private static final String TAG = "MGoBlogActivity";
-	private static final String STATE_ACTIVE_POSITION = "com.atami.mgodroid.activePosition";
+    private static final String TAG = "MGoBlogActivity";
+    private static final String STATE_ACTIVE_POSITION = "com.atami.mgodroid.activePosition";
+    private static final String STATE_ACTIVE_TITLE = "com.atami.mgodroid.activeTitle";
 
-	private MenuDrawer mMenuDrawer;
+    private MenuDrawer mMenuDrawer;
 
-	private int mActivePosition = 1;
-	private Handler mHandler;
-	private Runnable mToggleUpRunnable;
-	private boolean mDisplayUp = true;
+    private int mActivePosition = 1;
+    private Handler mHandler;
+    private Runnable mToggleUpRunnable;
+    private boolean mDisplayUp = true;
 
-	private boolean mIsDualPane;
+    private boolean mIsDualPane;
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-		if (savedInstanceState != null) {
-			mActivePosition = savedInstanceState.getInt(STATE_ACTIVE_POSITION);
-		}
+        if (savedInstanceState != null) {
+            mActivePosition = savedInstanceState.getInt(STATE_ACTIVE_POSITION);
+            String mActiveTitle = savedInstanceState.getString(STATE_ACTIVE_TITLE);
+            getSupportActionBar().setTitle(mActiveTitle);
+        }
 
-		mIsDualPane = getResources().getBoolean(R.bool.has_two_panes);
+        mIsDualPane = getResources().getBoolean(R.bool.has_two_panes);
 
-		// TODO: MenuDrawer will crash when switching from non static drawer to
-		// static. Issue is at
-		// https://github.com/SimonVT/android-menudrawer/issues/62
-		if (mIsDualPane) {
-			mMenuDrawer = MenuDrawer.attach(this, MenuDrawer.MENU_DRAG_CONTENT,
-					Position.LEFT, true);
-		} else {
-			mMenuDrawer = MenuDrawer.attach(this, MenuDrawer.MENU_DRAG_CONTENT,
-					Position.LEFT, false);
-		}
+        // TODO: MenuDrawer will crash when switching from non static drawer to
+        // static. Issue is at
+        // https://github.com/SimonVT/android-menudrawer/issues/62
+        if (mIsDualPane) {
+            mMenuDrawer = MenuDrawer.attach(this, MenuDrawer.MENU_DRAG_CONTENT,
+                    Position.LEFT, true);
+        } else {
+            mMenuDrawer = MenuDrawer.attach(this, MenuDrawer.MENU_DRAG_CONTENT,
+                    Position.LEFT, false);
+        }
 
-		mMenuDrawer.setContentView(R.layout.node_index_container);
+        mMenuDrawer.setContentView(R.layout.node_index_container);
 
-		buildMenuDrawer();
+        buildMenuDrawer();
 
-		if (savedInstanceState == null) {
-			getSupportFragmentManager()
-					.beginTransaction()
-					.replace(R.id.node_index_container,
-							NodeIndexListFragment.newInstance("promote", "1"),
-							"MGoBlog")
-					.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-					.commit();
-		}
-	}
+        if (savedInstanceState == null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.node_index_container,
+                            NodeIndexListFragment.newInstance("promote", "1"),
+                            "MGoBlog")
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .commit();
+        }
+    }
 
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putInt(STATE_ACTIVE_POSITION, mActivePosition);
-	}
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(STATE_ACTIVE_POSITION, mActivePosition);
+        outState.putString(STATE_ACTIVE_TITLE, getSupportActionBar().getTitle().toString());
+    }
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			mMenuDrawer.toggleMenu();
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                mMenuDrawer.toggleMenu();
 
-			return true;
-		}
+                return true;
+        }
 
-		return super.onOptionsItemSelected(item);
-	}
+        return super.onOptionsItemSelected(item);
+    }
 
-	@Override
-	public void onBackPressed() {
-		final int drawerState = mMenuDrawer.getDrawerState();
-		if (drawerState == MenuDrawer.STATE_OPEN
-				|| drawerState == MenuDrawer.STATE_OPENING) {
-			mMenuDrawer.closeMenu();
-			return;
-		}
+    @Override
+    public void onBackPressed() {
+        final int drawerState = mMenuDrawer.getDrawerState();
+        if (drawerState == MenuDrawer.STATE_OPEN
+                || drawerState == MenuDrawer.STATE_OPENING) {
+            mMenuDrawer.closeMenu();
+            return;
+        }
 
-		super.onBackPressed();
-	}
+        super.onBackPressed();
+    }
 
-	private void buildMenuDrawer() {
+    private void buildMenuDrawer() {
         List<Object> items = new ArrayList<Object>();
         items.add(new DrawerCategory("Navigation"));
         items.add(new DrawerItem("MGoBlog", R.drawable.ic_action_blog, R.drawable.ic_action_blog_selected));
@@ -116,7 +120,7 @@ public class MGoBlogActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
-            	DrawerItem di = (DrawerItem) menuList.getAdapter().getItem(position);
+                DrawerItem di = (DrawerItem) menuList.getAdapter().getItem(position);
                 Fragment f = null;
                 if (di.mTitle.equals("MGoBlog")) {
                     f = NodeIndexListFragment.newInstance("promote", "1");
@@ -126,12 +130,12 @@ public class MGoBlogActivity extends BaseActivity {
                     f = NodeIndexListFragment.newInstance("type", "forum");
                 } else if (di.mTitle.equals("mgo.licio.us")) {
                     f = NodeIndexListFragment.newInstance("type", "link");
-                } else if (di.mTitle.equals("Account")){
-                	f = LoginFragment.newInstance();
-                } else if (di.mTitle.equals("About")){
-                	f = AboutFragment.newInstance();
+                } else if (di.mTitle.equals("Account")) {
+                    f = LoginFragment.newInstance();
+                } else if (di.mTitle.equals("About")) {
+                    f = AboutFragment.newInstance();
                 }
-               
+
                 getSupportFragmentManager().beginTransaction().replace(R.id.node_index_container,
                         f, di.mTitle).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
 
@@ -183,118 +187,118 @@ public class MGoBlogActivity extends BaseActivity {
         }
     }
 
-	private static class DrawerItem {
+    private static class DrawerItem {
 
-		String mTitle;
-		int mIconRes;
-		int mIconResSelected;
+        String mTitle;
+        int mIconRes;
+        int mIconResSelected;
 
-		DrawerItem(String title, int iconRes, int iconResSel) {
-			mTitle = title;
-			mIconRes = iconRes;
-			mIconResSelected = iconResSel;
-		}
-	}
+        DrawerItem(String title, int iconRes, int iconResSel) {
+            mTitle = title;
+            mIconRes = iconRes;
+            mIconResSelected = iconResSel;
+        }
+    }
 
-	private static class DrawerCategory {
+    private static class DrawerCategory {
 
-		String mTitle;
+        String mTitle;
 
-		DrawerCategory(String title) {
-			mTitle = title;
-		}
-	}
+        DrawerCategory(String title) {
+            mTitle = title;
+        }
+    }
 
-	private class MenuDrawerAdapter extends BaseAdapter {
+    private class MenuDrawerAdapter extends BaseAdapter {
 
-		private List<Object> mItems;
-		private int curPosition;
+        private List<Object> mItems;
+        private int curPosition;
 
-		MenuDrawerAdapter(List<Object> items) {
-			mItems = items;
-			curPosition = 1;
-		}
+        MenuDrawerAdapter(List<Object> items) {
+            mItems = items;
+            curPosition = 1;
+        }
 
-		@Override
-		public int getCount() {
-			return mItems.size();
-		}
+        @Override
+        public int getCount() {
+            return mItems.size();
+        }
 
-		@Override
-		public Object getItem(int position) {
-			return mItems.get(position);
-		}
+        @Override
+        public Object getItem(int position) {
+            return mItems.get(position);
+        }
 
-		@Override
-		public long getItemId(int position) {
-			return position;
-		}
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
 
-		@Override
-		public int getItemViewType(int position) {
-			return getItem(position) instanceof DrawerItem ? 0 : 1;
-		}
+        @Override
+        public int getItemViewType(int position) {
+            return getItem(position) instanceof DrawerItem ? 0 : 1;
+        }
 
-		@Override
-		public int getViewTypeCount() {
-			return 2;
-		}
+        @Override
+        public int getViewTypeCount() {
+            return 2;
+        }
 
-		@Override
-		public boolean isEnabled(int position) {
-			return getItem(position) instanceof DrawerItem;
-		}
+        @Override
+        public boolean isEnabled(int position) {
+            return getItem(position) instanceof DrawerItem;
+        }
 
-		@Override
-		public boolean areAllItemsEnabled() {
-			return false;
-		}
-		
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			View v = convertView;
-			Object item = getItem(position);
-			TextView tv = null;
+        @Override
+        public boolean areAllItemsEnabled() {
+            return false;
+        }
 
-			if (item instanceof DrawerCategory) {
-				if (v == null) {
-					v = getLayoutInflater().inflate(R.layout.menu_row_category,
-							parent, false);
-				}
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View v = convertView;
+            Object item = getItem(position);
+            TextView tv = null;
 
-				((TextView) v).setText(((DrawerCategory) item).mTitle);
+            if (item instanceof DrawerCategory) {
+                if (v == null) {
+                    v = getLayoutInflater().inflate(R.layout.menu_row_category,
+                            parent, false);
+                }
 
-			} else {
-				v = getLayoutInflater().inflate(R.layout.menu_row_item,
-						parent, false);
-				tv = (TextView) v.findViewById(R.id.item_text);
-				tv.setText(((DrawerItem) item).mTitle);
-				
-				LinearLayout selected = (LinearLayout) v.findViewById(R.id.item_selected);
-				
-				if(position == mActivePosition){
-					selected.setVisibility(View.VISIBLE);
-					tv.setTextColor(Color.parseColor("#F0D34E"));
-					tv.setCompoundDrawablesWithIntrinsicBounds(
-							((DrawerItem) item).mIconResSelected, 0, 0, 0);
-				} else {
-					selected.setVisibility(View.INVISIBLE);
-					tv.setTextColor(Color.parseColor("#E9E9E9"));
-					tv.setCompoundDrawablesWithIntrinsicBounds(
-							((DrawerItem) item).mIconRes, 0, 0, 0);
-				}
+                ((TextView) v).setText(((DrawerCategory) item).mTitle);
 
-			}
+            } else {
+                v = getLayoutInflater().inflate(R.layout.menu_row_item,
+                        parent, false);
+                tv = (TextView) v.findViewById(R.id.item_text);
+                tv.setText(((DrawerItem) item).mTitle);
 
-			v.setTag(R.id.mdActiveViewPosition, position);
+                LinearLayout selected = (LinearLayout) v.findViewById(R.id.item_selected);
 
-			if (position == mActivePosition) {
-				mMenuDrawer.setActiveView(v, position);
-			}
+                if (position == mActivePosition) {
+                    selected.setVisibility(View.VISIBLE);
+                    tv.setTextColor(Color.parseColor("#F0D34E"));
+                    tv.setCompoundDrawablesWithIntrinsicBounds(
+                            ((DrawerItem) item).mIconResSelected, 0, 0, 0);
+                } else {
+                    selected.setVisibility(View.INVISIBLE);
+                    tv.setTextColor(Color.parseColor("#E9E9E9"));
+                    tv.setCompoundDrawablesWithIntrinsicBounds(
+                            ((DrawerItem) item).mIconRes, 0, 0, 0);
+                }
 
-			return v;
-		}
-		
-			
-	}
+            }
+
+            v.setTag(R.id.mdActiveViewPosition, position);
+
+            if (position == mActivePosition) {
+                mMenuDrawer.setActiveView(v, position);
+            }
+
+            return v;
+        }
+
+
+    }
 }

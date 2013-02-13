@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@drawable/comment_card"
     android:orientation="vertical"
     android:paddingBottom="8dp"
@@ -15,12 +15,12 @@
 
         <EditText
             android:id="@+id/cmt_title"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:layout_weight="0.8"
             android:ems="10"
-            android:hint="Title"
+            android:hint="@string/comment_title"
             android:inputType="textMultiLine"
             android:textColor="@color/blue"
             android:textColorHint="@color/text_grey"
@@ -36,7 +36,8 @@
             android:layout_gravity="right|center_vertical"
             android:layout_marginRight="8dp"
             android:background="@android:color/transparent"
-            android:src="@drawable/submit_comments" />
+            android:src="@drawable/submit_comments"
+            android:contentDescription="@string/submit_comment"/>
     </LinearLayout>
 
     <LinearLayout
@@ -53,9 +54,10 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:ems="10"
+        android:gravity="top|left"
         android:hint="Comment"
         android:inputType="textMultiLine"
-        android:lines="5"
+        android:lines="7"
         android:textColor="@android:color/black" />
 
 </LinearLayout>

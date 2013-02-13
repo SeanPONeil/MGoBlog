@@ -32,4 +32,6 @@
     <string name="client_error">Error code: %d</string>
     <string name="server_error">Server error: %d</string>
     <string name="cache_error">Error reading from cache</string>
+    <string name="submit_comment">Submit</string>
+    <string name="comment_title">Title</string>
 </resources>
