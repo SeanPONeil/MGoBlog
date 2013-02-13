@@ -101,7 +101,7 @@ public class NodeCommentFragment extends BaseListFragment implements LoaderManag
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.node_body, menu);
+        inflater.inflate(R.menu.comment, menu);
         nodeCommentMenu = menu;
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -114,6 +114,9 @@ public class NodeCommentFragment extends BaseListFragment implements LoaderManag
                 queue.add(new NodeCommentTask(nid, getTag()));
                 System.out.println(mAdapter.getCount());
                 return true;
+            case R.id.addComment:
+                //TODO activity.showAddComment(nodeComment.getCid());
+            	return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -16,22 +16,45 @@
         android:paddingBottom="8dp"
         android:paddingTop="8dp" >
 
-        <TextView
-            android:id="@+id/cmt_title"
-            style="@style/NodeIndexTitle"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:textStyle="bold" />
+            android:orientation="horizontal" 
+            android:gravity="center_vertical">
 
-        <TextView
-            android:id="@+id/cmt_time"
-            style="@style/NodeIndexTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.8"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/cmt_title"
+                    style="@style/NodeIndexTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="5dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/cmt_time"
+                    style="@style/NodeIndexTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/cmt_reply"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_gravity="right"
+                android:layout_marginRight="8dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/reply" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="fill_parent"

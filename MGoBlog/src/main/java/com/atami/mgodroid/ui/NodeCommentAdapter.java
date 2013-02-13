@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.atami.mgodroid.R;
@@ -80,6 +81,14 @@ public class NodeCommentAdapter extends ArrayAdapter<NodeComment> {
         viewHolder.title.setText(nodeComment.getSubject());
         viewHolder.subtitle.setText("By " + nodeComment.getName() + " - " + nodeComment.getTimestamp());
 
+     // Watch for button clicks.
+        ImageButton reply = (ImageButton)view.findViewById(R.id.cmt_reply);
+        reply.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+               //TODO activity.showAddComment(nodeComment.getCid());
+            }
+        });
+        
         Spanned html = Html.fromHtml(nodeComment.getComment(),
                 new Html.ImageGetter() {
 
