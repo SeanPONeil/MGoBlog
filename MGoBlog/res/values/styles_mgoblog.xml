@@ -40,6 +40,9 @@
 
         <!-- MenuDrawer specific -->
         <item name="menuDrawerStyle">@style/MenuDrawerStyle</item>
+
+        <!-- PullToRefresh specific -->
+        <item name="ptrAnimationStyle">flip</item>
     </style>
 
     <!-- Node Index List Item Styling -->
