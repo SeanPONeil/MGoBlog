@@ -117,7 +117,7 @@ public class NodeCommentFragment extends BaseListFragment implements LoaderManag
                 return true;
             case R.id.addComment:
                 FragmentManager fm = getActivity().getSupportFragmentManager();
-                CommentDialog cd = CommentDialog.newInstance(0);
+                CommentDialogFragment cd = CommentDialogFragment.newInstance(0);
                 cd.show(fm, "dialog");
             	return true;
             default:
