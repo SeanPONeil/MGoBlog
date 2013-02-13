@@ -8,17 +8,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.atami.mgodroid.R;
 import com.atami.mgodroid.models.NodeComment;
 import com.atami.mgodroid.util.MobileHTMLUtil;
+import android.support.v4.app.FragmentManager;
 
 import java.util.List;
 
 public class NodeCommentAdapter extends ArrayAdapter<NodeComment> {
 
     private List<NodeComment> nodeComments;
+    private FragmentManager fragmentManager;
 
     /**
      * Holds on to Views to avoid costly findViewById calls
@@ -39,9 +42,11 @@ public class NodeCommentAdapter extends ArrayAdapter<NodeComment> {
     }
 
     public NodeCommentAdapter(Context context, int textViewResourceId,
-                              List<NodeComment> nodeComments) {
+                              List<NodeComment> nodeComments, 
+                              FragmentManager fragmentManager) {
         super(context, textViewResourceId, nodeComments);
         this.nodeComments = nodeComments;
+        this.fragmentManager = fragmentManager; 
     }
 
     @Override
@@ -80,6 +85,15 @@ public class NodeCommentAdapter extends ArrayAdapter<NodeComment> {
         viewHolder.title.setText(nodeComment.getSubject());
         viewHolder.subtitle.setText("By " + nodeComment.getName() + " - " + nodeComment.getTimestamp());
 
+     // Watch for button clicks.
+        ImageButton reply = (ImageButton)view.findViewById(R.id.cmt_reply);
+        reply.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                CommentDialog cd = CommentDialog.newInstance(0);
+                cd.show(fragmentManager, "dialog");
+            }
+        });
+        
         Spanned html = Html.fromHtml(nodeComment.getComment(),
                 new Html.ImageGetter() {
 

@@ -1,5 +1,8 @@
 package com.atami.mgodroid.ui;
 
+import android.app.DialogFragment;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import com.actionbarsherlock.view.MenuItem;
@@ -41,4 +44,5 @@ public class NodeActivity extends BaseActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+    
 }
