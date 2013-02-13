@@ -38,7 +38,8 @@ import javax.inject.Singleton;
                 NodeCommentFragment.class,
                 NodeIndexTaskService.class,
                 NodeTaskService.class,
-                LoginFragment.class
+                LoginFragment.class,
+                AboutFragment.class
         }
 )
 public class OttoModule {
