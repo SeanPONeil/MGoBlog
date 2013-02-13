@@ -89,7 +89,7 @@ public class NodeCommentAdapter extends ArrayAdapter<NodeComment> {
         ImageButton reply = (ImageButton)view.findViewById(R.id.cmt_reply);
         reply.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                CommentDialog cd = CommentDialog.newInstance(0);
+                CommentDialogFragment cd = CommentDialogFragment.newInstance(0);
                 cd.show(fragmentManager, "dialog");
             }
         });
