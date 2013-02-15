@@ -18,5 +18,6 @@
 <resources>
     <bool name="has_two_panes">false</bool>
     <item name="node_container" type="layout">@layout/node_container_one_pane</item>
+    <item name="crowd" type="drawable">@drawable/bg</item>
 </resources>
 <!-- END_INCLUDE(all) -->
