@@ -1,6 +1,7 @@
 package com.atami.mgodroid.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -36,6 +38,7 @@ public class NodeFragment extends WebViewFragment implements
 
 	// ID of the current node
 	int nid;
+	String title = null;
 
 	@Inject
 	TaskQueue<NodeTask> queue;
@@ -72,11 +75,11 @@ public class NodeFragment extends WebViewFragment implements
 		getWebView().getSettings().setPluginState(WebSettings.PluginState.ON);
 		getWebView().getSettings().setLayoutAlgorithm(
 				WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
-		
-		//getWebView().setBackgroundDrawable(getResources().getDrawable(R.drawable.comment_card));
-		//getWebView().setBackgroundColor(0x00000000);
-		//getWebView().setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
-		
+
+		// getWebView().setBackgroundDrawable(getResources().getDrawable(R.drawable.comment_card));
+		// getWebView().setBackgroundColor(0x00000000);
+		// getWebView().setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
+
 		// Bug in ActiveAndroid ModelLoader: Cached results in LoaderManager
 		// aren't updated
 		// when the ModelLoaders From changes
@@ -115,6 +118,7 @@ public class NodeFragment extends WebViewFragment implements
 			getSherlockActivity().getSupportActionBar().setSubtitle(
 					"By " + node.get(0).getName() + " - "
 							+ node.get(0).getCommentCount() + " " + "comments");
+			title = node.get(0).getTitle();
 		}
 	}
 
@@ -169,6 +173,26 @@ public class NodeFragment extends WebViewFragment implements
 			ft.replace(R.id.node_pane, newFragment, getTag());
 			ft.addToBackStack(null);
 			ft.commit();
+			return true;
+		case R.id.share:
+
+			if (title == null) {
+				Toast.makeText(getActivity(), "Loading article...",
+						Toast.LENGTH_LONG);
+				return true;
+			}
+
+			Intent i = new Intent(android.content.Intent.ACTION_SEND);
+			String subject = "Check out this post from MGoBlog";
+			String message = "Check out the post \"" + title + "\" from MGoBlog:\n"
+					+ "http://mgoblog.com/node/" + Integer.toString(nid);
+
+			i.setType("text/plain");
+			i.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
+			i.putExtra(android.content.Intent.EXTRA_TEXT, message);
+
+			startActivity(Intent.createChooser(i, "Share this Post"));
+
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
