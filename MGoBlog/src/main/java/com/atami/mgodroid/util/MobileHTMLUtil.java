@@ -1,79 +1,90 @@
 package com.atami.mgodroid.util;
 
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.jsoup.parser.Tag;
 import org.jsoup.safety.Whitelist;
 
+import android.util.Log;
+
 public class MobileHTMLUtil {
 
-    /**
-     * Cleans HTML fragments and makes them more user
-     * fridnly for mobile devices
-     * @param html an HTML fragment
-     * @return a cleaned HTML body
-     */
-    public static String clean(String html){
+	/**
+	 * Cleans HTML fragments and makes them more user fridnly for mobile devices
+	 * 
+	 * @param html
+	 *            an HTML fragment
+	 * @return a cleaned HTML body
+	 */
+	public static String clean(String html) {
 
-        html = Jsoup.clean(html, Whitelist.basicWithImages());
-        Document doc = Jsoup.parseBodyFragment(html);
+		Document doc = Jsoup.parseBodyFragment(html);
+		Elements videos = doc
+				.select("iframe[src~=(youtube\\.com)], object[data~=(youtube\\.com)], embed[src~=(youtube\\.com)]");
 
-        //Add MGoBlog css before storing
-        Element headNode = doc.head();
-        headNode.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"node_body.css\"></style>");
+		// start by adding placeholder <a> tags to keep videos before clean
+		for (Element video : videos) {
+			Element div = new Element(Tag.valueOf("div"), "").attr("class",
+					"video");
+			Element thumbnail = new Element(Tag.valueOf("a"), "").attr("href",
+					video.attr("src"));
 
-        //Iterate through iframes, replace Youtube embeds with
-        //a thumbnail that links to Youtube
-        for (Element iframe : doc.select("iframe")) {
-            if (iframe.attr("src").contains("youtube")) {
-                Element div = new Element(Tag.valueOf("div"), "").attr("class", "video");
-                Element thumbnail = new Element(Tag.valueOf("a"), "").attr("href", iframe.attr("src"));
-                String videoID = iframe.attr("src").replaceFirst(".*/([^/?]+).*", "$1");
-                String thumbnailURL = String.format("http://img.youtube.com/vi/%s/0.jpg", videoID);
-                Element img = new Element(Tag.valueOf("img"), "")
-                        .attr("src", "play_button.png")
-                        .attr("style", "background:URL(" + thumbnailURL + ")");
-                thumbnail.appendChild(img);
-                div.appendChild(thumbnail);
-                iframe.replaceWith(div);
-            }
-        }
+			div.appendChild(thumbnail);
+			video.replaceWith(div);
+		}
 
-        for (Element embed : doc.select("embed")) {
-            if (embed.attr("src").contains("youtube")) {
-                Element div = new Element(Tag.valueOf("div"), "").attr("class", "video");
-                Element thumbnail = new Element(Tag.valueOf("a"), "").attr("href", embed.attr("src"));
-                String src = embed.attr("src").substring(0, embed.attr("src").lastIndexOf("?"));
-                String videoID = src.replaceFirst(".*/([^/?]+).*", "$1");
-                String thumbnailURL = String.format("http://img.youtube.com/vi/%s/0.jpg", videoID);
-                Element img = new Element(Tag.valueOf("img"), "")
-                        .attr("src", "play_button.png")
-                        .attr("style", "background:URL(" + thumbnailURL + ")");
-                thumbnail.appendChild(img);
-                div.appendChild(thumbnail);
-                embed.replaceWith(div);
-            }
+		// have to whitelist AFTER replacing videos with images so that
+		// the videos don't get "cleaned" out
+		html = Jsoup.clean(doc.toString(), Whitelist.basicWithImages());
+		doc = Jsoup.parseBodyFragment(html);
 
-        }
+		videos = doc.select("a[href~=(youtube\\.com)]");
 
-        //TODO: Find plain text links and wrap them in an anchor tag
+		// add images with styling to the <a> tags that point to youtube
+		for (Element video : videos) {
+			
+			int len = video.attr("href").lastIndexOf("?");
 
-        return doc.toString().replace("<p>&nbsp;</p>", "").trim();
-    }
-    
-    public static CharSequence trimTrailingWhitespace(CharSequence source) {
+			if (len <= 0) {
+				len = video.attr("href").length();
+			}
 
-	    if(source == null)
-	        return "";
+			String src = video.attr("href").substring(0, len);
 
-	    int i = source.length();
+			String videoID = src.replaceFirst(".*/([^/?]+).*", "$1");
+			String thumbnailURL = String.format(
+					"http://img.youtube.com/vi/%s/0.jpg", videoID);
 
-	    // loop back to the first non-whitespace character
-	    while(--i >= 0 && Character.isWhitespace(source.charAt(i))) {
-	    }
+			Element img = new Element(Tag.valueOf("img"), "")
+					.attr("src",
+							"https://raw.github.com/SeanPONeil/MGoBlog/master/MGoBlog/assets/play_button.png")
+					.attr("style", "background:URL(" + thumbnailURL + ")");
 
-	    return source.subSequence(0, i+1);
+			video.appendChild(img);
+		}
+
+		// Add MGoBlog css
+		doc.head()
+				.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"node_body.css\"></style>");
+
+		// TODO: Find plain text links and wrap them in an anchor tag
+		return doc.toString().replace("<p>&nbsp;</p>", "").trim();
 	}
+
+	public static CharSequence trimTrailingWhitespace(CharSequence source) {
+
+		if (source == null)
+			return "";
+
+		int i = source.length();
+
+		// loop back to the first non-whitespace character
+		while (--i >= 0 && Character.isWhitespace(source.charAt(i))) {
+		}
+
+		return source.subSequence(0, i + 1);
+	}
+
 }

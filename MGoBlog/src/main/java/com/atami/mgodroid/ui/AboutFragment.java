@@ -1,9 +1,13 @@
 package com.atami.mgodroid.ui;
 
 import android.os.Bundle;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
 import com.atami.mgodroid.R;
 import com.atami.mgodroid.ui.base.BaseFragment;
 
@@ -26,14 +30,19 @@ public class AboutFragment extends BaseFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
-		
 	}
-	
+
 	@Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, 
-        Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.about, container, false);
-    }
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		View v = inflater.inflate(R.layout.about, container, false);
+
+		TextView tv = (TextView) v.findViewById(R.id.about);
+		tv.setText(Html
+				.fromHtml("MGoBlog covers football, basketball, hockey, baseball, lacrosse, recruiting, and much, much more. This app was designed and developed by two University of Michigan Alumni, Sean O'Neil and Kristin Boyer. " +
+						"It is open source and can be checked out on <a href=\"https://github.com/SeanPONeil/MGoBlog\">GitHub</a>."));
+		tv.setMovementMethod(LinkMovementMethod.getInstance());
+		return v;
+	}
 
 }

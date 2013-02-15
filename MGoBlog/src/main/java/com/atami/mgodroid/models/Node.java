@@ -166,6 +166,10 @@ public class Node extends Model {
     public int getRevisionTimestamp() {
         return revision_timestamp;
     }
+    
+    public String getUri() {
+    	return uri;
+    }
 
     @Override
     public String toString() {
