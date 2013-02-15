@@ -38,7 +38,7 @@ public class AboutFragment extends BaseFragment {
 
 		TextView tv = (TextView) v.findViewById(R.id.about);
 		tv.setText(Html
-				.fromHtml("MGoBlog covers football, basketball, hockey, baseball, lacrosse, recruiting, and much, much more. This app was designed by two University of Michigan Alumni, Sean O'Neil and Kristin Boyer. " +
+				.fromHtml("MGoBlog covers football, basketball, hockey, baseball, lacrosse, recruiting, and much, much more. This app was designed and developed by two University of Michigan Alumni, Sean O'Neil and Kristin Boyer. " +
 						"It is open source and can be checked out on <a href=\"https://github.com/SeanPONeil/MGoBlog\">GitHub</a>."));
 
 		return v;
