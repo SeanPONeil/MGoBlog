@@ -21,18 +21,54 @@ public class MobileHTMLUtil {
 	public static String clean(String html) {
 
 		Document doc = Jsoup.parseBodyFragment(html);
-		Elements videos = doc.select("iframe[src~=(youtube\\.com)], object[data~=(youtube\\.com)], embed[src~=(youtube\\.com)]");
-		
-		for (Element video : videos) replaceYouTube(video);
-		
-		// have to whitelist AFTER replacing videos with images so that 
+		Elements videos = doc
+				.select("iframe[src~=(youtube\\.com)], object[data~=(youtube\\.com)], embed[src~=(youtube\\.com)]");
+
+		// start by adding placeholder <a> tags to keep videos before clean
+		for (Element video : videos) {
+			Element div = new Element(Tag.valueOf("div"), "").attr("class",
+					"video");
+			Element thumbnail = new Element(Tag.valueOf("a"), "").attr("href",
+					video.attr("src"));
+
+			div.appendChild(thumbnail);
+			video.replaceWith(div);
+		}
+
+		// have to whitelist AFTER replacing videos with images so that
 		// the videos don't get "cleaned" out
 		html = Jsoup.clean(doc.toString(), Whitelist.basicWithImages());
 		doc = Jsoup.parseBodyFragment(html);
-		
+
+		videos = doc.select("a[href~=(youtube\\.com)]");
+
+		// add images with styling to the <a> tags that point to youtube
+		for (Element video : videos) {
+			
+			int len = video.attr("href").lastIndexOf("?");
+
+			if (len <= 0) {
+				len = video.attr("href").length();
+			}
+
+			String src = video.attr("href").substring(0, len);
+
+			String videoID = src.replaceFirst(".*/([^/?]+).*", "$1");
+			String thumbnailURL = String.format(
+					"http://img.youtube.com/vi/%s/0.jpg", videoID);
+
+			Element img = new Element(Tag.valueOf("img"), "")
+					.attr("src",
+							"https://raw.github.com/SeanPONeil/MGoBlog/master/MGoBlog/assets/play_button.png")
+					.attr("style", "background:URL(" + thumbnailURL + ")");
+
+			video.appendChild(img);
+		}
+
 		// Add MGoBlog css
-		doc.head().append("<link rel=\"stylesheet\" type=\"text/css\" href=\"node_body.css\"></style>");
-		
+		doc.head()
+				.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"node_body.css\"></style>");
+
 		// TODO: Find plain text links and wrap them in an anchor tag
 		return doc.toString().replace("<p>&nbsp;</p>", "").trim();
 	}
@@ -51,28 +87,4 @@ public class MobileHTMLUtil {
 		return source.subSequence(0, i + 1);
 	}
 
-	public static void replaceYouTube(Element elt) {
-		if (elt.attr("src").contains("youtube")) {
-			Element div = new Element(Tag.valueOf("div"), "").attr("class",
-					"video");
-			Element thumbnail = new Element(Tag.valueOf("a"), "").attr("href",
-					elt.attr("src"));
-			
-			int len = elt.attr("src").lastIndexOf("?");
-			if(len <= 0) len = elt.attr("src").length();
-			
-			String src = elt.attr("src").substring(0, len);
-			String videoID = src.replaceFirst(".*/([^/?]+).*", "$1");
-			String thumbnailURL = String.format(
-					"http://img.youtube.com/vi/%s/0.jpg", videoID);
-			
-			Element img = new Element(Tag.valueOf("img"), "").attr("src",
-					"https://raw.github.com/SeanPONeil/MGoBlog/master/MGoBlog/assets/play_button.png").attr("style",
-					"background:URL(" + thumbnailURL + ")");
-
-			thumbnail.appendChild(img);
-			div.appendChild(thumbnail);
-			elt.replaceWith(div);
-		}
-	}
 }
