@@ -73,7 +73,7 @@ public class NodeCommentTaskService extends Service implements Callback<List<Nod
             public void run() {
                 ActiveAndroid.beginTransaction();
                 for (NodeComment nc : nodeComments) {
-                    nc.setComment(MobileHTMLUtil.clean(nc.getComment()));
+                	nc.setComment(MobileHTMLUtil.cleanComments(nc.getComment()));
                     nc.save();
                 }
                 ActiveAndroid.setTransactionSuccessful();
