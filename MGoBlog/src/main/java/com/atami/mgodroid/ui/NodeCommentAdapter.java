@@ -86,7 +86,6 @@ public class NodeCommentAdapter extends ArrayAdapter<NodeComment> {
         viewHolder.title.setText(nodeComment.getSubject());
         viewHolder.subtitle.setText("By " + nodeComment.getName() + " - " + nodeComment.getTimestamp());
 
-     // Watch for button clicks.
         ImageButton reply = (ImageButton)view.findViewById(R.id.cmt_reply);
         reply.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -95,21 +94,7 @@ public class NodeCommentAdapter extends ArrayAdapter<NodeComment> {
             }
         });
         
-        Spanned html = Html.fromHtml(nodeComment.getComment(),
-                new Html.ImageGetter() {
-
-                    @Override
-                    public Drawable getDrawable(String source) {
-                        Drawable drawable = null;
-//				drawable = Drawable.createFromPath(source);
-//				drawable.setBounds(0, 0, drawable.getIntrinsicWidth(),
-//						drawable.getIntrinsicHeight());
-
-                        return drawable;
-                    }
-                }, null);
-
-        viewHolder.comment.setText(MobileHTMLUtil.trimTrailingWhitespace(html));
+        viewHolder.comment.setText(MobileHTMLUtil.trimTrailingWhitespace(Html.fromHtml(nodeComment.getComment())));
         viewHolder.comment.setMovementMethod(LinkMovementMethod.getInstance());
 
         return view;
