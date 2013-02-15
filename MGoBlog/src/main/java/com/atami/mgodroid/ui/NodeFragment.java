@@ -38,7 +38,7 @@ public class NodeFragment extends WebViewFragment implements
 
 	// ID of the current node
 	int nid;
-	String uri = null;
+	String title = null;
 
 	@Inject
 	TaskQueue<NodeTask> queue;
@@ -118,7 +118,7 @@ public class NodeFragment extends WebViewFragment implements
 			getSherlockActivity().getSupportActionBar().setSubtitle(
 					"By " + node.get(0).getName() + " - "
 							+ node.get(0).getCommentCount() + " " + "comments");
-			uri = node.get(0).getUri();
+			title = node.get(0).getTitle();
 		}
 	}
 
@@ -176,15 +176,16 @@ public class NodeFragment extends WebViewFragment implements
 			return true;
 		case R.id.share:
 
-			if (uri == null) {
+			if (title == null) {
 				Toast.makeText(getActivity(), "Loading article...",
 						Toast.LENGTH_LONG);
 				return true;
 			}
-						
+
 			Intent i = new Intent(android.content.Intent.ACTION_SEND);
 			String subject = "Check out this article from MGoBlog";
-			String message = "Check out this article from MGoBlog:\n" + uri;
+			String message = "Check out the article \"" + title + "\" from MGoBlog:\n"
+					+ "http://mgoblog.com/node/" + Integer.toString(nid);
 
 			i.setType("text/plain");
 			i.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
