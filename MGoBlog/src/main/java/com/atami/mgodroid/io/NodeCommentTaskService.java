@@ -5,6 +5,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
+import com.activeandroid.ActiveAndroid;
 import com.atami.mgodroid.MGoBlogApplication;
 import com.atami.mgodroid.events.NodeCommentTaskStatus;
 import com.atami.mgodroid.models.NodeComment;
@@ -70,10 +71,13 @@ public class NodeCommentTaskService extends Service implements Callback<List<Nod
         new Thread(new Runnable() {
             @Override
             public void run() {
+                ActiveAndroid.beginTransaction();
                 for (NodeComment nc : nodeComments) {
                     nc.setComment(MobileHTMLUtil.clean(nc.getComment()));
                     nc.save();
                 }
+                ActiveAndroid.setTransactionSuccessful();
+                ActiveAndroid.endTransaction();
             }
         }).start();
         running = false;
