@@ -1,12 +1,11 @@
 package com.atami.mgodroid.modules;
 
 
+import com.atami.mgodroid.io.LoginTask;
 import com.atami.mgodroid.io.NodeCommentTask;
 import com.atami.mgodroid.io.NodeIndexTask;
 import com.atami.mgodroid.io.NodeTask;
-import com.atami.mgodroid.models.Node;
-import com.atami.mgodroid.models.NodeComment;
-import com.atami.mgodroid.models.NodeIndex;
+import com.atami.mgodroid.models.*;
 import com.google.gson.GsonBuilder;
 import dagger.Module;
 import dagger.Provides;
@@ -14,11 +13,14 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import retrofit.http.*;
 
 import javax.inject.Named;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executor;
 
 @Module(
         entryPoints = {
+                LoginTask.class,
                 NodeIndexTask.class,
                 NodeTask.class,
                 NodeCommentTask.class
@@ -48,6 +50,9 @@ public class MGoBlogAPIModule {
 
         @GET("/node/{nid}/comments.json")
         void getNodeComments(@Named("nid") int nid, Callback<List<NodeComment>> callback);
+
+        @POST("/user/login")
+        void loginUser(@SingleEntity LoginJsonObj payload, Callback<LoginResponse> callback);
     }
 
     private class APIExecutor implements Executor {
@@ -71,6 +76,9 @@ public class MGoBlogAPIModule {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setServer(new Server(API_URL))
                 .setExecutors(new APIExecutor(), new CallbackExecutor())
+                .setHeaders(Arrays.asList(
+                        new Header[]{new Header("Accept-Charset", "UTF-8"),
+                        new Header("Content-Type", "application/json")}))
                 .setConverter(new GsonConverter(new GsonBuilder()
                         .serializeNulls()
                         .create()))

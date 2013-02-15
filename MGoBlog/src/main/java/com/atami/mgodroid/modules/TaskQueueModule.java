@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import com.atami.mgodroid.MGoBlogApplication;
 import com.atami.mgodroid.io.*;
+import com.atami.mgodroid.ui.LoginFragment;
 import com.atami.mgodroid.ui.NodeCommentFragment;
 import com.atami.mgodroid.ui.NodeFragment;
 import com.atami.mgodroid.ui.NodeIndexListFragment;
@@ -16,9 +17,11 @@ import javax.inject.Singleton;
 
 @Module(
         entryPoints = {
+                LoginFragment.class,
                 NodeIndexListFragment.class,
                 NodeFragment.class,
                 NodeCommentFragment.class,
+                LoginTaskService.class,
                 NodeIndexTaskService.class,
                 NodeTaskService.class,
                 NodeCommentTaskService.class
@@ -105,6 +108,15 @@ public class TaskQueueModule {
         TaskQueue<NodeCommentTask> queue = new TaskQueue<NodeCommentTask>(delegate,
                 new IOTaskInjector<NodeCommentTask>(appContext));
         queue.setListener(new ServiceStarter<NodeCommentTask>(appContext, NodeCommentTaskService.class));
+        return queue;
+    }
+
+    @Provides
+    @Singleton
+    TaskQueue<LoginTask> provideLoginTaskQueue() {
+        ObjectQueue<LoginTask> delegate = new InMemoryObjectQueue<LoginTask>();
+        TaskQueue<LoginTask> queue = new TaskQueue<LoginTask>(delegate, new IOTaskInjector<LoginTask>(appContext));
+        queue.setListener(new ServiceStarter<LoginTask>(appContext, LoginTaskService.class));
         return queue;
     }
 }
