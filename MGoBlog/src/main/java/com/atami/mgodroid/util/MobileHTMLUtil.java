@@ -67,7 +67,7 @@ public class MobileHTMLUtil {
 					"http://img.youtube.com/vi/%s/0.jpg", videoID);
 			
 			Element img = new Element(Tag.valueOf("img"), "").attr("src",
-					"http://i.imgur.com/RRYojjC.png").attr("style",
+					"https://raw.github.com/SeanPONeil/MGoBlog/master/MGoBlog/assets/play_button.png").attr("style",
 					"background:URL(" + thumbnailURL + ")");
 
 			thumbnail.appendChild(img);
