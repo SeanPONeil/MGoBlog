@@ -183,15 +183,15 @@ public class NodeFragment extends WebViewFragment implements
 			}
 
 			Intent i = new Intent(android.content.Intent.ACTION_SEND);
-			String subject = "Check out this article from MGoBlog";
-			String message = "Check out the article \"" + title + "\" from MGoBlog:\n"
+			String subject = "Check out this post from MGoBlog";
+			String message = "Check out the post \"" + title + "\" from MGoBlog:\n"
 					+ "http://mgoblog.com/node/" + Integer.toString(nid);
 
 			i.setType("text/plain");
 			i.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
 			i.putExtra(android.content.Intent.EXTRA_TEXT, message);
 
-			startActivity(Intent.createChooser(i, "Share this Article"));
+			startActivity(Intent.createChooser(i, "Share this Post"));
 
 			return true;
 		default:
