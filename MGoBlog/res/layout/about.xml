@@ -1,33 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@drawable/bg"
-    android:gravity="center_horizontal"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:gravity="center" >
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_margin="10dp"
-        android:gravity="center_horizontal"
         android:background="@drawable/about_card"
         android:orientation="vertical"
         android:padding="10dp" >
 
         <ImageView
-            android:id="@+id/imageView1"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:src="@drawable/icon_nobg" />
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/icon_nobg"
+            android:layout_gravity="center_horizontal" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="The Internet&apos;s Premier Michigan Blog."
+            android:textColor="@color/blue"
+            android:textSize="15dp"
+            android:textStyle="bold|italic" />
 
         <TextView
             android:id="@+id/about"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Sed viverra nunc in felis faucibus quis porttitor libero egestas. Suspendisse potenti. Phasellus lacinia rutrum eros, at bibendum arcu cursus vel. \n \nNulla metus lectus, lobortis eget aliquet sodales, interdum eget enim. Quisque nec neque est, eget dignissim ipsum. Integer tristique sagittis laoreet. Quisque nulla diam, volutpat et luctus eu, condimentum nec lorem. Pellentesque vitae fringilla mi. Fusce convallis tortor et purus eleifend a placerat dolor tincidunt. Maecenas enim sapien, pellentesque et pellentesque id, mattis quis eros. Maecenas consectetur elementum eleifend. Etiam feugiat ultrices odio, id rutrum justo cursus ac. Morbi neque libero, placerat in euismod vitae, tempus et felis."
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:textColor="@color/blue"
             android:textSize="15dp" />
+        
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Go Blue!"
+            android:textColor="@color/blue"
+            android:textSize="15dp"
+            android:layout_marginTop="10dp"
+            android:textStyle="bold|italic" />
+
+<!--   -->
+
     </LinearLayout>
 
 </LinearLayout>
