@@ -2,6 +2,7 @@ package com.atami.mgodroid.ui;
 
 import android.os.Bundle;
 import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +41,7 @@ public class AboutFragment extends BaseFragment {
 		tv.setText(Html
 				.fromHtml("MGoBlog covers football, basketball, hockey, baseball, lacrosse, recruiting, and much, much more. This app was designed and developed by two University of Michigan Alumni, Sean O'Neil and Kristin Boyer. " +
 						"It is open source and can be checked out on <a href=\"https://github.com/SeanPONeil/MGoBlog\">GitHub</a>."));
-
+		tv.setMovementMethod(LinkMovementMethod.getInstance());
 		return v;
 	}
 
