@@ -22,7 +22,7 @@ public class MobileHTMLUtil {
 
 		Document doc = Jsoup.parseBodyFragment(html);
 		Elements videos = doc
-				.select("iframe[src~=(youtube\\.com)], object[data~=(youtube\\.com)], embed[src~=(youtube\\.com)]");
+				.select("iframe[src~=(youtube\\.com)], embed[src~=(youtube\\.com)]");
 
 		// start by adding placeholder <a> tags to keep videos before clean
 		for (Element video : videos) {
@@ -64,6 +64,34 @@ public class MobileHTMLUtil {
 
 			video.appendChild(img);
 		}
+
+		// Add MGoBlog css
+		doc.head()
+				.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"node_body.css\"></style>");
+
+		// TODO: Find plain text links and wrap them in an anchor tag
+		return doc.toString().replace("<p>&nbsp;</p>", "").trim();
+	}
+	
+	public static String cleanComments(String html) {
+
+		Document doc = Jsoup.parseBodyFragment(html);
+		Elements media = doc.select("img[src], iframe[src], embed[src]");
+
+		for(Element m : media){
+			Element p = new Element(Tag.valueOf("p"), "");
+			Element e = new Element(Tag.valueOf("a"), "").attr("href",
+					m.attr("src"));
+			e.text(m.attr("src"));
+
+			p.appendChild(e);
+			m.replaceWith(p);
+		}
+
+		// have to whitelist AFTER replacing videos with images so that
+		// the videos don't get "cleaned" out
+		html = Jsoup.clean(doc.toString(), Whitelist.basicWithImages());
+		doc = Jsoup.parseBodyFragment(html);
 
 		// Add MGoBlog css
 		doc.head()
