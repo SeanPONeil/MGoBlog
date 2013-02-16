@@ -12,19 +12,19 @@ import android.util.Log;
 public class MobileHTMLUtil {
 
 	/**
-	 * Cleans HTML fragments and makes them more user fridnly for mobile devices
+	 * Cleans Node HTML fragments and makes them more user fridnly for mobile devices
 	 * 
 	 * @param html
 	 *            an HTML fragment
 	 * @return a cleaned HTML body
 	 */
-	public static String clean(String html) {
+	public static String cleanNode(String html) {
 
 		Document doc = Jsoup.parseBodyFragment(html);
 		Elements videos = doc
 				.select("iframe[src~=(youtube\\.com)], embed[src~=(youtube\\.com)]");
 
-		// start by adding placeholder <a> tags to keep videos before clean
+		// start by adding placeholder <a> tags to keep videos before cleanNode
 		for (Element video : videos) {
 			Element div = new Element(Tag.valueOf("div"), "").attr("class",
 					"video");
@@ -99,20 +99,6 @@ public class MobileHTMLUtil {
 
 		// TODO: Find plain text links and wrap them in an anchor tag
 		return doc.toString().replace("<p>&nbsp;</p>", "").trim();
-	}
-
-	public static CharSequence trimTrailingWhitespace(CharSequence source) {
-
-		if (source == null)
-			return "";
-
-		int i = source.length();
-
-		// loop back to the first non-whitespace character
-		while (--i >= 0 && Character.isWhitespace(source.charAt(i))) {
-		}
-
-		return source.subSequence(0, i + 1);
 	}
 
 }

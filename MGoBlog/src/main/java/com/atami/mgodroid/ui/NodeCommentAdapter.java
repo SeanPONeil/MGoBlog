@@ -94,7 +94,7 @@ public class NodeCommentAdapter extends ArrayAdapter<NodeComment> {
             }
         });
         
-        viewHolder.comment.setText(MobileHTMLUtil.trimTrailingWhitespace(Html.fromHtml(nodeComment.getComment())));
+        viewHolder.comment.setText(Html.fromHtml(nodeComment.getComment()).toString().trim());
         viewHolder.comment.setMovementMethod(LinkMovementMethod.getInstance());
 
         return view;
