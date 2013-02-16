@@ -5,13 +5,9 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
-import com.activeandroid.ActiveAndroid;
 import com.atami.mgodroid.MGoBlogApplication;
 import com.atami.mgodroid.events.LoginTaskStatus;
-import com.atami.mgodroid.events.NodeIndexTaskStatus;
 import com.atami.mgodroid.models.LoginResponse;
-import com.atami.mgodroid.models.NodeComment;
-import com.atami.mgodroid.models.NodeIndex;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Produce;
 import com.squareup.tape.TaskQueue;
@@ -19,7 +15,6 @@ import retrofit.http.Callback;
 import retrofit.http.RetrofitError;
 
 import javax.inject.Inject;
-import java.util.List;
 
 public class LoginTaskService extends Service implements Callback<LoginResponse> {
 
