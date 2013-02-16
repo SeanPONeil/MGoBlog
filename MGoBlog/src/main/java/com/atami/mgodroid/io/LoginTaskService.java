@@ -7,7 +7,8 @@ import android.os.IBinder;
 import android.util.Log;
 import com.atami.mgodroid.MGoBlogApplication;
 import com.atami.mgodroid.events.LoginTaskStatus;
-import com.atami.mgodroid.models.LoginResponse;
+import com.atami.mgodroid.models.Session;
+import com.atami.mgodroid.models.User;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Produce;
 import com.squareup.tape.TaskQueue;
@@ -16,7 +17,7 @@ import retrofit.http.RetrofitError;
 
 import javax.inject.Inject;
 
-public class LoginTaskService extends Service implements Callback<LoginResponse> {
+public class LoginTaskService extends Service implements Callback<Session> {
 
     private static final String TAG = "LoginTaskService";
 
@@ -64,13 +65,14 @@ public class LoginTaskService extends Service implements Callback<LoginResponse>
     }
 
     @Override
-    public void success(final LoginResponse response) {
+    public void success(final Session response) {
         Log.i(TAG, "Success!");
-        Log.i(TAG, response.toString());
         new Thread(new Runnable() {
             @Override
             public void run() {
-
+                User user = response.getUser();
+                user.save();
+                response.save();
             }
         }).start();
         running = false;

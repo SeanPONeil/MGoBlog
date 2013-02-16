@@ -71,7 +71,6 @@ public class NodeTaskService extends Service implements Callback<Node> {
     @Override
     public void success(final Node node) {
         Log.i(TAG, "Success!");
-        Log.i(TAG, node.toString());
         new Thread(new Runnable() {
             @Override
             public void run() {

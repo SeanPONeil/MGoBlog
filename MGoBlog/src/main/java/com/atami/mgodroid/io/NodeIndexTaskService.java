@@ -72,7 +72,6 @@ public class NodeIndexTaskService extends Service implements Callback<List<NodeI
     @Override
     public void success(final List<NodeIndex> nodeIndexes) {
         Log.i(TAG, "Success!");
-        Log.i(TAG, nodeIndexes.toString());
         new Thread(new Runnable() {
             @Override
             public void run() {

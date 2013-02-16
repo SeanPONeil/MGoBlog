@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import com.activeandroid.query.Select;
 import com.atami.mgodroid.R;
 import com.atami.mgodroid.events.LoginTaskStatus;
 import com.atami.mgodroid.io.LoginTask;

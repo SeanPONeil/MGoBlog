@@ -9,11 +9,9 @@ import com.atami.mgodroid.models.*;
 import com.google.gson.GsonBuilder;
 import dagger.Module;
 import dagger.Provides;
-import org.apache.http.impl.client.DefaultHttpClient;
 import retrofit.http.*;
 
 import javax.inject.Named;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -52,7 +50,7 @@ public class MGoBlogAPIModule {
         void getNodeComments(@Named("nid") int nid, Callback<List<NodeComment>> callback);
 
         @POST("/user/login")
-        void loginUser(@SingleEntity LoginJsonObj payload, Callback<LoginResponse> callback);
+        void loginUser(@SingleEntity LoginJsonObj payload, Callback<Session> callback);
     }
 
     private class APIExecutor implements Executor {
@@ -78,8 +76,9 @@ public class MGoBlogAPIModule {
                 .setExecutors(new APIExecutor(), new CallbackExecutor())
                 .setHeaders(Arrays.asList(
                         new Header[]{new Header("Accept-Charset", "UTF-8"),
-                        new Header("Content-Type", "application/json")}))
+                                new Header("Content-Type", "application/json")}))
                 .setConverter(new GsonConverter(new GsonBuilder()
+                        .setPrettyPrinting()
                         .serializeNulls()
                         .create()))
                 .build();
