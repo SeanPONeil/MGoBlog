@@ -74,10 +74,14 @@ public class MGoBlogAPIModule {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setServer(new Server(API_URL))
                 .setExecutors(new APIExecutor(), new CallbackExecutor())
-                .setHeaders(Arrays.asList(
-                        new Header[]{new Header("Accept-Charset", "UTF-8"),
+                .setHeaders(new Headers() {
+                    @Override
+                    public List<Header> get() {
+                        return Arrays.asList(new Header("Accept-Charset", "UTF-8"),
                                 new Header("Content-Type", "application/json"),
-                                new Header("Cache-Control", "no-cache")}))
+                                new Header("Cache-Control", "no-cache"));
+                    }
+                })
                 .setConverter(new GsonConverter(new GsonBuilder()
                         .setPrettyPrinting()
                         .serializeNulls()
