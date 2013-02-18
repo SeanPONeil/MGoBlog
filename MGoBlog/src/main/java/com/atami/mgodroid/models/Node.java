@@ -175,6 +175,10 @@ public class Node extends Model {
         return name;
     }
 
+    public String getPath() {
+        return path;
+    }
+
     public String getTitle() {
         return title;
     }

@@ -34,6 +34,8 @@ public class NodeFragment extends WebViewFragment implements
     // ID of the current node
     int nid;
 
+    Node node;
+
     @Inject
     TaskQueue<NodeTask> queue;
 
@@ -117,6 +119,7 @@ public class NodeFragment extends WebViewFragment implements
             getSherlockActivity().getSupportActionBar().setSubtitle(
                     "By " + name + " - " + node.get(0).getCommentCount()
                             + " " + "comments");
+            this.node = node.get(0);
         }
     }
 
@@ -173,18 +176,13 @@ public class NodeFragment extends WebViewFragment implements
                 ft.commit();
                 return true;
             case R.id.share:
-
-                Intent i = new Intent(android.content.Intent.ACTION_SEND);
-                String subject = "Check out this post from MGoBlog";
-                String message = "Check out the post \"" + getSherlockActivity().getSupportActionBar().getTitle() + "\" from " +
-                        "MGoBlog:\n" + "http://mgoblog.com/node/" + Integer.toString(nid);
-
-                i.setType("text/plain");
-                i.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
-                i.putExtra(android.content.Intent.EXTRA_TEXT, message);
-
-                startActivity(Intent.createChooser(i, "Share this Post"));
-
+                if(node != null){
+                    Intent i = new Intent(android.content.Intent.ACTION_SEND);
+                    i.setType("text/plain");
+                    i.putExtra(android.content.Intent.EXTRA_SUBJECT, node.getTitle());
+                    i.putExtra(android.content.Intent.EXTRA_TEXT, "http://mgoblog.com/" + node.getPath());
+                    startActivity(Intent.createChooser(i, "Share this Post"));
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
