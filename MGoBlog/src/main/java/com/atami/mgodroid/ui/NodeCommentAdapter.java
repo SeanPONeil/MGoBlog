@@ -24,6 +24,8 @@ public class NodeCommentAdapter extends ArrayAdapter<NodeComment> {
     private List<NodeComment> nodeComments;
     private FragmentManager fragmentManager;
 
+    int nid;
+
     /**
      * Holds on to Views to avoid costly findViewById calls
      */
@@ -44,10 +46,12 @@ public class NodeCommentAdapter extends ArrayAdapter<NodeComment> {
 
     public NodeCommentAdapter(Context context, int textViewResourceId,
                               List<NodeComment> nodeComments, 
-                              FragmentManager fragmentManager) {
+                              FragmentManager fragmentManager,
+                              int nid) {
         super(context, textViewResourceId, nodeComments);
         this.nodeComments = nodeComments;
-        this.fragmentManager = fragmentManager; 
+        this.fragmentManager = fragmentManager;
+        this.nid = nid;
     }
 
     @Override
@@ -79,7 +83,7 @@ public class NodeCommentAdapter extends ArrayAdapter<NodeComment> {
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        NodeComment nodeComment = getItem(position);
+        final NodeComment nodeComment = getItem(position);
         int rank = nodeComment.getCommentDepth() * 20;
 
         viewHolder.container.setPadding(10 + rank, 0, 10, 10);
@@ -89,7 +93,7 @@ public class NodeCommentAdapter extends ArrayAdapter<NodeComment> {
         ImageButton reply = (ImageButton)view.findViewById(R.id.cmt_reply);
         reply.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                CommentDialogFragment cd = CommentDialogFragment.newInstance(0);
+                CommentDialogFragment cd = CommentDialogFragment.newInstance(nodeComment.getCid(), nid);
                 cd.show(fragmentManager, "dialog");
             }
         });

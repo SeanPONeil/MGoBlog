@@ -75,6 +75,10 @@ public class NodeTaskService extends Service implements Callback<Node> {
             @Override
             public void run() {
                 node.setBody(MobileHTMLUtil.cleanNode(node.getBody()));
+                if(node.getType().equals("link")){
+                    node.setLink(node.getField_link()[0].url);
+                    node.setBody(MobileHTMLUtil.addLinkToBody(node.getBody(), node.getLink()));
+                }
                 node.save();
             }
         }).start();

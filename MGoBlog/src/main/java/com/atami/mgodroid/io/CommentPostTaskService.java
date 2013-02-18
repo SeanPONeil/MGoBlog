@@ -9,23 +9,19 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 import com.atami.mgodroid.MGoBlogApplication;
-import com.atami.mgodroid.events.LoginTaskStatus;
-import com.atami.mgodroid.models.Session;
-import com.atami.mgodroid.models.User;
+import com.atami.mgodroid.events.CommentPostTaskStatus;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Produce;
 import com.squareup.tape.TaskQueue;
-import retrofit.http.Callback;
-import retrofit.http.RetrofitError;
 
 import javax.inject.Inject;
 
-public class LoginTaskService extends Service implements Callback<Session> {
+public class CommentPostTaskService extends Service implements CommentPostTask.Callback {
 
-    private static final String TAG = "LoginTaskService";
+    private final static String TAG = "CommentPostTaskService";
 
     @Inject
-    TaskQueue<LoginTask> queue;
+    TaskQueue<CommentPostTask> queue;
 
     @Inject
     Bus bus;
@@ -50,7 +46,7 @@ public class LoginTaskService extends Service implements Callback<Session> {
     private void executeNext() {
         if (running) return; // Only one task at a time.
 
-        LoginTask task = queue.peek();
+        CommentPostTask task = queue.peek();
         if (task != null) {
             running = true;
             taskTag = task.getTag();
@@ -63,42 +59,30 @@ public class LoginTaskService extends Service implements Callback<Session> {
     }
 
     @Produce
-    public LoginTaskStatus produceStatus() {
-        return new LoginTaskStatus(false, running, taskTag);
+    public CommentPostTaskStatus produceStatus() {
+        return new CommentPostTaskStatus(false, running, taskTag);
     }
 
     @Override
-    public void success(final Session response) {
+    public void onSuccess() {
         Log.i(TAG, "Success!");
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(LoginTaskService.this, "Logged in!", Toast.LENGTH_LONG).show();
-            }
-        });
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                User user = response.getUser();
-                user.save();
-                response.save();
-            }
-        }).start();
         running = false;
         queue.remove();
-        bus.post(new LoginTaskStatus(true, running, taskTag));
         bus.post(produceStatus());
+        bus.post(new CommentPostTaskStatus(true, running, taskTag));
         executeNext();
     }
 
     @Override
-    public void failure(RetrofitError error) {
-        if (error.isNetworkError()) {
-            Log.i(TAG, "Network error!");
-        } else {
-            Log.i(TAG, "Non network error! Something is wrong!");
-            error.printStackTrace();
-        }
+    public void onFailure() {
+        Log.i(TAG, "Error!");
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(CommentPostTaskService.this, "Something went wrong! Try posting again.",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
         running = false;
         queue.remove();
         bus.post(produceStatus());

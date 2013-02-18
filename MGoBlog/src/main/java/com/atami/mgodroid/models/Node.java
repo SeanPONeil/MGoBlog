@@ -37,6 +37,13 @@ public class Node extends Model {
         public int v_weight_unused;
     }
 
+    public class FieldLink{
+
+        public String title;
+
+         public String url;
+    }
+
     @Column(name = "nid", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
     private int nid;
 
@@ -139,6 +146,11 @@ public class Node extends Model {
     @Column(name = "uri")
     private String uri;
 
+    private FieldLink[] field_link;
+
+    @Column(name = "link")
+    private String link;
+
     public String getBody() {
         return body;
     }
@@ -147,12 +159,20 @@ public class Node extends Model {
         this.body = body;
     }
 
-    public String getName() {
-        return name;
+    public FieldLink[] getField_link(){
+        return field_link;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link){
+        this.link = link;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public String getTitle() {
@@ -165,6 +185,10 @@ public class Node extends Model {
 
     public int getRevisionTimestamp() {
         return revision_timestamp;
+    }
+
+    public String getType() {
+        return type;
     }
     
     public String getUri() {

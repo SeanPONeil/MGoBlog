@@ -1,5 +1,7 @@
 package com.atami.mgodroid.ui;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,13 +13,14 @@ import com.activeandroid.query.Select;
 import com.atami.mgodroid.R;
 import com.atami.mgodroid.events.LoginTaskStatus;
 import com.atami.mgodroid.io.LoginTask;
+import com.atami.mgodroid.ui.base.BaseDialogFragment;
 import com.atami.mgodroid.ui.base.BaseFragment;
 import com.squareup.otto.Subscribe;
 import com.squareup.tape.TaskQueue;
 
 import javax.inject.Inject;
 
-public class LoginFragment extends BaseFragment {
+public class LoginFragment extends BaseDialogFragment {
 
     public final static String TAG = "LoginFragment";
 
@@ -30,33 +33,67 @@ public class LoginFragment extends BaseFragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        final View v = inflater.inflate(R.layout.login, container, false);
+        return v;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final View v = inflater.inflate(R.layout.login, container, false);
-        Button login = (Button) v.findViewById(R.id.login);
-        login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String username = ((EditText) v.findViewById(R.id.login_username)).getText().toString();
-                String password = ((EditText) v.findViewById(R.id.login_password)).getText().toString();
-                queue.add(new LoginTask(username, password, getTag()));
-            }
-        });
-        return v;
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        final Button login = (Button) getView().findViewById(R.id.login);
+        SharedPreferences prefs = getActivity().getSharedPreferences(getActivity().getPackageName(),
+                Context.MODE_PRIVATE);
+        String username = prefs.getString("username", "");
+        if(username.isEmpty()){
+            login.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String username = ((EditText) getView().findViewById(R.id.login_username)).getText().toString();
+                    String password = ((EditText) getView().findViewById(R.id.login_password)).getText().toString();
+                    queue.add(new LoginTask(username, password, getTag()));
+                }
+            });
+        }else{
+            login.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    SharedPreferences prefs = getActivity().getSharedPreferences(getActivity().getPackageName(),
+                            Context.MODE_PRIVATE);
+                    prefs.edit().putString("username", "").putString("password", "").commit();
+                    login.setText("Login");
+                }
+            });
+            login.setText("Logout");
+        }
     }
 
     @Subscribe
     public void onLoginTaskStatusUpdate(LoginTaskStatus status){
         if(status.tag.equals(getTag())){
             if(status.running){
-                Toast.makeText(getActivity(), "running", Toast.LENGTH_SHORT).show();
-            }else{
-                Toast.makeText(getActivity(), "stopped", Toast.LENGTH_SHORT).show();
+                Button login = (Button) getView().findViewById(R.id.login);
+                login.setText("Logging in...");
+            }
+
+            if(status.completed){
+                String username = ((EditText) getView().findViewById(R.id.login_username)).getText().toString();
+                String password = ((EditText) getView().findViewById(R.id.login_password)).getText().toString();
+                SharedPreferences prefs = getActivity().getSharedPreferences(getActivity().getPackageName(),
+                        Context.MODE_PRIVATE);
+                prefs.edit().putString("username", username).putString("password", password).commit();
+
+                final Button login = (Button) getView().findViewById(R.id.login);
+                login.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        SharedPreferences prefs = getActivity().getSharedPreferences(getActivity().getPackageName(),
+                                Context.MODE_PRIVATE);
+                        prefs.edit().putString("username", "").putString("password", "").commit();
+                        login.setText("Login");
+                    }
+                });
+                login.setText("Logout");
             }
         }
     }

@@ -29,4 +29,12 @@ public class Session extends Model {
                 ", user=" + user +
                 '}';
     }
+
+    public String getSessid() {
+        return sessid;
+    }
+
+    public String getSessionName(){
+        return session_name;
+    }
 }

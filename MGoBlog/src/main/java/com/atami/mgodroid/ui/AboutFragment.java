@@ -9,9 +9,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.atami.mgodroid.R;
+import com.atami.mgodroid.ui.base.BaseDialogFragment;
 import com.atami.mgodroid.ui.base.BaseFragment;
 
-public class AboutFragment extends BaseFragment {
+public class AboutFragment extends BaseDialogFragment {
 
 	public final static String TAG = "LoginFragment";
 

@@ -5,10 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import com.atami.mgodroid.MGoBlogApplication;
 import com.atami.mgodroid.io.*;
-import com.atami.mgodroid.ui.LoginFragment;
-import com.atami.mgodroid.ui.NodeCommentFragment;
-import com.atami.mgodroid.ui.NodeFragment;
-import com.atami.mgodroid.ui.NodeIndexListFragment;
+import com.atami.mgodroid.ui.*;
 import com.squareup.tape.*;
 import dagger.Module;
 import dagger.Provides;
@@ -17,10 +14,12 @@ import javax.inject.Singleton;
 
 @Module(
         entryPoints = {
+                CommentDialogFragment.class,
                 LoginFragment.class,
                 NodeIndexListFragment.class,
                 NodeFragment.class,
                 NodeCommentFragment.class,
+                CommentPostTaskService.class,
                 LoginTaskService.class,
                 NodeIndexTaskService.class,
                 NodeTaskService.class,
@@ -117,6 +116,15 @@ public class TaskQueueModule {
         ObjectQueue<LoginTask> delegate = new InMemoryObjectQueue<LoginTask>();
         TaskQueue<LoginTask> queue = new TaskQueue<LoginTask>(delegate, new IOTaskInjector<LoginTask>(appContext));
         queue.setListener(new ServiceStarter<LoginTask>(appContext, LoginTaskService.class));
+        return queue;
+    }
+
+    @Provides
+    @Singleton
+    TaskQueue<CommentPostTask> provideCommentPostTaskQueue(){
+        ObjectQueue<CommentPostTask> delegate = new InMemoryObjectQueue<CommentPostTask>();
+        TaskQueue<CommentPostTask> queue = new TaskQueue<CommentPostTask>(delegate);
+        queue.setListener(new ServiceStarter<CommentPostTask>(appContext, CommentPostTaskService.class));
         return queue;
     }
 }

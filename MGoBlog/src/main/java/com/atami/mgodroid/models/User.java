@@ -71,7 +71,6 @@ public class User extends Model {
     @Column(name = "comments_per_page")
     private String comments_per_page;
 
-    @Column(name = "roles")
     private Map<String, String> roles;
 
     @Override
@@ -94,5 +93,17 @@ public class User extends Model {
                 ", comments_per_page='" + comments_per_page + '\'' +
                 ", roles=" + roles +
                 '}';
+    }
+
+    public int getUid() {
+        return uid;
+    }
+
+    public String getName(){
+        return name;
+    }
+
+    public Map<String, String> getRoles(){
+        return roles;
     }
 }

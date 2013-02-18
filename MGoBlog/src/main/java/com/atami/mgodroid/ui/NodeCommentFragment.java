@@ -65,7 +65,7 @@ public class NodeCommentFragment extends BaseListFragment implements LoaderManag
         super.onActivityCreated(savedInstanceState);
 
         mAdapter = new NodeCommentAdapter(getActivity(), android.R.layout.simple_list_item_2,
-                new ArrayList<NodeComment>(), getActivity().getSupportFragmentManager());
+                new ArrayList<NodeComment>(), getActivity().getSupportFragmentManager(), nid);
         getListView().setDividerHeight(0);
         getListView().setAdapter(mAdapter);
 
@@ -117,7 +117,7 @@ public class NodeCommentFragment extends BaseListFragment implements LoaderManag
                 return true;
             case R.id.addComment:
                 FragmentManager fm = getActivity().getSupportFragmentManager();
-                CommentDialogFragment cd = CommentDialogFragment.newInstance(0);
+                CommentDialogFragment cd = CommentDialogFragment.newInstance(0, nid);
                 cd.show(fm, "dialog");
             	return true;
             default:

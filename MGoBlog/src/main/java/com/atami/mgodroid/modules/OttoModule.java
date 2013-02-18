@@ -38,6 +38,7 @@ import javax.inject.Singleton;
                 NodeCommentFragment.class,
                 NodeIndexTaskService.class,
                 NodeTaskService.class,
+                CommentDialogFragment.class,
                 LoginFragment.class,
                 AboutFragment.class
         }

@@ -72,6 +72,15 @@ public class MobileHTMLUtil {
 		// TODO: Find plain text links and wrap them in an anchor tag
 		return doc.toString().replace("<p>&nbsp;</p>", "").trim();
 	}
+
+    public static String addLinkToBody(String html, String link){
+        Document doc = Jsoup.parse(html);
+        Element href = new Element(Tag.valueOf("a"), "");
+        href.attr("href", link);
+        href.text(link);
+        doc.body().appendChild(href);
+        return doc.toString();
+    }
 	
 	public static String cleanComments(String html) {
 

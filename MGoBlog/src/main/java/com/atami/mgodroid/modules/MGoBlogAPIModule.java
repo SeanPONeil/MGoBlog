@@ -76,7 +76,8 @@ public class MGoBlogAPIModule {
                 .setExecutors(new APIExecutor(), new CallbackExecutor())
                 .setHeaders(Arrays.asList(
                         new Header[]{new Header("Accept-Charset", "UTF-8"),
-                                new Header("Content-Type", "application/json")}))
+                                new Header("Content-Type", "application/json"),
+                                new Header("Cache-Control", "no-cache")}))
                 .setConverter(new GsonConverter(new GsonBuilder()
                         .setPrettyPrinting()
                         .serializeNulls()

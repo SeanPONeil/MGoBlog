@@ -1,13 +1,13 @@
 package com.atami.mgodroid.events;
 
 
-public class LoginTaskStatus {
+public class CommentPostTaskStatus {
 
     public boolean completed;
     public boolean running;
     public String tag;
 
-    public LoginTaskStatus(boolean completed, boolean running, String tag) {
+    public CommentPostTaskStatus(boolean completed, boolean running, String tag) {
         this.completed = completed;
         this.running = running;
         this.tag = tag;
