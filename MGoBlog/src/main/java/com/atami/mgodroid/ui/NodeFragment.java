@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.WebSettings;
@@ -113,7 +114,7 @@ public class NodeFragment extends WebViewFragment implements
                     node.get(0).getTitle());
 
             String name = node.get(0).getName();
-            if (name.isEmpty()) {
+            if (TextUtils.isEmpty(name)) {
                 name = "Anonymous Coward";
             }
             getSherlockActivity().getSupportActionBar().setSubtitle(

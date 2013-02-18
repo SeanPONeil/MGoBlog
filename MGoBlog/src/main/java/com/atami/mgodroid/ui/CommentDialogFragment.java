@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,9 +90,7 @@ public class CommentDialogFragment extends BaseDialogFragment {
                 } else {
                     String subjectText = subject.getText().toString();
                     String commentText = comment.getText().toString();
-                    System.out.println(subjectText.isEmpty());
-                    System.out.println(commentText.isEmpty());
-                    if(subjectText.isEmpty() || commentText.isEmpty()){
+                    if(TextUtils.isEmpty(subjectText) || TextUtils.isEmpty(commentText)){
                         Toast.makeText(getActivity(), "Enter a subject and comment", Toast.LENGTH_SHORT).show();
                         return;
                     }
