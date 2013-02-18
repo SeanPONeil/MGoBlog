@@ -109,9 +109,14 @@ public class NodeFragment extends WebViewFragment implements
                     node.get(0).getBody(), "text/html", "UTF-8", null);
             getSherlockActivity().getSupportActionBar().setTitle(
                     node.get(0).getTitle());
+
+            String name = node.get(0).getName();
+            if (name.isEmpty()) {
+                name = "Anonymous Coward";
+            }
             getSherlockActivity().getSupportActionBar().setSubtitle(
-                    "By " + node.get(0).getName() + " - "
-                            + node.get(0).getCommentCount() + " " + "comments");
+                    "By " + name + " - " + node.get(0).getCommentCount()
+                            + " " + "comments");
         }
     }
 
