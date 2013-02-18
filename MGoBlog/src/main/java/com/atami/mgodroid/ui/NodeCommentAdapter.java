@@ -1,10 +1,9 @@
 package com.atami.mgodroid.ui;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
+import android.support.v4.app.FragmentManager;
 import android.text.Html;
-import android.text.Spanned;
-import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,38 +13,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.atami.mgodroid.R;
 import com.atami.mgodroid.models.NodeComment;
-import com.atami.mgodroid.util.MobileHTMLUtil;
-import android.support.v4.app.FragmentManager;
 
 import java.util.List;
 
 public class NodeCommentAdapter extends ArrayAdapter<NodeComment> {
 
+    int nid;
     private List<NodeComment> nodeComments;
     private FragmentManager fragmentManager;
 
-    int nid;
-
-    /**
-     * Holds on to Views to avoid costly findViewById calls
-     */
-    private class ViewHolder {
-        public TextView subtitle;
-        public TextView title;
-        public TextView comment;
-        public LinearLayout container;
-
-        private ViewHolder(TextView subtitle, TextView title,
-                           TextView comment, LinearLayout container) {
-            this.subtitle = subtitle;
-            this.title = title;
-            this.comment = comment;
-            this.container = container;
-        }
-    }
-
     public NodeCommentAdapter(Context context, int textViewResourceId,
-                              List<NodeComment> nodeComments, 
+                              List<NodeComment> nodeComments,
                               FragmentManager fragmentManager,
                               int nid) {
         super(context, textViewResourceId, nodeComments);
@@ -90,26 +68,40 @@ public class NodeCommentAdapter extends ArrayAdapter<NodeComment> {
         viewHolder.title.setText(nodeComment.getSubject());
         viewHolder.subtitle.setText("By " + nodeComment.getName() + " - " + nodeComment.getTimestamp());
 
-        ImageButton reply = (ImageButton)view.findViewById(R.id.cmt_reply);
+        ImageButton reply = (ImageButton) view.findViewById(R.id.cmt_reply);
         reply.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 CommentDialogFragment cd = CommentDialogFragment.newInstance(nodeComment.getCid(), nid);
                 cd.show(fragmentManager, "dialog");
             }
         });
-        
+
         viewHolder.comment.setText(Html.fromHtml(nodeComment.getComment()).toString().trim());
-        viewHolder.comment.setMovementMethod(LinkMovementMethod.getInstance());
+        Linkify.addLinks(viewHolder.comment, Linkify.ALL);
 
         return view;
     }
 
-    public List<NodeComment> getNodeComments() {
-        return nodeComments;
-    }
-
     public void setNodeComments(List<NodeComment> nodeComments) {
         this.nodeComments = nodeComments;
+    }
+
+    /**
+     * Holds on to Views to avoid costly findViewById calls
+     */
+    private class ViewHolder {
+        public TextView subtitle;
+        public TextView title;
+        public TextView comment;
+        public LinearLayout container;
+
+        private ViewHolder(TextView subtitle, TextView title,
+                           TextView comment, LinearLayout container) {
+            this.subtitle = subtitle;
+            this.title = title;
+            this.comment = comment;
+            this.container = container;
+        }
     }
 
 }

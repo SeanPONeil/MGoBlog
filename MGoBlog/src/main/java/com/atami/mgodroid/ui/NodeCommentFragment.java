@@ -55,7 +55,7 @@ public class NodeCommentFragment extends BaseListFragment implements LoaderManag
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         nid = getArguments().getInt("nid");
-        if(savedInstanceState == null){
+        if (savedInstanceState == null) {
             queue.add(new NodeCommentTask(nid, getTag()));
         }
     }
@@ -119,7 +119,7 @@ public class NodeCommentFragment extends BaseListFragment implements LoaderManag
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 CommentDialogFragment cd = CommentDialogFragment.newInstance(0, nid);
                 cd.show(fm, "dialog");
-            	return true;
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
