@@ -144,10 +144,10 @@ public class MGoBlogActivity extends BaseActivity {
 									FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
 							.commit();
 					getSupportActionBar().setTitle(di.mTitle);
+                    mActivePosition = position;
+                    mMenuDrawer.setActiveView(view, position);
 				}
 
-                mActivePosition = position;
-                mMenuDrawer.setActiveView(view, position);
                 menuAdapter.notifyDataSetChanged();
                 mMenuDrawer.closeMenu();
             }

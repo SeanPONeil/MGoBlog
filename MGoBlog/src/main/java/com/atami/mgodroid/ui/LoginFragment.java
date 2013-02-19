@@ -98,6 +98,7 @@ public class LoginFragment extends BaseDialogFragment {
                     }
                 });
                 login.setText("Logout");
+                dismiss();
             }
         }
     }
