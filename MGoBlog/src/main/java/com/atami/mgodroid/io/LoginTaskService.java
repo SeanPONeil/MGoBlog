@@ -64,7 +64,7 @@ public class LoginTaskService extends Service implements Callback<Session> {
 
     @Produce
     public LoginTaskStatus produceStatus() {
-        return new LoginTaskStatus(false, running, taskTag);
+        return new LoginTaskStatus(false, false, running, taskTag);
     }
 
     @Override
@@ -86,7 +86,7 @@ public class LoginTaskService extends Service implements Callback<Session> {
         }).start();
         running = false;
         queue.remove();
-        bus.post(new LoginTaskStatus(true, running, taskTag));
+        bus.post(new LoginTaskStatus(true, false, running, taskTag));
         bus.post(produceStatus());
         executeNext();
     }
@@ -101,6 +101,7 @@ public class LoginTaskService extends Service implements Callback<Session> {
         }
         running = false;
         queue.remove();
+        bus.post(new LoginTaskStatus(false, true, running, taskTag));
         bus.post(produceStatus());
         executeNext();
     }
