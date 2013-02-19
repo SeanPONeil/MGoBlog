@@ -29,12 +29,9 @@ public class CommentDialogFragment extends BaseDialogFragment {
 
     int pid;
     int nid;
-
     ProgressDialog mProgressDialog;
-
     @Inject
     TaskQueue<LoginTask> loginQueue;
-
     @Inject
     TaskQueue<CommentPostTask> commentQueue;
 
@@ -90,33 +87,32 @@ public class CommentDialogFragment extends BaseDialogFragment {
                 } else {
                     String subjectText = subject.getText().toString();
                     String commentText = comment.getText().toString();
-                    if(TextUtils.isEmpty(commentText)){
+                    if (TextUtils.isEmpty(commentText)) {
                         Toast.makeText(getActivity(), "Enter a comment", Toast.LENGTH_SHORT).show();
                         return;
-                    } else if(TextUtils.isEmpty(subjectText)) {
-                    	//get first 50 characters from comment
-                    	int max_subject = 50;
-                    	boolean cutAtWord = false;
-                    	
-                    	if(commentText.length() > max_subject) {
-                    		subjectText = commentText.substring(0, max_subject);
-                    		if(commentText.charAt(max_subject) == ' ')
-                    			cutAtWord = true;
-                    	} else {
-                    		subjectText = commentText;
-                    	}
+                    } else if (TextUtils.isEmpty(subjectText)) {
+                        //get first 50 characters from comment
+                        int max_subject = 50;
+                        boolean cutAtWord = false;
 
-                    	//remove trailing letters if not cut off at a space
-                    	int last_space = subjectText.lastIndexOf(" ");
-                    	
-                    	if(last_space > 0 && !cutAtWord) {
-                    		subjectText = subjectText.substring(0, last_space);
-                    	}	
+                        if (commentText.length() > max_subject) {
+                            subjectText = commentText.substring(0, max_subject);
+                            if (commentText.charAt(max_subject) == ' ')
+                                cutAtWord = true;
+                        } else {
+                            subjectText = commentText;
+                        }
+
+                        //remove trailing letters if not cut off at a space
+                        int last_space = subjectText.lastIndexOf(" ");
+
+                        if (last_space > 0 && !cutAtWord) {
+                            subjectText = subjectText.substring(0, last_space);
+                        }
                     }
                     User user = new Select().from(User.class).where("name = ?", username).executeSingle();
-                    CommentJsonObj payload = new CommentJsonObj(subject.getText().toString(),
-                            comment.getText().toString(), String.valueOf(user.getUid()), String.valueOf(pid),
-                            String.valueOf(nid));
+                    CommentJsonObj payload = new CommentJsonObj(subjectText, comment.getText().toString(),
+                            String.valueOf(user.getUid()), String.valueOf(pid), String.valueOf(nid));
                     commentQueue.add(new CommentPostTask(payload, user.getUid(), getTag()));
                 }
             }
@@ -127,21 +123,21 @@ public class CommentDialogFragment extends BaseDialogFragment {
     public void onCommentPostTaskStatus(CommentPostTaskStatus status) {
         if (status.tag.equals(getTag())) {
             if (status.running) {
-                if(mProgressDialog == null){
+                if (mProgressDialog == null) {
                     mProgressDialog = new ProgressDialog(getActivity());
                     mProgressDialog.setIndeterminate(true);
                 }
                 mProgressDialog.setMessage("Posting comment...");
                 mProgressDialog.show();
             } else {
-                if(mProgressDialog == null){
+                if (mProgressDialog == null) {
                     mProgressDialog = new ProgressDialog(getActivity());
                     mProgressDialog.setIndeterminate(true);
                 }
                 mProgressDialog.hide();
             }
 
-            if(status.completed){
+            if (status.completed) {
                 mProgressDialog.hide();
                 dismiss();
             }
