@@ -4,10 +4,6 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Select;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.parser.Tag;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -15,141 +11,86 @@ import java.util.Map;
 @Table(name = "nodes")
 public class Node extends Model {
 
+    @Column(name = "nid", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
+    private int nid;
+    @Column(name = "type")
+    private String type;
+    @Column(name = "uid")
+    private int uid;
+    @Column(name = "status")
+    private int status;
+    @Column(name = "created")
+    private int created;
+
+    //@Column(name = "language")
+    //private String language;
+    @Column(name = "changed")
+    private int changed;
+    @Column(name = "comment")
+    private int comment;
+    @Column(name = "promote")
+    private int promote;
+    @Column(name = "moderate")
+    private int moderate;
+    @Column(name = "sticky")
+    private int sticky;
+    @Column(name = "tnid")
+    private int tnid;
+    @Column(name = "translate")
+    private int translate;
+    @Column(name = "vid")
+    private int vid;
+    @Column(name = "revision_uid")
+    private int revision_uid;
+    @Column(name = "title")
+    private String title;
+    @Column(name = "body")
+    private String body;
+    @Column(name = "teaser")
+    private String teaser;
+    @Column(name = "log")
+    private String log;
+    @Column(name = "revision_timestamp")
+    private int revision_timestamp;
+    @Column(name = "format")
+    private int format;
+    @Column(name = "name")
+    private String name;
+    @Column(name = "picture")
+    private String picture;
+    @Column(name = "data")
+    private String data;
+    @Column(name = "path")
+    private String path;
+    @Column(name = "last_comment_timestamp")
+    private int last_comment_timestamp;
+    @Column(name = "last_comment_name")
+    private String last_comment_name;
+    @Column(name = "comment_count")
+    private int comment_count;
+    @Column(name = "taxonomy")
+    private Map<Integer, Taxonomy> taxonomy;
+    @Column(name = "files")
+    private String[] files;
+    @Column(name = "page_titles")
+    private String page_title;
+    @Column(name = "forum_tid")
+    private String forum_tid;
+    @Column(name = "uri")
+    private String uri;
+    private FieldLink[] field_link;
+    @Column(name = "link")
+    private String link;
+
+    //@Column(name = "nodewords")
+    //private String[] nodewords;
+
     public static Node get(int nid) {
         return new Select()
                 .from(Node.class)
                 .where("nid = ?", nid)
                 .executeSingle();
     }
-
-    public class Taxonomy {
-
-        public int tid;
-
-        public int vid;
-
-        public String name;
-
-        public String description;
-
-        public int weight;
-
-        public int v_weight_unused;
-    }
-
-    public class FieldLink{
-
-        public String title;
-
-         public String url;
-    }
-
-    @Column(name = "nid", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
-    private int nid;
-
-    @Column(name = "type")
-    private String type;
-
-    @Column(name = "langugage")
-    private String language;
-
-    @Column(name = "uid")
-    private int uid;
-
-    @Column(name = "status")
-    private int status;
-
-    @Column(name = "created")
-    private int created;
-
-    @Column(name = "changed")
-    private int changed;
-
-    @Column(name = "comment")
-    private int comment;
-
-    @Column(name = "promote")
-    private int promote;
-
-    @Column(name = "moderate")
-    private int moderate;
-
-    @Column(name = "sticky")
-    private int sticky;
-
-    @Column(name = "tnid")
-    private int tnid;
-
-    @Column(name = "translate")
-    private int translate;
-
-    @Column(name = "vid")
-    private int vid;
-
-    @Column(name = "revision_uid")
-    private int revision_uid;
-
-    @Column(name = "title")
-    private String title;
-
-    @Column(name = "body")
-    private String body;
-
-    @Column(name = "teaser")
-    private String teaser;
-
-    @Column(name = "log")
-    private String log;
-
-    @Column(name = "revision_timestamp")
-    private int revision_timestamp;
-
-    @Column(name = "format")
-    private int format;
-
-    @Column(name = "name")
-    private String name;
-
-    @Column(name = "picture")
-    private String picture;
-
-    @Column(name = "data")
-    private String data;
-
-    @Column(name = "path")
-    private String path;
-
-    @Column(name = "last_comment_timestamp")
-    private int last_comment_timestamp;
-
-    @Column(name = "last_comment_name")
-    private String last_comment_name;
-
-    @Column(name = "comment_count")
-    private int comment_count;
-
-    @Column(name = "taxonomy")
-    private Map<Integer, Taxonomy> taxonomy;
-
-    @Column(name = "files")
-    private String[] files;
-
-    @Column(name = "page_titles")
-    private String page_title;
-
-    @Column(name = "forum_tid")
-    private String forum_tid;
-
-    //@Column(name = "nodewords")
-    //private String[] nodewords;
-
-    @Column(name = "uri")
-    private String uri;
-
-    private FieldLink[] field_link;
-
-    @Column(name = "link")
-    private String link;
 
     public String getBody() {
         return body;
@@ -159,7 +100,7 @@ public class Node extends Model {
         this.body = body;
     }
 
-    public FieldLink[] getField_link(){
+    public FieldLink[] getField_link() {
         return field_link;
     }
 
@@ -167,7 +108,7 @@ public class Node extends Model {
         return link;
     }
 
-    public void setLink(String link){
+    public void setLink(String link) {
         this.link = link;
     }
 
@@ -194,9 +135,9 @@ public class Node extends Model {
     public String getType() {
         return type;
     }
-    
+
     public String getUri() {
-    	return uri;
+        return uri;
     }
 
     @Override
@@ -204,7 +145,6 @@ public class Node extends Model {
         return "Node{" +
                 "nid=" + nid +
                 ", type='" + type + '\'' +
-                ", language='" + language + '\'' +
                 ", uid=" + uid +
                 ", status=" + status +
                 ", created=" + created +
@@ -236,5 +176,21 @@ public class Node extends Model {
                 ", forum_tid='" + forum_tid + '\'' +
                 ", uri='" + uri + '\'' +
                 '}';
+    }
+
+    public class Taxonomy {
+
+        public int tid;
+        public int vid;
+        public String name;
+        public String description;
+        public int weight;
+        public int v_weight_unused;
+    }
+
+    public class FieldLink {
+
+        public String title;
+        public String url;
     }
 }

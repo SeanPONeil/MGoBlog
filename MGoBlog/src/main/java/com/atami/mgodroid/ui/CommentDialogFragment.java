@@ -90,9 +90,28 @@ public class CommentDialogFragment extends BaseDialogFragment {
                 } else {
                     String subjectText = subject.getText().toString();
                     String commentText = comment.getText().toString();
-                    if(TextUtils.isEmpty(subjectText) || TextUtils.isEmpty(commentText)){
-                        Toast.makeText(getActivity(), "Enter a subject and comment", Toast.LENGTH_SHORT).show();
+                    if(TextUtils.isEmpty(commentText)){
+                        Toast.makeText(getActivity(), "Enter a comment", Toast.LENGTH_SHORT).show();
                         return;
+                    } else if(TextUtils.isEmpty(subjectText)) {
+                    	//get first 50 characters from comment
+                    	int max_subject = 50;
+                    	boolean cutAtWord = false;
+                    	
+                    	if(commentText.length() > max_subject) {
+                    		subjectText = commentText.substring(0, max_subject);
+                    		if(commentText.charAt(max_subject) == ' ')
+                    			cutAtWord = true;
+                    	} else {
+                    		subjectText = commentText;
+                    	}
+
+                    	//remove trailing letters if not cut off at a space
+                    	int last_space = subjectText.lastIndexOf(" ");
+                    	
+                    	if(last_space > 0 && !cutAtWord) {
+                    		subjectText = subjectText.substring(0, last_space);
+                    	}	
                     }
                     User user = new Select().from(User.class).where("name = ?", username).executeSingle();
                     CommentJsonObj payload = new CommentJsonObj(subject.getText().toString(),

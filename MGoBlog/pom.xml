@@ -6,12 +6,12 @@
     <parent>
         <groupId>com.atami</groupId>
         <artifactId>MGoBlog-parent</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>3.0.1</version>
     </parent>
 
     <groupId>com.atami</groupId>
     <artifactId>MGoBlog</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>3.0.1</version>
     <packaging>apk</packaging>
     <name>MGoBlog - Application</name>
 
@@ -134,6 +134,59 @@
                     <value>true</value>
                 </property>
             </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jarsigner-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>signing</id>
+                                <goals>
+                                    <goal>sign</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                                <phase>package</phase>
+                                <inherited>true</inherited>
+                                <configuration>
+                                    <removeExistingSignatures>true</removeExistingSignatures>
+                                    <archiveDirectory/>
+                                    <includes>
+                                        <include>${project.build.directory}/${project.artifactId}.apk</include>
+                                    </includes>
+                                    <keystore>${sign.keystore}</keystore>
+                                    <alias>${sign.alias}</alias>
+                                    <storepass>${sign.storepass}</storepass>
+                                    <keypass>${sign.keypass}</keypass>
+                                    <verbose>true</verbose>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <configuration>
+                            <artifacts>
+                                <artifact>
+                                    <file>${project.build.directory}/${project.artifactId}-signed-aligned.apk</file>
+                                    <type>apk</type>
+                                    <classifier>signed-aligned</classifier>
+                                </artifact>
+                            </artifacts>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>attach-signed-aligned</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>attach-artifact</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 </project>
