@@ -3,6 +3,7 @@ package com.atami.mgodroid.ui;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,7 +50,7 @@ public class LoginFragment extends BaseDialogFragment {
         SharedPreferences prefs = getActivity().getSharedPreferences(getActivity().getPackageName(),
                 Context.MODE_PRIVATE);
         String username = prefs.getString("username", "");
-        if(username.isEmpty()){
+        if(TextUtils.isEmpty(username)){
             login.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
