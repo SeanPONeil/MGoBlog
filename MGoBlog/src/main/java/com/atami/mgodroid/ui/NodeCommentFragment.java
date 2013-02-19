@@ -115,17 +115,6 @@ public class NodeCommentFragment extends BaseListFragment implements
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.comment, menu);
 		nodeCommentMenu = menu;
-		
-		//Set actionbar image to asc or desc
-		MenuItem sort = menu.findItem(R.id.sort);
-		SharedPreferences prefs = getActivity().getSharedPreferences(
-				getActivity().getPackageName(), Context.MODE_PRIVATE);
-		if (prefs.getString(SORT, ASC).equals(DESC)) {
-			sort.setIcon(R.drawable.ic_action_sort);
-		} else {
-			sort.setIcon(R.drawable.ic_action_sort_asc);
-		}
-		
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 
@@ -143,21 +132,29 @@ public class NodeCommentFragment extends BaseListFragment implements
 					.newInstance(0, nid);
 			cd.show(fm, "dialog");
 			return true;
-		case R.id.sort:
-			SharedPreferences prefs = getActivity().getSharedPreferences(
-					getActivity().getPackageName(), Context.MODE_PRIVATE);
-			String sort = prefs.getString(SORT, ASC);
-			if (sort.equals(ASC)) {
-				prefs.edit().putString(SORT, DESC).commit();
-			} else {
-				prefs.edit().putString(SORT, ASC).commit();
-			}
-			getActivity().invalidateOptionsMenu();
-			getActivity().getSupportLoaderManager().restartLoader(0, null, this);
+		case R.id.sort_asc:
+			sort(ASC);
+			return true;
+		case R.id.sort_desc:
+			sort(DESC);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+	
+	public void sort(String type){
+		
+		SharedPreferences prefs = getActivity().getSharedPreferences(
+				getActivity().getPackageName(), Context.MODE_PRIVATE);
+		
+		if(type.equals(ASC)){
+			prefs.edit().putString(SORT, ASC).commit();
+		} else {
+			prefs.edit().putString(SORT, DESC).commit();
+		}
+		getActivity().invalidateOptionsMenu();
+		getActivity().getSupportLoaderManager().restartLoader(0, null, this);
 	}
 
 	@Override
