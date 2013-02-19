@@ -131,15 +131,20 @@ public class MGoBlogActivity extends BaseActivity {
                 } else if (di.mTitle.equals("mgo.licio.us")) {
                     f = NodeIndexListFragment.newInstance("type", "link");
                 } else if (di.mTitle.equals("Account")) {
-                    f = LoginFragment.newInstance();
-                } else if (di.mTitle.equals("About")) {
-                    f = AboutFragment.newInstance();
-                }
+					LoginFragment.newInstance().show(getSupportFragmentManager(), "dialog");
+				} else if (di.mTitle.equals("About")) {
+					AboutFragment.newInstance().show(getSupportFragmentManager(), "dialog");
+				}
 
-                getSupportFragmentManager().beginTransaction().replace(R.id.node_index_container,
-                        f, di.mTitle).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
-
-                getSupportActionBar().setTitle(di.mTitle);
+				if (!di.mTitle.equals("About") && !di.mTitle.equals("Account")) {
+					getSupportFragmentManager()
+							.beginTransaction()
+							.replace(R.id.node_index_container, f, di.mTitle)
+							.setTransition(
+									FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+							.commit();
+					getSupportActionBar().setTitle(di.mTitle);
+				}
 
                 mActivePosition = position;
                 mMenuDrawer.setActiveView(view, position);

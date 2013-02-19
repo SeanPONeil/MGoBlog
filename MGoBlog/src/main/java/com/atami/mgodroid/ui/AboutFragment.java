@@ -6,6 +6,7 @@ import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.TextView;
 
 import com.atami.mgodroid.R;
@@ -36,6 +37,9 @@ public class AboutFragment extends BaseDialogFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		
+		getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
+		
 		View v = inflater.inflate(R.layout.about, container, false);
 
 		TextView tv = (TextView) v.findViewById(R.id.about);
