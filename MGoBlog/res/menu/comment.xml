@@ -14,5 +14,12 @@
             android:showAsAction="always"
             android:title="Add Comment">
     </item>
+    
+    <item
+            android:id="@+id/sort"
+            android:icon="@drawable/ic_action_sort"
+            android:showAsAction="always"
+            android:title="Sort">
+    </item>
 
 </menu>
