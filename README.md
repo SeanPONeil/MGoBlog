@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/SeanPONeil/MGoBlog.png)](https://travis-ci.org/SeanPONeil/MGoBlog?branch=dev)
+[![Build Status](https://travis-ci.org/SeanPONeil/MGoBlog.png)](https://travis-ci.org/SeanPONeil/MGoBlog?branch=master)
 
 MGoBlog
 =======
