@@ -20,9 +20,6 @@ import android.os.Looper;
 import com.atami.mgodroid.io.NodeIndexTaskService;
 import com.atami.mgodroid.io.NodeTaskService;
 import com.atami.mgodroid.ui.*;
-import com.atami.mgodroid.ui.base.BaseActivity;
-import com.atami.mgodroid.ui.base.BaseFragment;
-import com.atami.mgodroid.ui.base.BaseListFragment;
 import com.squareup.otto.Bus;
 import dagger.Module;
 import dagger.Provides;
@@ -48,13 +45,13 @@ public class OttoModule {
     @Provides
     @Singleton
     Bus provideBus() {
-        return new AsyncBus();
+        return new MainThreadBus();
     }
 
     /**
      * Otto EventBus that posts all events on the Android main thread
      */
-    private class AsyncBus extends Bus {
+    private class MainThreadBus extends Bus {
         private final Handler mainThread = new Handler(Looper.getMainLooper());
 
         @Override
@@ -62,7 +59,7 @@ public class OttoModule {
             mainThread.post(new Runnable() {
                 @Override
                 public void run() {
-                    AsyncBus.super.post(event);
+                    MainThreadBus.super.post(event);
                 }
             });
         }

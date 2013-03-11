@@ -32,7 +32,7 @@ public class MGoBlogAPIModule {
 
         @GET("/node.json")
         @QueryParam(name = "parameters[sticky]", value = "0")
-        void getNodeIndexByType(@Named("parameters[type]") String type, @Named("page") int page,
+        void getNodeIndexByType(@Name("parameters[type]") String type, @Name("page") int page,
                                 Callback<List<NodeIndex>> callback);
 
         @GET("/node.json")
@@ -40,14 +40,14 @@ public class MGoBlogAPIModule {
                 @QueryParam(name = "parameters[sticky]", value = "0"),
                 @QueryParam(name = "parameters[promote]", value = "1")
         })
-        void getFrontPage(@Named("page") int page,
+        void getFrontPage(@Name("page") int page,
                           Callback<List<NodeIndex>> callback);
 
         @GET("/node/{nid}.json")
-        void getNode(@Named("nid") int nid, Callback<Node> callback);
+        void getNode(@Name("nid") int nid, Callback<Node> callback);
 
         @GET("/node/{nid}/comments.json")
-        void getNodeComments(@Named("nid") int nid, Callback<List<NodeComment>> callback);
+        void getNodeComments(@Name("nid") int nid, Callback<List<NodeComment>> callback);
 
         @POST("/user/login")
         void loginUser(@SingleEntity LoginJsonObj payload, Callback<Session> callback);
