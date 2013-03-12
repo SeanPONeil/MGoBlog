@@ -32,4 +32,8 @@ public class BaseActivity extends SherlockFragmentActivity{
         super.onPause();
         bus.unregister(this);
     }
+
+    protected Bus getBus(){
+        return bus;
+    }
 }

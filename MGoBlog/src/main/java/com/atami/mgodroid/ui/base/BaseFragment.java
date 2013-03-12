@@ -12,9 +12,6 @@ import javax.inject.Inject;
  */
 public class BaseFragment extends SherlockFragment {
 
-    @Inject
-    protected Bus bus;
-
     @Override
     public void onCreate(Bundle state) {
         super.onCreate(state);
@@ -39,12 +36,16 @@ public class BaseFragment extends SherlockFragment {
     @Override
     public void onResume() {
         super.onResume();
-        bus.register(this);
+        getBus().register(this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        bus.unregister(this);
+        getBus().unregister(this);
+    }
+
+    protected Bus getBus(){
+        return ((BaseActivity) getActivity()).getBus();
     }
 }

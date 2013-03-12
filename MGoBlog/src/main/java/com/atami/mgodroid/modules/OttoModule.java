@@ -17,9 +17,9 @@ package com.atami.mgodroid.modules;
 
 import android.os.Handler;
 import android.os.Looper;
-import com.atami.mgodroid.io.NodeIndexTaskService;
-import com.atami.mgodroid.io.NodeTaskService;
-import com.atami.mgodroid.ui.*;
+import com.atami.mgodroid.io.*;
+import com.atami.mgodroid.ui.MGoBlogActivity;
+import com.atami.mgodroid.ui.NodeActivity;
 import com.squareup.otto.Bus;
 import dagger.Module;
 import dagger.Provides;
@@ -29,15 +29,12 @@ import javax.inject.Singleton;
 @Module(
         entryPoints = {
                 MGoBlogActivity.class,
-                NodeIndexListFragment.class,
-                NodeFragment.class,
                 NodeActivity.class,
-                NodeCommentFragment.class,
+                CommentPostTaskService.class,
+                LoginTaskService.class,
+                NodeCommentTaskService.class,
                 NodeIndexTaskService.class,
-                NodeTaskService.class,
-                CommentDialogFragment.class,
-                LoginFragment.class,
-                AboutFragment.class
+                NodeTaskService.class
         }
 )
 public class OttoModule {
