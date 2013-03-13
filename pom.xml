@@ -90,6 +90,10 @@
                         <archive>${project.build.directory}/${project.build.finalName}.${project.packaging}</archive>
                         <verbose>true</verbose>
                         <certs>true</certs>
+                        <keystore>${sign.keystore}</keystore>
+                        <alias>${sign.alias}</alias>
+                        <storepass>${sign.storepass}</storepass>
+                        <keypass>${sign.keypass}</keypass>
                     </configuration>
                 </plugin>
                 <plugin>
