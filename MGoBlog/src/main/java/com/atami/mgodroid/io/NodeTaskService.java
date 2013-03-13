@@ -14,6 +14,7 @@ import com.squareup.otto.Produce;
 import com.squareup.tape.TaskQueue;
 import retrofit.http.Callback;
 import retrofit.http.RetrofitError;
+import retrofit.http.client.Response;
 
 import javax.inject.Inject;
 
@@ -69,7 +70,7 @@ public class NodeTaskService extends Service implements Callback<Node> {
     }
 
     @Override
-    public void success(final Node node) {
+    public void success(final Node node, Response response) {
         Log.i(TAG, "Success!");
         new Thread(new Runnable() {
             @Override

@@ -17,6 +17,7 @@ import com.squareup.otto.Produce;
 import com.squareup.tape.TaskQueue;
 import retrofit.http.Callback;
 import retrofit.http.RetrofitError;
+import retrofit.http.client.Response;
 
 import javax.inject.Inject;
 
@@ -68,7 +69,7 @@ public class LoginTaskService extends Service implements Callback<Session> {
     }
 
     @Override
-    public void success(final Session response) {
+    public void success(final Session session, Response response) {
         Log.i(TAG, "Success!");
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
@@ -79,9 +80,9 @@ public class LoginTaskService extends Service implements Callback<Session> {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                User user = response.getUser();
+                User user = session.getUser();
                 user.save();
-                response.save();
+                session.save();
             }
         }).start();
         running = false;

@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>com.atami</groupId>
         <artifactId>MGoBlog-parent</artifactId>
-        <version>3.0.1</version>
+        <version>3.0.3-SNAPSHOT</version>
     </parent>
 
     <groupId>com.atami</groupId>
     <artifactId>MGoBlog</artifactId>
-    <version>3.0.1</version>
+    <version>3.0.2</version>
     <packaging>apk</packaging>
     <name>MGoBlog - Application</name>
 
     <properties>
-        <dagger.version>0.9</dagger.version>
+        <dagger.version>0.9.1</dagger.version>
     </properties>
 
     <dependencies>
@@ -50,7 +49,7 @@
         <dependency>
             <groupId>com.squareup.retrofit</groupId>
             <artifactId>retrofit</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.squareup</groupId>
@@ -112,13 +111,6 @@
                     <source>1.6</source>
                     <target>1.6</target>
                 </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.squareup</groupId>
-                        <artifactId>dagger-compiler</artifactId>
-                        <version>${dagger.version}</version>
-                    </dependency>
-                </dependencies>
             </plugin>
         </plugins>
 
@@ -127,41 +119,77 @@
     <profiles>
         <profile>
             <id>release</id>
-            <!-- via this activation the profile is automatically used when the release is done with the maven release plugin -->
-            <activation>
-                <property>
-                    <name>performRelease</name>
-                    <value>true</value>
-                </property>
-            </activation>
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
+                        <groupId>com.pyx4me</groupId>
+                        <artifactId>proguard-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>process-classes-with-proguard</id>
+                                <phase>process-classes</phase>
+                                <goals>
+                                    <goal>proguard</goal>
+                                </goals>
+                                <configuration>
+                                    <proguardVersion>4.4</proguardVersion>
+                                    <maxMemory>256m</maxMemory>
+                                    <injar>classes</injar>
+                                    <libs>
+                                        <lib>${rt.jar.path}</lib>
+                                        <lib>${jsse.jar.path}</lib>
+                                    </libs>
+                                    <obfuscate>true</obfuscate>
+                                    <addMavenDescriptor>false</addMavenDescriptor>
+                                    <proguardInclude>${project.basedir}/proguard.conf</proguardInclude>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>net.sf.proguard</groupId>
+                                <artifactId>proguard</artifactId>
+                                <version>4.4</version>
+                                <scope>runtime</scope>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                    <plugin>
                         <artifactId>maven-jarsigner-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>signing</id>
+                                <id>sign-application-apk</id>
+                                <phase>package</phase>
                                 <goals>
                                     <goal>sign</goal>
                                     <goal>verify</goal>
                                 </goals>
-                                <phase>package</phase>
-                                <inherited>true</inherited>
-                                <configuration>
-                                    <removeExistingSignatures>true</removeExistingSignatures>
-                                    <archiveDirectory/>
-                                    <includes>
-                                        <include>${project.build.directory}/${project.artifactId}.apk</include>
-                                    </includes>
-                                    <keystore>${sign.keystore}</keystore>
-                                    <alias>${sign.alias}</alias>
-                                    <storepass>${sign.storepass}</storepass>
-                                    <keypass>${sign.keypass}</keypass>
-                                    <verbose>true</verbose>
-                                </configuration>
                             </execution>
                         </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+                        <artifactId>android-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>zipalign-application-apk</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>zipalign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <release>true</release>
+                            <zipalign>
+                                <verbose>true</verbose>
+                                <inputApk>${project.build.directory}/${project.artifactId}-${project.version}.apk</inputApk>
+                                <outputApk>${project.build.directory}/${project.artifactId}-${project.version}-signed-aligned.apk</outputApk>
+                            </zipalign>
+                            <sign>
+                                <debug>false</debug>
+                            </sign>
+                        </configuration>
                     </plugin>
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
@@ -169,9 +197,9 @@
                         <configuration>
                             <artifacts>
                                 <artifact>
-                                    <file>${project.build.directory}/${project.artifactId}-signed-aligned.apk</file>
-                                    <type>apk</type>
-                                    <classifier>signed-aligned</classifier>
+                                    <file>${project.build.directory}/proguard_map.txt</file>
+                                    <type>map</type>
+                                    <classifier>release</classifier>
                                 </artifact>
                             </artifacts>
                         </configuration>
@@ -189,4 +217,5 @@
             </build>
         </profile>
     </profiles>
+
 </project>

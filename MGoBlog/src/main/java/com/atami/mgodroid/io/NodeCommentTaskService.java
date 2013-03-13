@@ -15,6 +15,7 @@ import com.squareup.otto.Produce;
 import com.squareup.tape.TaskQueue;
 import retrofit.http.Callback;
 import retrofit.http.RetrofitError;
+import retrofit.http.client.Response;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -66,7 +67,7 @@ public class NodeCommentTaskService extends Service implements Callback<List<Nod
     }
 
     @Override
-    public void success(final List<NodeComment> nodeComments) {
+    public void success(final List<NodeComment> nodeComments, Response response) {
         Log.i(TAG, "Success!");
         new Thread(new Runnable() {
             @Override
