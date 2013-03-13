@@ -20,8 +20,8 @@
     </scm>
 
     <properties>
-        <platform.version>4.1.1.4
-        </platform.version>
+        <platform.version>4.1.1.4</platform.version>
+        <android-plugin>3.5.1</android-plugin>
     </properties>
 
     <dependencyManagement>
