@@ -5,12 +5,12 @@
     <parent>
         <groupId>com.atami</groupId>
         <artifactId>MGoBlog-parent</artifactId>
-        <version>3.0.2-SNAPSHOT</version>
+        <version>3.0.2</version>
     </parent>
 
     <groupId>com.atami</groupId>
     <artifactId>MGoBlog</artifactId>
-    <version>3.0.2-SNAPSHOT</version>
+    <version>3.0.2</version>
     <packaging>apk</packaging>
     <name>MGoBlog - Application</name>
 
