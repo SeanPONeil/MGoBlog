@@ -14,21 +14,6 @@ import java.util.List;
 @Table(name = "node_comments")
 public class NodeComment extends Model {
 
-    public static List<NodeComment> getAll(int nid) {
-        return new Select()
-                .from(NodeComment.class)
-                .where("nid = ?", String.valueOf(nid))
-                .orderBy("thread DESC")
-                .execute();
-    }
-
-    public static void deleteAll(int nid) {
-        new Delete()
-                .from(NodeComment.class)
-                .where("nid = ?", nid)
-                .execute();
-    }
-
     @Column(name = "cid", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
     private int cid;
 
