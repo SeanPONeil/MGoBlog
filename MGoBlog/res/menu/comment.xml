@@ -14,5 +14,22 @@
             android:showAsAction="always"
             android:title="Add Comment">
     </item>
+    
+    <item
+            android:id="@+id/sort"
+            android:icon="@drawable/ic_action_sort"
+            android:showAsAction="always"
+            android:title="Sort">
+        
+        <menu>
+            <item
+                android:id="@+id/sort_asc"
+                android:title="Ascending"/>
+            <item
+                android:id="@+id/sort_desc"
+                android:title="Descending"/>
+        </menu>
+        
+    </item>
 
 </menu>
