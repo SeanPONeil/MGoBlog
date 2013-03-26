@@ -17,6 +17,5 @@
                            android:layout_alignParentBottom="true"
                            ads:adUnitId="a14db4391caf79c"
                            ads:adSize="SMART_BANNER"
-                           ads:testDevices="845FD8D222E3473C2988E10EF5C8B4A4"
                            ads:loadAdOnCreate="true"/>
 </RelativeLayout>
