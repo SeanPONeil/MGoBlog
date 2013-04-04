@@ -1,6 +1,7 @@
 package com.atami.mgodroid.ui;
 
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
@@ -13,7 +14,7 @@ import com.atami.mgodroid.R;
 import com.atami.mgodroid.ui.base.BaseDialogFragment;
 import com.atami.mgodroid.ui.base.BaseFragment;
 
-public class AboutFragment extends BaseDialogFragment {
+public class AboutFragment extends DialogFragment {
 
 	public final static String TAG = "LoginFragment";
 

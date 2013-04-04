@@ -13,10 +13,13 @@ import com.atami.mgodroid.events.CommentPostTaskStatus;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Produce;
 import com.squareup.tape.TaskQueue;
+import retrofit.http.Callback;
+import retrofit.http.RetrofitError;
+import retrofit.http.client.Response;
 
 import javax.inject.Inject;
 
-public class CommentPostTaskService extends Service implements CommentPostTask.Callback {
+public class CommentPostTaskService extends Service implements Callback {
 
     private final static String TAG = "CommentPostTaskService";
 
@@ -64,7 +67,7 @@ public class CommentPostTaskService extends Service implements CommentPostTask.C
     }
 
     @Override
-    public void onSuccess() {
+    public void success(Object o, Response response) {
         Log.i(TAG, "Success!");
         running = false;
         queue.remove();
@@ -74,7 +77,7 @@ public class CommentPostTaskService extends Service implements CommentPostTask.C
     }
 
     @Override
-    public void onFailure() {
+    public void failure(RetrofitError retrofitError) {
         Log.i(TAG, "Error!");
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override

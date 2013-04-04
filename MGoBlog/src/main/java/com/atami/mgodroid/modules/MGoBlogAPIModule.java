@@ -1,32 +1,45 @@
 package com.atami.mgodroid.modules;
 
 
-import com.atami.mgodroid.io.LoginTask;
-import com.atami.mgodroid.io.NodeCommentTask;
-import com.atami.mgodroid.io.NodeIndexTask;
-import com.atami.mgodroid.io.NodeTask;
+import com.atami.mgodroid.io.*;
 import com.atami.mgodroid.models.*;
+import com.atami.mgodroid.ui.CommentDialogFragment;
 import com.google.gson.GsonBuilder;
 import dagger.Module;
 import dagger.Provides;
 import retrofit.http.*;
+import retrofit.http.client.Response;
 
-import javax.inject.Named;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executor;
 
-@Module(
+@Module(complete = false,
+        includes = {SessionModule.class, OttoModule.class},
         entryPoints = {
                 LoginTask.class,
                 NodeIndexTask.class,
                 NodeTask.class,
-                NodeCommentTask.class
+                NodeCommentTask.class,
+                CommentPostTask.class,
         }
 )
 public class MGoBlogAPIModule {
 
     private static final String API_URL = "http://mgoblog.com/mobileservices/";
+
+    @Provides
+    MGoBlogAPI provideMGoBlogAPI(Session session) {
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setServer(new Server(API_URL))
+                .setExecutors(new APIExecutor(), new CallbackExecutor())
+                .setHeaders(session)
+                .setConverter(new GsonConverter(new GsonBuilder()
+                        .setPrettyPrinting()
+                        .serializeNulls()
+                        .create()))
+                .build();
+        return restAdapter.create(MGoBlogAPI.class);
+    }
 
     public interface MGoBlogAPI {
 
@@ -51,6 +64,9 @@ public class MGoBlogAPIModule {
 
         @POST("/user/login")
         void loginUser(@SingleEntity LoginJsonObj payload, Callback<Session> callback);
+
+        @POST("/comment.json")
+        void postComment(@SingleEntity CommentJsonObj payload, Callback<Response> callback);
     }
 
     private class APIExecutor implements Executor {
@@ -67,26 +83,5 @@ public class MGoBlogAPIModule {
         public void execute(Runnable r) {
             r.run();
         }
-    }
-
-    @Provides
-    MGoBlogAPI provideMGoBlogAPI() {
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setServer(new Server(API_URL))
-                .setExecutors(new APIExecutor(), new CallbackExecutor())
-                .setHeaders(new Headers() {
-                    @Override
-                    public List<Header> get() {
-                        return Arrays.asList(new Header("Accept-Charset", "UTF-8"),
-                                new Header("Content-Type", "application/json"),
-                                new Header("Cache-Control", "no-cache"));
-                    }
-                })
-                .setConverter(new GsonConverter(new GsonBuilder()
-                        .setPrettyPrinting()
-                        .serializeNulls()
-                        .create()))
-                .build();
-        return restAdapter.create(MGoBlogAPI.class);
     }
 }

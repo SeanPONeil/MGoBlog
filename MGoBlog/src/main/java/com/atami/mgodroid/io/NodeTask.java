@@ -17,7 +17,7 @@ public class NodeTask implements Task<Callback<Node>> {
     private String tag;
 
     @Inject
-    private MGoBlogAPI api;
+    MGoBlogAPI api;
 
     /**
      * Downloads a node from MGoBlog

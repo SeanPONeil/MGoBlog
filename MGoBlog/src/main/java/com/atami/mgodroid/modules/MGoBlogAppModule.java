@@ -10,7 +10,8 @@ import dagger.Module;
         includes = {
                 MGoBlogAPIModule.class,
                 OttoModule.class,
-                TaskQueueModule.class
+                TaskQueueModule.class,
+                SessionModule.class
         }
 )
 public class MGoBlogAppModule {

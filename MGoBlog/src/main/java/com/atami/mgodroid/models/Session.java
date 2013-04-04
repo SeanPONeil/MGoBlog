@@ -1,20 +1,17 @@
 package com.atami.mgodroid.models;
 
+import retrofit.http.Header;
+import retrofit.http.Headers;
 
-import com.activeandroid.Model;
-import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
+import javax.inject.Singleton;
+import java.util.Arrays;
+import java.util.List;
 
-@Table(name = "sessions")
-public class Session extends Model {
+@Singleton
+public class Session implements Headers{
 
-    @Column(name = "sessid")
     private String sessid;
-
-    @Column(name = "session_name")
     private String session_name;
-
-    @Column(name = "user")
     private User user;
 
     public User getUser() {
@@ -30,11 +27,17 @@ public class Session extends Model {
                 '}';
     }
 
-    public String getSessid() {
-        return sessid;
+    public void setSession(Session session){
+        this.sessid = session.sessid;
+        this.session_name = session.session_name;
+        this.user = session.user;
     }
 
-    public String getSessionName(){
-        return session_name;
+    @Override
+    public List<Header> get() {
+        return Arrays.asList(new Header("Accept-Charset", "UTF-8"),
+                new Header("Content-Type", "application/json"),
+                new Header("Cache-Control", "no-cache"),
+                new Header("Cookie", session_name + "=" + sessid));
     }
 }

@@ -18,6 +18,7 @@ import com.atami.mgodroid.events.CommentPostTaskStatus;
 import com.atami.mgodroid.io.CommentPostTask;
 import com.atami.mgodroid.io.LoginTask;
 import com.atami.mgodroid.models.CommentJsonObj;
+import com.atami.mgodroid.models.Session;
 import com.atami.mgodroid.models.User;
 import com.atami.mgodroid.ui.base.BaseDialogFragment;
 import com.squareup.otto.Subscribe;
@@ -34,6 +35,8 @@ public class CommentDialogFragment extends BaseDialogFragment {
     TaskQueue<LoginTask> loginQueue;
     @Inject
     TaskQueue<CommentPostTask> commentQueue;
+    @Inject
+    Session session;
 
     public static CommentDialogFragment newInstance(int pid, int nid) {
         CommentDialogFragment f = new CommentDialogFragment();
@@ -110,10 +113,9 @@ public class CommentDialogFragment extends BaseDialogFragment {
                             subjectText = subjectText.substring(0, last_space);
                         }
                     }
-                    User user = new Select().from(User.class).where("name = ?", username).executeSingle();
                     CommentJsonObj payload = new CommentJsonObj(subjectText, comment.getText().toString(),
-                            String.valueOf(user.getUid()), String.valueOf(pid), String.valueOf(nid));
-                    commentQueue.add(new CommentPostTask(payload, user.getUid(), getTag()));
+                            String.valueOf(session.getUser().getUid()), String.valueOf(pid), String.valueOf(nid));
+                    commentQueue.add(new CommentPostTask(payload, session.getUser().getUid(), getTag()));
                 }
             }
         });

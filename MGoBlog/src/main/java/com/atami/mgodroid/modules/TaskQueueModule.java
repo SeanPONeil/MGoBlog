@@ -12,7 +12,7 @@ import dagger.Provides;
 
 import javax.inject.Singleton;
 
-@Module(
+@Module(includes = {OttoModule.class, SessionModule.class},
         entryPoints = {
                 CommentDialogFragment.class,
                 LoginFragment.class,
@@ -32,6 +32,53 @@ public class TaskQueueModule {
 
     public TaskQueueModule(Context appContext) {
         this.appContext = appContext;
+    }
+
+    @Provides
+    @Singleton
+    TaskQueue<NodeIndexTask> provideNodeIndexTaskQueue() {
+        ObjectQueue<NodeIndexTask> delegate = new InMemoryObjectQueue<NodeIndexTask>();
+        TaskQueue<NodeIndexTask> queue = new TaskQueue<NodeIndexTask>(delegate, new IOTaskInjector<NodeIndexTask>
+                (appContext));
+        queue.setListener(new ServiceStarter<NodeIndexTask>(appContext, NodeIndexTaskService.class));
+        return queue;
+    }
+
+    @Provides
+    @Singleton
+    TaskQueue<NodeTask> provideNodeTaskQueue() {
+        ObjectQueue<NodeTask> delegate = new InMemoryObjectQueue<NodeTask>();
+        TaskQueue<NodeTask> queue = new TaskQueue<NodeTask>(delegate, new IOTaskInjector<NodeTask>(appContext));
+        queue.setListener(new ServiceStarter<NodeTask>(appContext, NodeTaskService.class));
+        return queue;
+    }
+
+    @Provides
+    @Singleton
+    TaskQueue<NodeCommentTask> provideNodeCommentTaskQueue() {
+        ObjectQueue<NodeCommentTask> delegate = new InMemoryObjectQueue<NodeCommentTask>();
+        TaskQueue<NodeCommentTask> queue = new TaskQueue<NodeCommentTask>(delegate,
+                new IOTaskInjector<NodeCommentTask>(appContext));
+        queue.setListener(new ServiceStarter<NodeCommentTask>(appContext, NodeCommentTaskService.class));
+        return queue;
+    }
+
+    @Provides
+    @Singleton
+    TaskQueue<LoginTask> provideLoginTaskQueue() {
+        ObjectQueue<LoginTask> delegate = new InMemoryObjectQueue<LoginTask>();
+        TaskQueue<LoginTask> queue = new TaskQueue<LoginTask>(delegate, new IOTaskInjector<LoginTask>(appContext));
+        queue.setListener(new ServiceStarter<LoginTask>(appContext, LoginTaskService.class));
+        return queue;
+    }
+
+    @Provides
+    @Singleton
+    TaskQueue<CommentPostTask> provideCommentPostTaskQueue() {
+        ObjectQueue<CommentPostTask> delegate = new InMemoryObjectQueue<CommentPostTask>();
+        TaskQueue<CommentPostTask> queue = new TaskQueue<CommentPostTask>(delegate, new IOTaskInjector<CommentPostTask>(appContext));
+        queue.setListener(new ServiceStarter<CommentPostTask>(appContext, CommentPostTaskService.class));
+        return queue;
     }
 
     public static class IOTaskInjector<T extends Task> implements TaskInjector<T> {
@@ -78,53 +125,5 @@ public class TaskQueueModule {
         @Override
         public void onRemove(ObjectQueue<T> queue) {
         }
-    }
-
-
-    @Provides
-    @Singleton
-    TaskQueue<NodeIndexTask> provideNodeIndexTaskQueue() {
-        ObjectQueue<NodeIndexTask> delegate = new InMemoryObjectQueue<NodeIndexTask>();
-        TaskQueue<NodeIndexTask> queue = new TaskQueue<NodeIndexTask>(delegate, new IOTaskInjector<NodeIndexTask>
-                (appContext));
-        queue.setListener(new ServiceStarter<NodeIndexTask>(appContext, NodeIndexTaskService.class));
-        return queue;
-    }
-
-    @Provides
-    @Singleton
-    TaskQueue<NodeTask> provideNodeTaskQueue() {
-        ObjectQueue<NodeTask> delegate = new InMemoryObjectQueue<NodeTask>();
-        TaskQueue<NodeTask> queue = new TaskQueue<NodeTask>(delegate, new IOTaskInjector<NodeTask>(appContext));
-        queue.setListener(new ServiceStarter<NodeTask>(appContext, NodeTaskService.class));
-        return queue;
-    }
-
-    @Provides
-    @Singleton
-    TaskQueue<NodeCommentTask> provideNodeCommentTaskQueue() {
-        ObjectQueue<NodeCommentTask> delegate = new InMemoryObjectQueue<NodeCommentTask>();
-        TaskQueue<NodeCommentTask> queue = new TaskQueue<NodeCommentTask>(delegate,
-                new IOTaskInjector<NodeCommentTask>(appContext));
-        queue.setListener(new ServiceStarter<NodeCommentTask>(appContext, NodeCommentTaskService.class));
-        return queue;
-    }
-
-    @Provides
-    @Singleton
-    TaskQueue<LoginTask> provideLoginTaskQueue() {
-        ObjectQueue<LoginTask> delegate = new InMemoryObjectQueue<LoginTask>();
-        TaskQueue<LoginTask> queue = new TaskQueue<LoginTask>(delegate, new IOTaskInjector<LoginTask>(appContext));
-        queue.setListener(new ServiceStarter<LoginTask>(appContext, LoginTaskService.class));
-        return queue;
-    }
-
-    @Provides
-    @Singleton
-    TaskQueue<CommentPostTask> provideCommentPostTaskQueue(){
-        ObjectQueue<CommentPostTask> delegate = new InMemoryObjectQueue<CommentPostTask>();
-        TaskQueue<CommentPostTask> queue = new TaskQueue<CommentPostTask>(delegate);
-        queue.setListener(new ServiceStarter<CommentPostTask>(appContext, CommentPostTaskService.class));
-        return queue;
     }
 }

@@ -31,6 +31,9 @@ public class LoginTaskService extends Service implements Callback<Session> {
     @Inject
     Bus bus;
 
+    @Inject
+    Session session;
+
     private boolean running;
     private String taskTag;
 
@@ -71,20 +74,7 @@ public class LoginTaskService extends Service implements Callback<Session> {
     @Override
     public void success(final Session session, Response response) {
         Log.i(TAG, "Success!");
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(LoginTaskService.this, "Logged in!", Toast.LENGTH_LONG).show();
-            }
-        });
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                User user = session.getUser();
-                user.save();
-                session.save();
-            }
-        }).start();
+        this.session.setSession(session);
         running = false;
         queue.remove();
         bus.post(new LoginTaskStatus(true, false, running, taskTag));

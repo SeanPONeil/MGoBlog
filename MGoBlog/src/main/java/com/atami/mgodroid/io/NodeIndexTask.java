@@ -20,7 +20,7 @@ public class NodeIndexTask implements Task<Callback<List<NodeIndex>>> {
     private String tag;
 
     @Inject
-    private MGoBlogAPI api;
+    MGoBlogAPI api;
 
     /**
      * Downloads a node index page from MGoBlog, and saves it locally through the callback
