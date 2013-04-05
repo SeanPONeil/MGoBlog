@@ -92,6 +92,10 @@ public class MobileHTMLUtil {
 
             p.appendChild(e);
             m.replaceWith(p);
+
+            //Set to null explicitly to hopefully prevent OutOfMemory errors
+            p = null;
+            e = null;
         }
 
         // have to whitelist AFTER replacing videos with images so that
