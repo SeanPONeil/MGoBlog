@@ -11,12 +11,13 @@ import com.atami.mgodroid.models.NodeIndex;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Produce;
 import com.squareup.tape.TaskQueue;
-import retrofit.http.Callback;
-import retrofit.http.RetrofitError;
-import retrofit.http.client.Response;
 
 import javax.inject.Inject;
 import java.util.List;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Service for running NodeIndexTasks in the background. NodeIndexTasks are retrieved from the TaskQueue and

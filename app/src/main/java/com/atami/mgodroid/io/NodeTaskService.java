@@ -12,11 +12,12 @@ import com.atami.mgodroid.util.MobileHTMLUtil;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Produce;
 import com.squareup.tape.TaskQueue;
-import retrofit.http.Callback;
-import retrofit.http.RetrofitError;
-import retrofit.http.client.Response;
 
 import javax.inject.Inject;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Service for running NodeTasks in the background. NodeTasks are retrieved from the TaskQueue and

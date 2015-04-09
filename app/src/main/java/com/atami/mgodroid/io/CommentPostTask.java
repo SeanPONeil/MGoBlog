@@ -4,10 +4,10 @@ package com.atami.mgodroid.io;
 import com.atami.mgodroid.models.CommentJsonObj;
 import com.atami.mgodroid.modules.MGoBlogAPIModule;
 import com.squareup.tape.Task;
-import retrofit.http.Callback;
-import retrofit.http.client.Response;
 
 import javax.inject.Inject;
+
+import retrofit.Callback;
 
 public class CommentPostTask implements Task<Callback> {
 

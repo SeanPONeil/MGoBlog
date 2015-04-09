@@ -3,23 +3,20 @@ package com.atami.mgodroid.io;
 
 import android.app.Service;
 import android.content.Intent;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 import android.util.Log;
-import android.widget.Toast;
 import com.atami.mgodroid.MGoBlogApplication;
 import com.atami.mgodroid.events.LoginTaskStatus;
 import com.atami.mgodroid.models.Session;
-import com.atami.mgodroid.models.User;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Produce;
 import com.squareup.tape.TaskQueue;
-import retrofit.http.Callback;
-import retrofit.http.RetrofitError;
-import retrofit.http.client.Response;
 
 import javax.inject.Inject;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class LoginTaskService extends Service implements Callback<Session> {
 

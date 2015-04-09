@@ -3,12 +3,14 @@ package com.atami.mgodroid.modules;
 
 import com.atami.mgodroid.io.*;
 import com.atami.mgodroid.models.*;
-import com.atami.mgodroid.ui.CommentDialogFragment;
 import com.google.gson.GsonBuilder;
 import dagger.Module;
 import dagger.Provides;
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.client.Response;
+import retrofit.converter.GsonConverter;
 import retrofit.http.*;
-import retrofit.http.client.Response;
 
 import java.util.List;
 import java.util.concurrent.Executor;

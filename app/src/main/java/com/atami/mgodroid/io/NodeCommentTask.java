@@ -2,13 +2,13 @@ package com.atami.mgodroid.io;
 
 
 import com.atami.mgodroid.models.NodeComment;
-import com.atami.mgodroid.modules.MGoBlogAPIModule;
 import com.squareup.tape.Task;
-import retrofit.http.Callback;
 
 import javax.inject.Inject;
 
 import java.util.List;
+
+import retrofit.Callback;
 
 import static com.atami.mgodroid.modules.MGoBlogAPIModule.MGoBlogAPI;
 
