@@ -13,7 +13,7 @@ import dagger.Provides;
 import javax.inject.Singleton;
 
 @Module(includes = {OttoModule.class, SessionModule.class},
-        entryPoints = {
+        injects = {
                 CommentDialogFragment.class,
                 LoginFragment.class,
                 NodeIndexListFragment.class,

@@ -17,7 +17,7 @@ import java.util.concurrent.Executor;
 
 @Module(complete = false,
         includes = {SessionModule.class, OttoModule.class},
-        entryPoints = {
+        injects = {
                 LoginTask.class,
                 NodeIndexTask.class,
                 NodeTask.class,

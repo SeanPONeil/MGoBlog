@@ -9,7 +9,7 @@ import dagger.Provides;
 import javax.inject.Singleton;
 
 @Module(complete = false,
-        entryPoints = {
+        injects = {
                 CommentDialogFragment.class,
                 LoginTaskService.class
         })

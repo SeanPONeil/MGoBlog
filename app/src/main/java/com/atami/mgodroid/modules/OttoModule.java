@@ -26,7 +26,7 @@ import dagger.Provides;
 import javax.inject.Singleton;
 
 @Module(complete = false,
-        entryPoints = {
+        injects = {
                 MGoBlogActivity.class,
                 NodeActivity.class
         }
