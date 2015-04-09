@@ -1,7 +1,16 @@
 apply plugin: 'com.android.application'
 
 dependencies {
-    compile fileTree(dir: 'libs', include: '*.jar')
+    compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
+    compile 'com.github.chrisbanes.actionbarpulltorefresh:library:0.9.9'
+    compile 'net.simonvt.menudrawer:menudrawer:3.0.6'
+    compile 'com.squareup:otto:1.3.6'
+    compile 'com.squareup.retrofit:retrofit:1.9.0'
+    compile 'com.squareup:tape:1.2.3'
+    compile 'com.squareup.dagger:dagger:1.2.2'
+    compile 'com.squareup.dagger:dagger-compiler:1.2.2'
+    compile 'org.jsoup:jsoup:1.8.1'
+    compile 'org.ocpsoft.prettytime:prettytime:3.2.7.Final'
 }
 
 android {
@@ -21,9 +30,5 @@ android {
         // by a similar customization.
         debug.setRoot('build-types/debug')
         release.setRoot('build-types/release')
-    }
-
-    dependencies {
-      
     }
 }
