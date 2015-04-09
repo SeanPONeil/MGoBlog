@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 
 dependencies {
+    compile 'com.android.support:support-v4:22.0.0'
     compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
     compile 'com.github.chrisbanes.actionbarpulltorefresh:library:0.9.9'
     compile 'net.simonvt.menudrawer:menudrawer:3.0.6'
