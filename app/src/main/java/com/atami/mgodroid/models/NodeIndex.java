@@ -6,6 +6,7 @@ import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Delete;
 import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
+
 import org.joda.time.DateTime;
 import org.ocpsoft.prettytime.PrettyTime;
 
