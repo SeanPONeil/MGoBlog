@@ -7,7 +7,6 @@ import com.google.gson.GsonBuilder;
 import dagger.Module;
 import dagger.Provides;
 import retrofit.Callback;
-import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.client.Response;
 import retrofit.converter.GsonConverter;
@@ -44,30 +43,25 @@ public class MGoBlogAPIModule {
 
     public interface MGoBlogAPI {
 
-        @GET("/node.json")
-        @QueryParam(name = "parameters[sticky]", value = "0")
-        void getNodeIndexByType(@Name("parameters[type]") String type, @Name("page") int page,
+        @GET("/node.json?parameters[sticky]=0")
+        void getNodeIndexByType(@Path("parameters[type]") String type, @Path("page") int page,
                                 Callback<List<NodeIndex>> callback);
 
-        @GET("/node.json")
-        @QueryParams({
-                @QueryParam(name = "parameters[sticky]", value = "0"),
-                @QueryParam(name = "parameters[promote]", value = "1")
-        })
-        void getFrontPage(@Name("page") int page,
+        @GET("/node.json?parameters[sticky]=0&parameters[promote]=1")
+        void getFrontPage(@Path("page") int page,
                           Callback<List<NodeIndex>> callback);
 
         @GET("/node/{nid}.json")
-        void getNode(@Name("nid") int nid, Callback<Node> callback);
+        void getNode(@Path("nid") int nid, Callback<Node> callback);
 
         @GET("/node/{nid}/comments.json")
-        void getNodeComments(@Name("nid") int nid, Callback<List<NodeComment>> callback);
+        void getNodeComments(@Path("nid") int nid, Callback<List<NodeComment>> callback);
 
         @POST("/user/login")
-        void loginUser(@SingleEntity LoginJsonObj payload, Callback<MGoRequestInterceptor> callback);
+        void loginUser(@Body LoginJsonObj payload, Callback<MGoRequestInterceptor> callback);
 
         @POST("/comment.json")
-        void postComment(@SingleEntity CommentJsonObj payload, Callback<Response> callback);
+        void postComment(@Body CommentJsonObj payload, Callback<Response> callback);
     }
 
     private class APIExecutor implements Executor {
