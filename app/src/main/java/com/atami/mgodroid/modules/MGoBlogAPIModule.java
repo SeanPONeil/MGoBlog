@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import dagger.Module;
 import dagger.Provides;
 import retrofit.Callback;
+import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.client.Response;
 import retrofit.converter.GsonConverter;
@@ -30,15 +31,13 @@ public class MGoBlogAPIModule {
     private static final String API_URL = "http://mgoblog.com/mobileservices/";
 
     @Provides
-    MGoBlogAPI provideMGoBlogAPI(Session session) {
+    MGoBlogAPI provideMGoBlogAPI(MGoRequestInterceptor MGoRequestInterceptor) {
         RestAdapter restAdapter = new RestAdapter.Builder()
-                .setServer(new Server(API_URL))
+                .setEndpoint(API_URL)
                 .setExecutors(new APIExecutor(), new CallbackExecutor())
-                .setHeaders(session)
-                .setConverter(new GsonConverter(new GsonBuilder()
-                        .setPrettyPrinting()
-                        .serializeNulls()
-                        .create()))
+                .setRequestInterceptor(MGoRequestInterceptor)
+                .setConverter(new GsonConverter(
+                    new GsonBuilder().setPrettyPrinting().serializeNulls().create()))
                 .build();
         return restAdapter.create(MGoBlogAPI.class);
     }
@@ -65,7 +64,7 @@ public class MGoBlogAPIModule {
         void getNodeComments(@Name("nid") int nid, Callback<List<NodeComment>> callback);
 
         @POST("/user/login")
-        void loginUser(@SingleEntity LoginJsonObj payload, Callback<Session> callback);
+        void loginUser(@SingleEntity LoginJsonObj payload, Callback<MGoRequestInterceptor> callback);
 
         @POST("/comment.json")
         void postComment(@SingleEntity CommentJsonObj payload, Callback<Response> callback);

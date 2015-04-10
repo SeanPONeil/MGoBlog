@@ -2,7 +2,7 @@ package com.atami.mgodroid.io;
 
 
 import com.atami.mgodroid.models.LoginJsonObj;
-import com.atami.mgodroid.models.Session;
+import com.atami.mgodroid.models.MGoRequestInterceptor;
 import com.squareup.tape.Task;
 
 import javax.inject.Inject;
@@ -11,7 +11,7 @@ import retrofit.Callback;
 
 import static com.atami.mgodroid.modules.MGoBlogAPIModule.MGoBlogAPI;
 
-public class LoginTask implements Task<Callback<Session>> {
+public class LoginTask implements Task<Callback<MGoRequestInterceptor>> {
 
     public static final String TAG = "LoginTask";
 
@@ -33,7 +33,7 @@ public class LoginTask implements Task<Callback<Session>> {
     }
 
     @Override
-    public void execute(Callback<Session> callback) {
+    public void execute(Callback<MGoRequestInterceptor> callback) {
         api.loginUser(new LoginJsonObj(username, password), callback);
     }
 }

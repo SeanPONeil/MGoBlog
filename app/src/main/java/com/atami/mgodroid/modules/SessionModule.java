@@ -1,7 +1,7 @@
 package com.atami.mgodroid.modules;
 
 import com.atami.mgodroid.io.LoginTaskService;
-import com.atami.mgodroid.models.Session;
+import com.atami.mgodroid.models.MGoRequestInterceptor;
 import com.atami.mgodroid.ui.CommentDialogFragment;
 import dagger.Module;
 import dagger.Provides;
@@ -15,8 +15,7 @@ import javax.inject.Singleton;
         })
 public class SessionModule {
     @Provides
-    @Singleton
-    Session provideSession() {
-        return new Session();
+    @Singleton MGoRequestInterceptor provideSession() {
+        return new MGoRequestInterceptor();
     }
 }

@@ -12,14 +12,12 @@ import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
-import com.activeandroid.query.Select;
 import com.atami.mgodroid.R;
 import com.atami.mgodroid.events.CommentPostTaskStatus;
 import com.atami.mgodroid.io.CommentPostTask;
 import com.atami.mgodroid.io.LoginTask;
 import com.atami.mgodroid.models.CommentJsonObj;
-import com.atami.mgodroid.models.Session;
-import com.atami.mgodroid.models.User;
+import com.atami.mgodroid.models.MGoRequestInterceptor;
 import com.atami.mgodroid.ui.base.BaseDialogFragment;
 import com.squareup.otto.Subscribe;
 import com.squareup.tape.TaskQueue;
@@ -35,8 +33,7 @@ public class CommentDialogFragment extends BaseDialogFragment {
     TaskQueue<LoginTask> loginQueue;
     @Inject
     TaskQueue<CommentPostTask> commentQueue;
-    @Inject
-    Session session;
+    @Inject MGoRequestInterceptor MGoRequestInterceptor;
 
     public static CommentDialogFragment newInstance(int pid, int nid) {
         CommentDialogFragment f = new CommentDialogFragment();
@@ -114,8 +111,8 @@ public class CommentDialogFragment extends BaseDialogFragment {
                         }
                     }
                     CommentJsonObj payload = new CommentJsonObj(subjectText, comment.getText().toString(),
-                            String.valueOf(session.getUser().getUid()), String.valueOf(pid), String.valueOf(nid));
-                    commentQueue.add(new CommentPostTask(payload, session.getUser().getUid(), getTag()));
+                            String.valueOf(MGoRequestInterceptor.getUser().getUid()), String.valueOf(pid), String.valueOf(nid));
+                    commentQueue.add(new CommentPostTask(payload, MGoRequestInterceptor.getUser().getUid(), getTag()));
                 }
             }
         });

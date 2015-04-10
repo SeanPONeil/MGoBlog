@@ -7,7 +7,7 @@ import android.os.IBinder;
 import android.util.Log;
 import com.atami.mgodroid.MGoBlogApplication;
 import com.atami.mgodroid.events.LoginTaskStatus;
-import com.atami.mgodroid.models.Session;
+import com.atami.mgodroid.models.MGoRequestInterceptor;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Produce;
 import com.squareup.tape.TaskQueue;
@@ -18,7 +18,7 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class LoginTaskService extends Service implements Callback<Session> {
+public class LoginTaskService extends Service implements Callback<MGoRequestInterceptor> {
 
     private static final String TAG = "LoginTaskService";
 
@@ -28,8 +28,7 @@ public class LoginTaskService extends Service implements Callback<Session> {
     @Inject
     Bus bus;
 
-    @Inject
-    Session session;
+    @Inject MGoRequestInterceptor MGoRequestInterceptor;
 
     private boolean running;
     private String taskTag;
@@ -69,9 +68,9 @@ public class LoginTaskService extends Service implements Callback<Session> {
     }
 
     @Override
-    public void success(final Session session, Response response) {
+    public void success(final MGoRequestInterceptor MGoRequestInterceptor, Response response) {
         Log.i(TAG, "Success!");
-        this.session.setSession(session);
+        this.MGoRequestInterceptor.setInterceptor(MGoRequestInterceptor);
         running = false;
         queue.remove();
         bus.post(new LoginTaskStatus(true, false, running, taskTag));
