@@ -44,11 +44,11 @@ public class MGoBlogAPIModule {
     public interface MGoBlogAPI {
 
         @GET("/node.json?parameters[sticky]=0")
-        void getNodeIndexByType(@Path("parameters[type]") String type, @Path("page") int page,
+        void getNodeIndexByType(@Query("parameters[type]") String type, @Query("page") int page,
                                 Callback<List<NodeIndex>> callback);
 
         @GET("/node.json?parameters[sticky]=0&parameters[promote]=1")
-        void getFrontPage(@Path("page") int page,
+        void getFrontPage(@Query("page") int page,
                           Callback<List<NodeIndex>> callback);
 
         @GET("/node/{nid}.json")

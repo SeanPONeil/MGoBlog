@@ -7,15 +7,6 @@
     <FrameLayout
             android:id="@+id/node_index_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/adView">
+            android:layout_height="match_parent">
     </FrameLayout>
-
-    <com.google.ads.AdView android:id="@+id/adView"
-                           android:layout_width="match_parent"
-                           android:layout_height="wrap_content"
-                           android:layout_alignParentBottom="true"
-                           ads:adUnitId="a14db4391caf79c"
-                           ads:adSize="SMART_BANNER"
-                           ads:loadAdOnCreate="true"/>
 </RelativeLayout>

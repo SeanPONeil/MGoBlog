@@ -15,6 +15,8 @@ import com.atami.mgodroid.events.NodeIndexTaskStatus;
 import com.atami.mgodroid.io.NodeIndexTask;
 import com.atami.mgodroid.models.NodeIndex;
 import com.atami.mgodroid.ui.base.PullToRefreshListFragment;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleListener;
 import com.squareup.otto.Subscribe;
 import com.squareup.tape.TaskQueue;
 
@@ -23,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NodeIndexListFragment extends PullToRefreshListFragment
-        implements OnLastItemVisibleListener, OnRefreshListener<ListView>,
+        implements OnLastItemVisibleListener, PullToRefreshBase.OnRefreshListener<ListView>,
         LoaderManager.LoaderCallbacks<List<NodeIndex>> {
 
     private final static String TAG = "NodeIndexListFragment";
@@ -109,17 +111,17 @@ public class NodeIndexListFragment extends PullToRefreshListFragment
     @Override
     public void onRefresh(PullToRefreshBase<ListView> refreshView) {
         getPullToRefreshListView().setLastUpdatedLabel(
-                DateUtils.formatDateTime(getActivity(),
-                        System.currentTimeMillis(), DateUtils.FORMAT_SHOW_TIME
-                        | DateUtils.FORMAT_SHOW_DATE
-                        | DateUtils.FORMAT_ABBREV_ALL));
-        queue.add(new NodeIndexTask(column, value, 0, getTag()));
+            DateUtils.formatDateTime(getActivity(), System.currentTimeMillis(),
+                DateUtils.FORMAT_SHOW_TIME
+                    | DateUtils.FORMAT_SHOW_DATE
+                    | DateUtils.FORMAT_ABBREV_ALL));
+        if (refreshView.getState() != PullToRefreshBase.State.MANUAL_REFRESHING) {
+            queue.add(new NodeIndexTask(column, value, 0, getTag()));
+        }
     }
 
     @Subscribe
     public void onNewNodeIndexTaskStatus(NodeIndexTaskStatus status) {
-        System.out.println(status.tag);
-        System.out.println(getTag());
         if (status.tag.equals(getTag())) {
             if (status.running) {
                 getPullToRefreshListView().setRefreshing(false);

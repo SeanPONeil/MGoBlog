@@ -44,16 +44,8 @@ public class MGoBlogActivity extends BaseActivity {
 
         mIsDualPane = getResources().getBoolean(R.bool.has_two_panes);
 
-        // TODO: MenuDrawer will crash when switching from non static drawer to
-        // static. Issue is at
-        // https://github.com/SimonVT/android-menudrawer/issues/62
-        if (mIsDualPane) {
-            mMenuDrawer = MenuDrawer.attach(this, MenuDrawer.MENU_DRAG_CONTENT,
-                    Position.LEFT, true);
-        } else {
-            mMenuDrawer = MenuDrawer.attach(this, MenuDrawer.MENU_DRAG_CONTENT,
-                    Position.LEFT, false);
-        }
+        mMenuDrawer = MenuDrawer.attach(this, MenuDrawer.Type.BEHIND, Position.LEFT,
+            MenuDrawer.MENU_DRAG_CONTENT);
 
         mMenuDrawer.setContentView(R.layout.node_index_container);
 
@@ -187,6 +179,10 @@ public class MGoBlogActivity extends BaseActivity {
                         if (!mDisplayUp) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                         mMenuDrawer.setOnDrawerStateChangeListener(null);
                     }
+                }
+
+                @Override public void onDrawerSlide(float openRatio, int offsetPixels) {
+
                 }
             });
         }
