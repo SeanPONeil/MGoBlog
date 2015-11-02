@@ -14,6 +14,10 @@ import java.util.List;
 @Table(name = "node_comments")
 public class NodeComment extends Model {
 
+    public NodeComment() {
+        super();
+    }
+
     @Column(name = "cid", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
     private int cid;
 

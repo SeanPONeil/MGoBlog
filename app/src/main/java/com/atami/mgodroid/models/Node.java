@@ -11,6 +11,10 @@ import java.util.Map;
 @Table(name = "nodes")
 public class Node extends Model {
 
+    public Node() {
+        super();
+    }
+
     @Column(name = "nid", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
     private int nid;
     @Column(name = "type")

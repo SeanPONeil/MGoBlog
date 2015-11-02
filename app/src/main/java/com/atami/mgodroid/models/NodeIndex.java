@@ -13,6 +13,10 @@ import org.ocpsoft.prettytime.PrettyTime;
 @Table(name = "NodeIndexes")
 public class NodeIndex extends Model {
 
+    public NodeIndex() {
+        super();
+    }
+
     @Column(name = "nid", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
     private int nid;
 
