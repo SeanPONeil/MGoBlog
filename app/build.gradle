@@ -22,6 +22,8 @@ android {
 
     defaultConfig {
         minSdkVersion 8
+        versionCode 55
+        versionName "3.0.5"
     }
 
     sourceSets {
