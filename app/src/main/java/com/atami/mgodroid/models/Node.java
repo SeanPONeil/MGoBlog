@@ -4,6 +4,7 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Select;
+import com.google.gson.annotations.Expose;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -15,75 +16,75 @@ public class Node extends Model {
         super();
     }
 
-    @Column(name = "nid", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
+    @Expose @Column(name = "nid", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
     private int nid;
-    @Column(name = "type")
+    @Expose @Column(name = "type")
     private String type;
-    @Column(name = "uid")
+    @Expose @Column(name = "uid")
     private int uid;
-    @Column(name = "status")
+    @Expose @Column(name = "status")
     private int status;
-    @Column(name = "created")
+    @Expose @Column(name = "created")
     private int created;
 
     //@Column(name = "language")
     //private String language;
-    @Column(name = "changed")
+    @Expose @Column(name = "changed")
     private int changed;
-    @Column(name = "comment")
+    @Expose @Column(name = "comment")
     private int comment;
-    @Column(name = "promote")
+    @Expose @Column(name = "promote")
     private int promote;
-    @Column(name = "moderate")
+    @Expose @Column(name = "moderate")
     private int moderate;
-    @Column(name = "sticky")
+    @Expose @Column(name = "sticky")
     private int sticky;
-    @Column(name = "tnid")
+    @Expose @Column(name = "tnid")
     private int tnid;
-    @Column(name = "translate")
+    @Expose @Column(name = "translate")
     private int translate;
-    @Column(name = "vid")
+    @Expose @Column(name = "vid")
     private int vid;
-    @Column(name = "revision_uid")
+    @Expose @Column(name = "revision_uid")
     private int revision_uid;
-    @Column(name = "title")
+    @Expose @Column(name = "title")
     private String title;
-    @Column(name = "body")
+    @Expose @Column(name = "body")
     private String body;
-    @Column(name = "teaser")
+    @Expose @Column(name = "teaser")
     private String teaser;
-    @Column(name = "log")
+    @Expose @Column(name = "log")
     private String log;
-    @Column(name = "revision_timestamp")
+    @Expose @Column(name = "revision_timestamp")
     private int revision_timestamp;
-    @Column(name = "format")
+    @Expose @Column(name = "format")
     private int format;
-    @Column(name = "name")
+    @Expose @Column(name = "name")
     private String name;
-    @Column(name = "picture")
+    @Expose @Column(name = "picture")
     private String picture;
-    @Column(name = "data")
+    @Expose @Column(name = "data")
     private String data;
-    @Column(name = "path")
+    @Expose @Column(name = "path")
     private String path;
-    @Column(name = "last_comment_timestamp")
+    @Expose @Column(name = "last_comment_timestamp")
     private int last_comment_timestamp;
-    @Column(name = "last_comment_name")
+    @Expose @Column(name = "last_comment_name")
     private String last_comment_name;
-    @Column(name = "comment_count")
+    @Expose @Column(name = "comment_count")
     private int comment_count;
-    @Column(name = "taxonomy")
+    @Expose @Column(name = "taxonomy")
     private Map<Integer, Taxonomy> taxonomy;
-    @Column(name = "files")
+    @Expose @Column(name = "files")
     private String[] files;
-    @Column(name = "page_titles")
+    @Expose @Column(name = "page_titles")
     private String page_title;
-    @Column(name = "forum_tid")
+    @Expose @Column(name = "forum_tid")
     private String forum_tid;
-    @Column(name = "uri")
+    @Expose @Column(name = "uri")
     private String uri;
     private FieldLink[] field_link;
-    @Column(name = "link")
+    @Expose @Column(name = "link")
     private String link;
 
     //@Column(name = "nodewords")

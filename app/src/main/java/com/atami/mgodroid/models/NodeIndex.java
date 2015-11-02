@@ -6,6 +6,7 @@ import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Delete;
 import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
+import com.google.gson.annotations.Expose;
 
 import org.joda.time.DateTime;
 import org.ocpsoft.prettytime.PrettyTime;
@@ -17,52 +18,52 @@ public class NodeIndex extends Model {
         super();
     }
 
-    @Column(name = "nid", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
+    @Expose @Column(name = "nid", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
     private int nid;
 
-    @Column(name = "vid")
+    @Expose @Column(name = "vid")
     private int vid;
 
-    @Column(name = "type")
+    @Expose @Column(name = "type")
     private String type;
 
-    @Column(name = "language")
+    @Expose @Column(name = "language")
     private String language;
 
-    @Column(name = "title")
+    @Expose @Column(name = "title")
     private String title;
 
-    @Column(name = "uid")
+    @Expose @Column(name = "uid")
     private int uid;
 
-    @Column(name = "status")
+    @Expose @Column(name = "status")
     private int status;
 
-    @Column(name = "created")
+    @Expose @Column(name = "created")
     private long created;
 
-    @Column(name = "changed")
+    @Expose @Column(name = "changed")
     private long changed;
 
-    @Column(name = "comment")
+    @Expose @Column(name = "comment")
     private int comment;
 
-    @Column(name = "promote")
+    @Expose @Column(name = "promote")
     private int promote;
 
-    @Column(name = "moderate")
+    @Expose @Column(name = "moderate")
     private int moderate;
 
-    @Column(name = "sticky")
+    @Expose @Column(name = "sticky")
     private int sticky;
 
-    @Column(name = "tnid")
+    @Expose @Column(name = "tnid")
     private int tnid;
 
-    @Column(name = "translate")
+    @Expose @Column(name = "translate")
     private int translate;
 
-    @Column(name = "uri")
+    @Expose @Column(name = "uri")
     private String uri;
 
     //ActiveAndroid queries

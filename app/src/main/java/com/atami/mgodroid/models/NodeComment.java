@@ -6,6 +6,8 @@ import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
+import com.google.gson.annotations.Expose;
+
 import org.joda.time.DateTime;
 import org.ocpsoft.prettytime.PrettyTime;
 
@@ -18,46 +20,46 @@ public class NodeComment extends Model {
         super();
     }
 
-    @Column(name = "cid", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
+    @Expose @Column(name = "cid", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
     private int cid;
 
-    @Column(name = "pid")
+    @Expose @Column(name = "pid")
     private int pid;
 
-    @Column(name = "nid")
+    @Expose @Column(name = "nid")
     private int nid;
 
-    @Column(name = "uid")
+    @Expose @Column(name = "uid")
     private int uid;
 
-    @Column(name = "subject")
+    @Expose @Column(name = "subject")
     private String subject;
 
-    @Column(name = "comment")
+    @Expose @Column(name = "comment")
     private String comment;
 
-    @Column(name = "hostname")
+    @Expose @Column(name = "hostname")
     private String hostname;
 
-    @Column(name = "timestamp")
+    @Expose @Column(name = "timestamp")
     private long timestamp;
 
-    @Column(name = "status")
+    @Expose @Column(name = "status")
     private int status;
 
-    @Column(name = "format")
+    @Expose @Column(name = "format")
     private int format;
 
-    @Column(name = "thread")
+    @Expose @Column(name = "thread")
     private String thread;
 
-    @Column(name = "name")
+    @Expose @Column(name = "name")
     private String name;
 
-    @Column(name = "mail")
+    @Expose @Column(name = "mail")
     private String mail;
 
-    @Column(name = "homepage")
+    @Expose @Column(name = "homepage")
     private String homepage;
 
     public String getSubject() {

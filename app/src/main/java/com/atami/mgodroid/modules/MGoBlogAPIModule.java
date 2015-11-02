@@ -109,6 +109,7 @@ public class MGoBlogAPIModule {
                 .setRequestInterceptor(MGoRequestInterceptor)
                 .setConverter(new GsonConverter(
                         new GsonBuilder()
+                                .excludeFieldsWithoutExposeAnnotation()
                                 .setPrettyPrinting()
                                 .serializeNulls()
                             .create()))
