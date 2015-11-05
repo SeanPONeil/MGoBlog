@@ -1,9 +1,11 @@
 package com.atami.mgodroid.models;
 
+import com.google.gson.annotations.Expose;
+
 public class LoginJsonObj {
 
-    public String username;
-    public String password;
+    @Expose public String username;
+    @Expose public String password;
 
     public LoginJsonObj(String username, String password) {
         this.username = username;

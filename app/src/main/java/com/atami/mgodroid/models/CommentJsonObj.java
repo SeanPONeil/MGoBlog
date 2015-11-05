@@ -1,17 +1,19 @@
 package com.atami.mgodroid.models;
 
 
+import com.google.gson.annotations.Expose;
+
 public class CommentJsonObj {
 
-    private String subject;
+    @Expose private String subject;
 
-    private String comment;
+    @Expose private String comment;
 
-    private String uid;
+    @Expose private String uid;
 
-    private String pid;
+    @Expose private String pid;
 
-    private String nid;
+    @Expose private String nid;
 
     public CommentJsonObj(String subject, String comment, String uid, String pid, String nid) {
         this.subject = subject;
