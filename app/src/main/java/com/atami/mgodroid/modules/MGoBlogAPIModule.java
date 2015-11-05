@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
 
 @Module(complete = false,
         library = true,
-        includes = {SessionModule.class, OttoModule.class},
+        includes = {OttoModule.class},
         injects = {
                 LoginTask.class,
                 NodeIndexTask.class,

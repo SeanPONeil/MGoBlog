@@ -12,7 +12,7 @@ import dagger.Provides;
 
 import javax.inject.Singleton;
 
-@Module(includes = {OttoModule.class, SessionModule.class},
+@Module(includes = {OttoModule.class},
         injects = {
                 CommentDialogFragment.class,
                 LoginFragment.class,
@@ -23,7 +23,8 @@ import javax.inject.Singleton;
                 LoginTaskService.class,
                 NodeIndexTaskService.class,
                 NodeTaskService.class,
-                NodeCommentTaskService.class
+                NodeCommentTaskService.class,
+                MGoBlogApplication.class
         }
 )
 public class TaskQueueModule {

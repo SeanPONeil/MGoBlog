@@ -1,42 +1,44 @@
 package com.atami.mgodroid.models;
 
 
+import com.google.gson.annotations.Expose;
+
 import java.util.Map;
 
 public class User {
 
-    private int uid;
-    private String name;
-    private String mail;
-    private int mode;
-    private int sort;
-    private int threshold;
+    @Expose private int uid;
+    @Expose private String name;
+    @Expose private String mail;
+    @Expose private int mode;
+    @Expose private int sort;
+    @Expose private int threshold;
 
-    //private String theme;
-    private String signature;
-    private long created;
-    private long login;
-    private int status;
+    //@Expose private String theme;
+    @Expose private String signature;
+    @Expose private long created;
+    @Expose private long login;
+    @Expose private int status;
 
-    //private String language;
-    private String picture;
-    private String init;
-    //private String data;
-    //private String timezone_name;
-    private int signature_format;
+    //@Expose private String language;
+    @Expose private String picture;
+    @Expose private String init;
+    //@Expose private String data;
+    //@Expose private String timezone_name;
+    @Expose private int signature_format;
 
-    //private String form_buid_id;
-    //private Map<String, String> mollom;
-    //private String picture_delete;
-    //private String picture_upload;
-    //private String block;
-    //private String openidurl_server;
-    //private String openidurl_delegate;
-    //private String openidurl_xrds;
-    //private int endure_misery;
-    private int cave;
-    private String comments_per_page;
-    private Map<String, String> roles;
+    //@Expose private String form_buid_id;
+    //@Expose private Map<String, String> mollom;
+    //@Expose private String picture_delete;
+    //@Expose private String picture_upload;
+    //@Expose private String block;
+    //@Expose private String openidurl_server;
+    //@Expose private String openidurl_delegate;
+    //@Expose private String openidurl_xrds;
+    //@Expose private int endure_misery;
+    @Expose private int cave;
+    @Expose private String comments_per_page;
+    @Expose private Map<String, String> roles;
 
     @Override
     public String toString() {
