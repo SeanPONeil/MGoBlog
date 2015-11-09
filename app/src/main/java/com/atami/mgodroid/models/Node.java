@@ -83,6 +83,7 @@ public class Node extends Model {
     private String forum_tid;
     @Expose @Column(name = "uri")
     private String uri;
+    @Expose @Column (name = "field_link")
     private FieldLink[] field_link;
     @Expose @Column(name = "link")
     private String link;
@@ -185,17 +186,17 @@ public class Node extends Model {
 
     public class Taxonomy {
 
-        public int tid;
-        public int vid;
-        public String name;
-        public String description;
-        public int weight;
-        public int v_weight_unused;
+        @Expose public int tid;
+        @Expose public int vid;
+        @Expose public String name;
+        @Expose public String description;
+        @Expose public int weight;
+        @Expose public int v_weight_unused;
     }
 
     public class FieldLink {
 
-        public String title;
-        public String url;
+        @Expose public String title;
+        @Expose public String url;
     }
 }
