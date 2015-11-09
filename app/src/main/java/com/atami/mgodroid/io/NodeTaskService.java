@@ -96,8 +96,6 @@ public class NodeTaskService extends Service implements Callback<Node> {
             Log.i(TAG, "Network error!");
         } else {
             Log.i(TAG, "Non network error! Something is wrong!");
-            Log.i(TAG, error.getBody().toString());
-            Log.i(TAG, error.getUrl());
         }
         running = false;
         queue.remove();
