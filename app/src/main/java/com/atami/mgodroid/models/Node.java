@@ -83,7 +83,7 @@ public class Node extends Model {
     private String forum_tid;
     @Expose @Column(name = "uri")
     private String uri;
-    @Expose @Column (name = "field_link")
+    @Expose
     private FieldLink[] field_link;
     @Expose @Column(name = "link")
     private String link;
