@@ -10,6 +10,8 @@ import android.util.Log;
 import com.activeandroid.ActiveAndroid;
 import com.atami.mgodroid.io.LoginTask;
 import com.atami.mgodroid.modules.*;
+import com.hyprmx.android.sdk.HyprMXHelper;
+import com.hyprmx.android.sdk.HyprMXReward;
 import com.squareup.tape.TaskQueue;
 
 import javax.inject.Inject;
@@ -43,6 +45,16 @@ public class MGoBlogApplication extends Application {
             String password = prefs.getString("password", null);
             loginTaskQueue.add(new LoginTask(username, password, null));
         }
+
+        HyprMXHelper.getInstance(this,
+                "-45",
+                "123123123123",
+                "asdasdasdasd",
+                true);
+        HyprMXReward rewards[] = new HyprMXReward[2];
+        rewards[0] = new HyprMXReward(0, 0.01f, 1, "Cent");
+        rewards[1] = new HyprMXReward(1, 0.005f, 1000, "Half a Cent");
+        HyprMXHelper.getInstance().setRewards(rewards);
     }
 
     public ObjectGraph objectGraph() {

@@ -10,6 +10,9 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
 
     <application android:hardwareAccelerated="true"
                  android:icon="@drawable/icon"
@@ -39,6 +42,24 @@
 
         <meta-data android:name="AA_DB_NAME" android:value="MGoBlog.db"/>
         <meta-data android:name="AA_DB_VERSION" android:value="3"/>  />
+
+        <activity
+            android:name="com.hyprmx.android.sdk.activity.HyprMXOfferViewerActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="HyprMX SDK"
+            android:launchMode="singleTop" />
+        <activity
+            android:name="com.hyprmx.android.sdk.activity.HyprMXRequiredInformationActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
+        <activity
+            android:name="com.hyprmx.android.sdk.activity.HyprMXNoOffersActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity
+            android:name="com.hyprmx.android.sdk.activity.HyprMXWebTrafficActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity
+            android:name="com.hyprmx.android.sdk.activity.HyprMXVideoPlayerActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
     </application>
 
 </manifest>

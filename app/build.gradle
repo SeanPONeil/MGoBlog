@@ -14,6 +14,7 @@ dependencies {
     compile 'org.jsoup:jsoup:1.8.1'
     compile 'org.ocpsoft.prettytime:prettytime:3.2.7.Final'
     compile 'joda-time:joda-time:2.7'
+    compile files('libs/HyprMX.jar')
 }
 
 android {
